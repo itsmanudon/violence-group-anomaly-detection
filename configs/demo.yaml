@@ -1,0 +1,2 @@
+# Visualization/inference default; calibrate on validation data before interpreting alerts.
+threshold: 0.5

@@ -1,0 +1,18 @@
+# Baseline architecture; experiment schedule is our default, not reproduced results.
+seed: 7
+device: auto
+num_segments: 32
+feature_dim: 4096
+model:
+  hidden_dims: [512, 32]
+  dropout: 0.6
+training:
+  optimizer: adagrad
+  learning_rate: 0.001 # Requested baseline; released author code uses 0.01.
+  epochs: 20 # Our epoch-based schedule, not the released iteration schedule.
+  batch_size: 30 # Pairs: 30 abnormal + 30 normal videos per full batch.
+  weight_l2: 0.001 # Explicit squared-weight penalty, excluding biases.
+loss:
+  ranking_margin: 1.0
+  sparsity_weight: 0.00008
+  smoothness_weight: 0.00008
