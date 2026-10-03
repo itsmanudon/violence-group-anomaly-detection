@@ -1,0 +1,14 @@
+device: auto
+detector:
+  backend: torchvision_fasterrcnn
+  # Bare official COCO v1 Faster R-CNN ResNet50 FPN state_dict, provided locally.
+  checkpoint: null
+  confidence_threshold: 0.5
+  nms_iou_threshold: 0.5
+  max_actors: 20
+  min_box_width: 4
+  min_box_height: 4
+  min_box_area: 0
+  person_class_id: 1
+matching:
+  iou_threshold: 0.5

@@ -4,9 +4,10 @@ A modular HCI research project for a future classroom/professor demonstration of
 violence and suspicious group activity in surveillance video. **Milestone 1 implements
 Sultani-style binary anomaly localization. Milestone 2A adds an independent
 Actor-Transformer baseline for Collective Activity with annotated actor boxes.**
-The models are not connected yet. Neither model currently classifies fighting,
-assault, or robbery. Person detection and surveillance adaptation belong to
-Milestone 2B; the Gradio demo comes later.
+**Milestone 2B adds automatic person detection and GT-versus-detected box
+robustness evaluation.** The models are not connected yet. Neither model currently
+classifies fighting, assault, or robbery. Surveillance behavior adaptation and
+the Gradio demo come later.
 
 "Goons" is informal project framing. The system detects **observable behavior**;
 it does not infer that a person intrinsically "is a goon," assign character labels,
@@ -36,7 +37,7 @@ flowchart TD
     S --> T[Anomaly scores over time]
     T --> W[Suspicious temporal windows]
     W --> J[JSON + timeline: Milestone 1]
-    W -. Future Milestone 2B .-> P[Person detection]
+    W -. Future cascade integration .-> P[Person detection: Milestone 2B]
     P -.-> R[HRNet pose + I3D RGB/motion + RoIAlign]
     R -.-> A[Actor-Transformer]
     A -.-> G[Individual actions + group activity]
@@ -235,9 +236,10 @@ decoder does not resample FPS. Source splitting cannot detect wrong source IDs.
 The binary scorer can mistake unusual benign behavior for anomalies. No operational
 accuracy or benchmark result is established.
 
-Milestone 2B should first establish real Collective performance with annotated
-boxes, then compare detected boxes against that reference, evaluate actor alignment
-and missed detections, and add appropriately annotated surveillance behavior data.
+Next, establish real Collective performance with annotated boxes and compare
+detected boxes against that reference using the Milestone 2B evaluation tools.
+Measure missed actors and annotation coverage before adding appropriately annotated
+surveillance behavior data.
 Connect Sultani windows only after these independent components are validated.
 Labels such as fighting/aggressive interaction require actual annotations; anomaly
 scores cannot supply these classes. Tracking and a Gradio demonstration are later
@@ -429,3 +431,99 @@ ruff check .
 ruff format --check .
 git diff --check
 ```
+
+## Milestone 2B: automatic actors and box robustness
+
+Annotated actor boxes are the paper baseline; a CCTV deployment must find people
+itself. The detector is replaceable infrastructure, not a contribution of either
+research paper. The **same Actor-Transformer checkpoint and unchanged model math**
+can now use GT actors, cached detections, or local detector inference.
+
+```mermaid
+flowchart TD
+    C[Ten-frame clip] --> M[Middle frame: index 5]
+    M --> D[Local person detector]
+    J[Precomputed detection JSONL] --> B[Filtered absolute xyxy person boxes]
+    D --> B
+    G[Annotated GT boxes: paper baseline] --> N[Explicit normalization for actor inputs]
+    B --> N
+    N --> P[HRNet actor crops]
+    C --> I[I3D pooled feature map]
+    N --> R[RoIAlign]
+    I --> R
+    P --> A[Unchanged Actor-Transformer]
+    R --> A
+    A --> O[Group prediction + actors + attention]
+    B --> E[No boxes: explicit abstention]
+```
+
+The default backend is local TorchVision COCO Faster R-CNN ResNet-50 FPN v1.
+Both model and backbone pretrained flags are disabled during construction; a
+compatible local state dictionary is loaded strictly. No weights are downloaded.
+Set `detector.checkpoint` in `configs/person_detector.yaml` (relative to the YAML
+directory). Missing weights fail clearly. Random weights are available only through
+an explicit structural-test API and are not meaningful detections.
+
+```powershell
+python scripts/detect_people.py --manifest data/manifests/collective.jsonl --config configs/person_detector.yaml --output data/manifests/collective_detections.jsonl
+python scripts/evaluate_detector.py --manifest data/manifests/collective.jsonl --detections data/manifests/collective_detections.jsonl --split test --output outputs/detector_metrics.json
+python scripts/match_actor_boxes.py --manifest data/manifests/collective.jsonl --detections data/manifests/collective_detections.jsonl --split test --output outputs/actor_matches.json
+```
+
+Detection JSONL contains native image dimensions, source/reference identities,
+absolute pixel boxes, confidence, person class IDs, filtering counts and model
+provenance. Empty detection lists are valid records. Precomputed artifacts let
+evaluation/extraction run repeatedly without detector inference. See the exact
+[data format](data/README.md#person-detections-and-feature-caches-milestone-2b).
+
+The existing extraction CLIs share their GT and detected-box paths:
+
+```powershell
+python scripts/extract_pose_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detections.jsonl --output-manifest data/manifests/collective_detected_pose.jsonl --feature-dir data/features/collective --checkpoint checkpoints/hrnet_w32_features.pt
+python scripts/extract_i3d_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detected_pose.jsonl --output-manifest data/manifests/collective_detected_both.jsonl --feature-dir data/features/collective --checkpoint checkpoints/i3d_mixed4f.pt
+```
+
+GT features and detected features are separate: even a matched detection gets
+features from **its own crop**, never copied from the GT actor. Feature manifests
+preserve ordered detections and content hashes. The original GT manifest/labels
+remain the annotation authority. A missing detection record is an error; an empty
+record is a measured detection failure and is retained.
+
+For a pose checkpoint, use its original GT pose-feature manifest and the detected
+pose-feature artifact. RGB/fusion comparisons analogously require both matching
+feature sets. Raw-mode checkpoints can extract both box conditions directly using
+their original local backbone exports.
+
+```powershell
+python scripts/compare_actor_boxes.py --checkpoint runs/actor_pose/best.pt --manifest data/manifests/collective_pose.jsonl --detections data/manifests/collective_detected_pose.jsonl --split test --config configs/person_detector.yaml --output outputs/box_robustness.json
+python scripts/infer_group_activity.py --checkpoint runs/actor_pose/best.pt --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detected_pose.jsonl --split test --attention --output outputs/detected_activity.json
+```
+
+Matching maximizes the number of pairs meeting the inclusive IoU threshold, then
+their total IoU. Only matched detections inherit actor labels; extras still enter
+group attention/pooling but are excluded from actor accuracy/F1. Report precision,
+recall, localization F1, mean matched IoU, missed actors, extra detections, and mean
+actor count alongside downstream classification. "Extra" means unmatched to the
+annotated actor subset, not proof that a detection is not a real person.
+
+The comparison JSON distinguishes the paper GT condition from the detected-box
+adaptation. It reports group accuracy on supported scenes and on **all scenes with
+abstentions counted as incorrect**, plus matched-only actor metrics and coverage.
+Paired classification deltas use identical scene/actor subsets. Undefined metrics
+are null. No failed scenes disappear from the denominator silently.
+
+```powershell
+python scripts/smoke_detection.py --output outputs/detection_smoke
+python -m pytest -q --basetemp .pytest_cache/local-temp
+ruff check .
+ruff format --check .
+git diff --check
+```
+
+The smoke creates synthetic RGB images, fixture detections and simple crop-mean
+features, trains a tiny scorer, and exercises live detection, cached comparison,
+misses/extras, and empty-scene abstention. These fixtures are not HRNet/I3D or
+detector benchmark results. Real accuracy remains unmeasured. No tracking,
+surveillance adaptation, Sultani cascade, or UI is added in this milestone.
+See [person-detection.md](docs/person-detection.md) for policies, APIs, local
+checkpoint compatibility, cache provenance, and limitations.

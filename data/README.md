@@ -278,3 +278,57 @@ state dictionaries are not accepted by these feature-only archive adapters.
 Each extraction creates a sidecar recording checkpoint SHA256, metadata, actor
 boxes, image size and feature shape. Preserve those sidecars when importing or
 sharing arrays. No actual pretrained HRNet/I3D checkpoint is included or downloaded.
+
+## Person detections and feature caches (Milestone 2B)
+
+Keep the original actor manifest as the GT annotation authority. Person detections
+are a separate **version 1 JSONL** artifact, one record per scene, including empty
+results. No script downloads detector weights or data. For example (one JSONL line):
+
+```json
+{"version":1,"coordinate_system":"absolute_xyxy","dataset":"collective","video_id":"seq01","source_video_id":"seq01","clip_id":"seq01:11","frame_index":11,"image_height":480,"image_width":720,"detections":[{"box":[20,30,60,110],"score":0.92,"class_id":1}],"metadata":{"person_class_id":1},"pose_feature_path":null,"rgb_feature_path":null,"feature_metadata":{}}
+```
+
+`frame_index` must equal the GT record's `frame_indices[5]`; dataset/clip/video/source
+identities must agree. `image_width/height` describe the **native reference image**.
+Boxes are finite absolute xyxy edge coordinates, bounded by those dimensions,
+with positive area. Confidence is in `[0,1]`. Only the declared person class is
+accepted (metadata `person_class_id`, default 1). `detections: []` is a valid
+no-person result. Missing scene records are errors, not equivalent to zero boxes.
+
+Writer order is deterministic by `(dataset,clip_id)`. Actors are left-to-right
+by center x, then center y, coordinates, descending confidence and class. Uncached
+records can be reordered on read; cached unsorted records fail rather than corrupt
+feature row alignment. Duplicate clip/source-center records and incorrect
+coordinate declarations fail. Metadata stores checkpoint SHA256, filter settings,
+before/after counts and per-stage rejection/truncation counts when produced locally.
+The parser does not rerun filters on an already finalized detection artifact.
+
+```powershell
+python scripts/detect_people.py --manifest data/manifests/collective.jsonl --config configs/person_detector.yaml --output data/manifests/collective_detections.jsonl
+python scripts/extract_pose_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detections.jsonl --output-manifest data/manifests/collective_detected_pose.jsonl --feature-dir data/features/collective --checkpoint checkpoints/hrnet_w32_features.pt
+python scripts/extract_i3d_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detected_pose.jsonl --output-manifest data/manifests/collective_detected_both.jsonl --feature-dir data/features/collective --checkpoint checkpoints/i3d_mixed4f.pt
+```
+
+Set the local Faster R-CNN checkpoint in the detector YAML. Checkpoint paths in
+YAML resolve beside that YAML; feature paths resolve beside their detection JSONL.
+The dataset layout is unchanged. Detection cache files belong under
+`data/manifests/`; arrays/provenance belong under `data/features/` (both ignored).
+
+The extraction outputs preserve detection records and add `pose_feature_path`
+and/or `rgb_feature_path` plus a `feature_metadata` mapping keyed by modality.
+Each mapping contains `detection_fingerprint`, `source_fingerprint`,
+`feature_sha256`, checkpoint SHA256, backbone metadata, extraction `image_size`,
+shape and box source. Loaded arrays must be finite float `[N,D]` in detection order.
+Ordered box/source/content fingerprints are mandatory when importing cached arrays;
+use `detection_fingerprint(result)` and `source_fingerprint(gt_row,gt_manifest)` to
+compute them. SHA256 hashes identify the saved `.npy` bytes. A source fingerprint
+identifies ordered resolved paths and frame indices, not actual source image bytes.
+Preserve image data and provenance separately. Empty scenes remain records and
+bypass feature/model calls at inference.
+
+Ground-truth and detected feature files are never interchangeable, even after
+matching. Matching transfers only class supervision for **evaluation**, never GT
+crop features. Unmatched action labels stay unknown; group labels remain the
+original scene annotations. See [person-detection.md](../docs/person-detection.md)
+for matching, metric denominators, empty-scene policy and local checkpoint contract.
