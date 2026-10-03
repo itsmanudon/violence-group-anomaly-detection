@@ -1,0 +1,42 @@
+# Collective RGB Actor-Transformer; use pose config first for smaller batches.
+seed: 42
+device: auto
+data:
+  num_frames: 10
+  image_size: [480, 720]
+  input_mode: precomputed # raw requires the corresponding local feature-only export
+model:
+  mode: rgb_only # pose_only, rgb_only, pose_rgb_early_fusion, pose_rgb_late_fusion
+  embedding_dim: 128
+  pose_feature_dim: 98304 # HRNet pre-head [32,64,48], flattened
+  rgb_feature_dim: 20800 # Mixed_4f 832 channels x RoI 5x5
+  num_actor_classes: 5
+  num_group_classes: 5
+  late_fusion_pose_weight: 2.0
+  transformer:
+    num_layers: 1
+    num_heads: 1
+    feedforward_dim: 256
+    dropout: 0.1
+    positional_encoding: true
+    reference_size: [480, 720] # Explicit PE coordinate scale, our implementation choice
+backbones:
+  pose: {checkpoint: null, frozen: true}
+  rgb: {checkpoint: null, frozen: true}
+loss:
+  group_weight: 1.0
+  actor_weight: 1.0
+training:
+  optimizer: adam
+  learning_rate: 0.0001
+  betas: [0.9, 0.999]
+  eps: 0.00000001 # Modern Adam default; paper's e^-10 notation is ambiguous
+  max_iterations: 20000
+  lr_milestones: [5000, 10000]
+  lr_gamma: 0.1
+  batch_size: 8
+  gradient_clip: 1.0 # Implementation default; null disables
+  validation_interval: 100
+  checkpoint_interval: 100
+actor_classes: [crossing, waiting, queueing, walking, talking]
+group_classes: [crossing, waiting, queueing, walking, talking]

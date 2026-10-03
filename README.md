@@ -2,9 +2,11 @@
 
 A modular HCI research project for a future classroom/professor demonstration of
 violence and suspicious group activity in surveillance video. **Milestone 1 implements
-Sultani-style binary anomaly localization.** Actor-Transformer and a Gradio demo are
-Milestone 2. The current model does not distinguish fighting, assault, robbery, or
-other anomaly types.
+Sultani-style binary anomaly localization. Milestone 2A adds an independent
+Actor-Transformer baseline for Collective Activity with annotated actor boxes.**
+The models are not connected yet. Neither model currently classifies fighting,
+assault, or robbery. Person detection and surveillance adaptation belong to
+Milestone 2B; the Gradio demo comes later.
 
 "Goons" is informal project framing. The system detects **observable behavior**;
 it does not infer that a person intrinsically "is a goon," assign character labels,
@@ -16,8 +18,11 @@ or infer criminal intent.
   Implemented: C3D feature bags, scoring network, MIL objective, training,
   evaluation, temporal inference, and timelines. [Author implementation](https://github.com/WaqasSultani/AnomalyDetectionCVPR2018)
   supplies the reference network details and coefficients.
-- Gavrilyuk, Sanford, Javan, and Snoek (CVPR 2020), *Actor-Transformers for Group
-  Activity Recognition*. Planned; no placeholder model or substitute backbone.
+- Gavrilyuk, Sanford, Javan, and Snoek (CVPR 2020),
+  [Actor-Transformers for Group Activity Recognition](https://arxiv.org/html/2003.12737).
+  Implemented: actor representations, positional encoding, masked attention,
+  individual/group heads, fusion, training, evaluation, and inference. Local
+  HRNet/I3D feature exports or precomputed actor features are required for real use.
 
 **No benchmark results have been measured or reproduced.** Synthetic tests establish
 software behavior, not surveillance detection accuracy.
@@ -31,7 +36,7 @@ flowchart TD
     S --> T[Anomaly scores over time]
     T --> W[Suspicious temporal windows]
     W --> J[JSON + timeline: Milestone 1]
-    W -. Milestone 2 .-> P[Person detection]
+    W -. Future Milestone 2B .-> P[Person detection]
     P -.-> R[HRNet pose + I3D RGB/motion + RoIAlign]
     R -.-> A[Actor-Transformer]
     A -.-> G[Individual actions + group activity]
@@ -42,8 +47,8 @@ flowchart TD
 
 Python **3.11+**. Run from the repository root. CPU is supported; install a
 compatible CUDA PyTorch build separately if required. Installation downloads Python
-dependencies, never datasets or pretrained weights. torchvision is unnecessary for
-this C3D implementation; it can be added for the future person/RoIAlign stage.
+dependencies, never datasets or pretrained weights. Actor feature extraction uses
+torchvision RoIAlign; install matching torch/torchvision builds for your device.
 
 ```powershell
 python -m venv .venv
@@ -190,8 +195,11 @@ result = pipeline.predict_features(features, duration_sec=120, threshold=0.5)
 
 ## Testing and structure
 
-Tests generate synthetic features and tiny videos. C3D shape tests use meta tensors;
-no dataset or pretrained checkpoint download is required.
+Tests generate synthetic features, tiny videos, and explicitly synthetic local
+backbone exports. C3D shape tests use meta tensors; no dataset or pretrained
+checkpoint download is required. Python 3.13.5 with CPU PyTorch/torchvision has
+been exercised. TorchScript emits deprecation warnings in modern PyTorch; the
+local archive contract and its limitations are documented below.
 
 ```powershell
 python -m pytest -q --basetemp .pytest_cache/local-temp
@@ -203,15 +211,16 @@ ruff format --check .
 configs/                   Experiment and inference YAML
 data/                      README, manifests/, splits/
 src/surveillance/
-  config.py                YAML loading
-  datasets/                JSONL, source splits, DCSASS/UCF, feature loading
+  config.py, actor_config.py YAML loading and experiment validation
+  datasets/                JSONL, source splits, DCSASS/UCF/Collective, actor batches
   video/                   Decode, segmentation, C3D transforms
-  features/                C3D FC6 and extractor protocol
+  features/                C3D FC6, local HRNet/I3D adapters, box geometry/RoIAlign
   models/sultani/           Scorer and MIL objective
-  training/                Pair sampling, seeds, checkpoints, TensorBoard
-  evaluation/              Binary metrics, temporal projection, manifest evaluation
-  inference/               AnomalyPipeline and result schema
-  visualization/           File-based timeline
+  models/actor_transformer/ Position, encoder, heads, fusion, joint loss
+  training/                MIL/actor trainers, seeds, checkpoints, TensorBoard
+  evaluation/              Binary/frame and group/actor metrics
+  inference/               AnomalyPipeline and GroupActivityPipeline
+  visualization/           File-based timeline and actor attention
 scripts/                   Preparation, joint split, extraction, train/eval/infer
 tests/                     Numerical, leakage, video and pipeline coverage
 docs/                      Implementation record
@@ -226,10 +235,197 @@ decoder does not resample FPS. Source splitting cannot detect wrong source IDs.
 The binary scorer can mistake unusual benign behavior for anomalies. No operational
 accuracy or benchmark result is established.
 
-Milestone 2: implement person detection/tracks, HRNet-W32 pose/static features,
-I3D dynamic RGB features, RoIAlign, and Actor-Transformer with individual-action
-and group-activity heads. Feed suspicious temporal windows into that stage, test
-actor/modality alignment and behavior labels, then build the Gradio demo. Labels
-such as fighting/aggressive interaction require actual annotations; anomaly scores
-cannot supply these classes. Add real implementations under `models/actor_transformer/`
-and `features/` when ready.
+Milestone 2B should first establish real Collective performance with annotated
+boxes, then compare detected boxes against that reference, evaluate actor alignment
+and missed detections, and add appropriately annotated surveillance behavior data.
+Connect Sultani windows only after these independent components are validated.
+Labels such as fighting/aggressive interaction require actual annotations; anomaly
+scores cannot supply these classes. Tracking and a Gradio demonstration are later
+work. Ground-truth actor boxes will not be available in real CCTV deployment.
+
+## Milestone 2A: independent Actor-Transformer
+
+```mermaid
+flowchart TD
+    C[Ten RGB frames + annotated center-frame actor boxes] --> P[Center-frame actor crops 256x192]
+    P --> H[Local HRNet-W32 pre-final features]
+    C --> I[Local RGB I3D Mixed_4f]
+    I --> R[Temporal mean / resize 90x160 / RoIAlign 5x5]
+    H --> E[Per-actor linear projection to d=128]
+    R --> E
+    F[Precomputed actor features] --> E
+    E --> X[2D center positional encoding]
+    X --> T[Masked post-norm Transformer encoder]
+    T --> A[Individual action head]
+    T --> M[Masked max over actors]
+    M --> G[Group activity head]
+```
+
+Each branch projects actor features to 128 dimensions, adds sinusoidal center
+coordinates (x in the first half, y in the second), and runs one encoder layer
+with one head, a 256-wide ReLU feed-forward block, and dropout 0.1. A linear
+individual-action head and a linear group head after masked max pooling classify
+crossing, waiting, queueing, walking, and talking. The group target is the majority
+actor action. The models remain vocabulary-agnostic for later Volleyball support.
+
+| Tensor | Shape and meaning |
+|---|---|
+| `pose_features` / `rgb_features` | `[B,N,Dp]` / `[B,N,Dr]`; defaults 98,304 / 20,800 |
+| `actor_boxes` | `[B,N,4]`, normalized xyxy edge coordinates |
+| `actor_valid_mask` | `[B,N]`, True for real actors |
+| `actor_logits` / `group_logits` | `[B,N,C_actor]` / `[B,C_group]` |
+| optional attention | Per branch `[B,layers,heads,N,N]` |
+
+Batches pad to their largest actor count. Invalid keys are excluded from attention;
+padded queries/outputs are zeroed. Max pooling uses negative infinity for padding,
+and actor loss/metrics select only valid actors. Padded NaNs cannot contaminate
+valid outputs. Empty scenes are rejected; single-actor scenes are supported.
+
+Modes are `pose_only`, `rgb_only`, `pose_rgb_early_fusion` (concatenate projected
+features and project to d), and `pose_rgb_late_fusion` (independent branches,
+probability mixture `(2*pose + rgb)/3` by default). Late fusion returns stable
+log-probabilities as logits, so cross-entropy and inference softmax are consistent.
+Its pose weight is configurable. Joint loss exposes `total`, `group`, and `actor`:
+
+```text
+group = mean cross_entropy(group_logits, group_labels)
+actor = mean cross_entropy(actor_logits[valid], actor_labels[valid])
+total = group_weight * group + actor_weight * actor
+```
+
+Both weights default to one. Loss averages actors across the batch, not per scene.
+
+### Collective setup and precomputed workflow
+
+Acquire the dataset yourself and follow [data/README.md](data/README.md#collective-activity-milestone-2a)
+and the [verified annotation/split specification](docs/collective-format.md).
+Preparation consumes the actual `seqNN/annotations.txt` and `frameNNNN.jpg` layout.
+The default is a documented 32/12 split; the optional development validation list
+below removes three sources from the training pool without touching test data.
+
+```powershell
+python scripts/prepare_collective.py --root data/raw/collective --output data/manifests/collective.jsonl --val-sequences 1 2 3
+python scripts/extract_pose_features.py --manifest data/manifests/collective.jsonl --output-manifest data/manifests/collective_pose.jsonl --feature-dir data/features/collective --checkpoint checkpoints/hrnet_w32_features.pt --device auto
+python scripts/train_actor_transformer.py --config configs/actor_transformer_pose_only.yaml --manifest data/manifests/collective_pose.jsonl --output runs/actor_pose
+python scripts/evaluate_actor_transformer.py --checkpoint runs/actor_pose/best.pt --manifest data/manifests/collective_pose.jsonl --split test --output outputs/actor_pose_metrics.json
+python scripts/infer_group_activity.py --checkpoint runs/actor_pose/best.pt --manifest data/manifests/collective_pose.jsonl --split test --attention --output outputs/actor_pose_predictions.json
+tensorboard --logdir runs/actor_pose/tensorboard
+```
+
+For RGB, extract I3D features and use the RGB config:
+
+```powershell
+python scripts/extract_i3d_features.py --manifest data/manifests/collective_pose.jsonl --output-manifest data/manifests/collective_both.jsonl --feature-dir data/features/collective --checkpoint checkpoints/i3d_mixed4f.pt --device auto
+python scripts/train_actor_transformer.py --config configs/actor_transformer.yaml --manifest data/manifests/collective_both.jsonl --output runs/actor_rgb
+```
+
+The second extraction preserves pose references, actor order, and splits. For
+late fusion copy a config, set `model.mode: pose_rgb_late_fusion`, and train using
+`collective_both.jsonl`. Imported arrays must be finite float `.npy` files `[N,D]`
+matching manifest actor order and configured dimensions. Set `pose_feature_path`
+and/or `rgb_feature_path` relative to the JSONL file (absolute paths also work).
+Feature-only training does not read images. Extraction writes provenance sidecars
+with checkpoint SHA256, preprocessing, boxes, and feature shape.
+
+### Local HRNet and I3D checkpoints
+
+The adapters require **vetted feature-only TorchScript exports**, not arbitrary
+classifier state dictionaries. See [the full export contract](docs/actor-backbones.md)
+for embedded JSON metadata, exact endpoints, export commands, preprocessing, and
+references to the original backbones. HRNet-W32 must emit pre-final-layer
+`[actors,32,64,48]` features; I3D must emit `[B,832,t,h,w]` at `Mixed_4f`.
+This repository implements the adapters, crop/pooling/RoI operations and validation;
+it does not ship or independently verify a complete pretrained HRNet/I3D export.
+Missing or incompatible local exports fail clearly. No weights are downloaded.
+
+Raw training uses the same trainer: copy a config, set `data.input_mode: raw`,
+and set the enabled `backbones.pose.checkpoint` / `backbones.rgb.checkpoint` paths.
+Paths in YAML resolve relative to that YAML file. Set `frozen: false` to fine-tune
+an export that preserves parameters and train/eval behavior; the default freezes
+it. Use `collective.jsonl` as the manifest. Input frames are `[B,10,3,H,W]` RGB in
+[0,1]; export-specific normalization is applied by the adapter. The raw checkpoint
+stores trained backbone parameters and declared metadata, but loading still needs
+the original compatible local architecture export.
+
+### Training, evaluation, and inference details
+
+Adam defaults to LR 1e-4, betas 0.9/0.999, with 0.1 drops after 5,000 and 10,000
+optimizer steps and a 20,000-step horizon. Configurable AdamW/SGD are also available.
+TensorBoard records losses, LR and validation group accuracy. `last.pt` stores
+iteration, optimizer/scheduler, config, model/backbones and manifest fingerprint;
+`best.pt` uses validation group accuracy. Without validation, an explicit warning
+announces selection by negative training loss; test data never selects checkpoints.
+
+```powershell
+python scripts/train_actor_transformer.py --config configs/actor_transformer_pose_only.yaml --manifest data/manifests/collective_pose.jsonl --output runs/actor_pose --resume runs/actor_pose/last.pt
+```
+
+Resume in the same run directory; only `training.max_iterations` may be increased.
+Per-iteration seeds make interrupted/resumed training repeatable in the same
+software/device environment. The fingerprint checks manifest bytes, **not image
+or feature file contents**; preserve those files and extraction provenance when
+resuming. Changed declared raw-backbone preprocessing/provenance is rejected.
+
+Evaluation reports group accuracy, per-class accuracy/support, macro F1, and a
+confusion matrix (rows true, columns predicted), plus individual accuracy/macro F1.
+Macro F1 includes all configured classes; absent-class accuracy is null. Predictions
+include group/actor probabilities, class names, boxes, metadata, and optional
+unpadded per-branch attention. Probabilities are not calibrated confidence estimates.
+
+```python
+from pathlib import Path
+import numpy as np
+from surveillance.training.actor_transformer_trainer import load_checkpoint
+from surveillance.inference.group_activity_pipeline import GroupActivityPipeline
+from surveillance.visualization.actor_attention import save_actor_attention
+
+system, saved = load_checkpoint(Path("runs/actor_pose/best.pt"), device="cpu")
+pipeline = GroupActivityPipeline(system)
+# batch: pose_features [B,N,D], actor_boxes [B,N,4], actor_valid_mask [B,N].
+# Labels are optional for predict_batch; collate_actors can build labeled batches.
+scenes = pipeline.predict_batch(batch, return_attention=True)
+matrix = np.asarray(scenes[0]["attention"]["pose"]).mean(axis=(0, 1))
+save_actor_attention(matrix, Path("outputs/actor_attention.png"))
+```
+
+Attention describes model interactions; it is not evidence of causality or intent.
+
+### Fidelity and implementation choices
+
+Paper-aligned architecture/settings: ten frames at offsets -5..4; HRNet-W32 pose
+crop 256x192; RGB I3D Mixed_4f, temporal mean and 5x5 RoIs; d=128; one post-norm
+encoder layer/head; FF=256; dropout 0.1; 2D sinusoidal position; actor/group heads;
+max pooling; equal loss weights; Adam iteration schedule; pose-weighted late fusion.
+
+The following are explicit implementation choices, so this is **not an exact
+paper reproduction or a measured benchmark result**:
+
+- Center-frame pose for both training and testing, rather than random training
+  frames; no tracking/interpolation of center annotations.
+- Normalized box centers mapped to a configurable 480x720 positional reference
+  grid; direct stretched actor crops, no unverified augmentation recipe.
+- RoIAlign `aligned=True`, sampling ratio 2; bilinear resize with
+  `align_corners=False`; a versioned local TorchScript export boundary.
+- Frozen/precomputed backbones by default, early concatenation/projection, and
+  joint training of late-fusion branches using cross-entropy on the mixture.
+- Adam epsilon 1e-8, gradient clipping 1.0, deterministic scene sampling,
+  optional source validation holdout, tie-breaking by lowest class ID.
+- The 32/12 source IDs are verified from a related method's released loader;
+  the Actor-Transformers paper does not enumerate its exact sequence IDs.
+
+Modern `MultiheadAttention` is used with explicit `key_padding_mask=~valid`,
+post-norm residual blocks, and `average_attn_weights=False`. This avoids opaque
+padding semantics and exposes per-head attention. Synthetic tests verify masking,
+coordinates, gradients, frozen/unfrozen extraction and deterministic resume.
+Real checkpoint export compatibility and Collective accuracy remain unverified.
+
+Run the offline workflow (creates its own tiny features, then trains, saves,
+reloads, evaluates and infers on scenes with different actor counts):
+
+```powershell
+python scripts/smoke_actor_transformer.py --output outputs/actor_smoke --mode pose_rgb_late_fusion --iterations 3
+python -m pytest -q --basetemp .pytest_cache/local-temp
+ruff check .
+ruff format --check .
+git diff --check
+```
