@@ -332,3 +332,40 @@ matching. Matching transfers only class supervision for **evaluation**, never GT
 crop features. Unmatched action labels stay unknown; group labels remain the
 original scene annotations. See [person-detection.md](../docs/person-detection.md)
 for matching, metric denominators, empty-scene policy and local checkpoint contract.
+
+## Collective real benchmark validation (Milestone 2C)
+
+The strict benchmark path expects all `seq01` through `seq44`, each containing
+`annotations.txt` and consecutive `frame0001.jpg`, `frame0002.jpg`, ... files.
+It reuses the exact annotation parser described above. No guessed annotation
+format, download, silent label replacement or silent box clipping is introduced.
+Install data in `data/raw/collective/` under its applicable license.
+
+```powershell
+python scripts/validate_collective.py --root data/raw/collective --report runs/collective/dataset_validation.json --val-sequences 1 2 3
+python scripts/run_collective_experiment.py --stage prepare
+```
+
+The protocol preserves the released 32/12 IDs, explicitly holds out training
+sequences 1,2,3 for validation, and verifies original train/test source assignment,
+duplicate scenes, referenced frames, labels, dimensions, finite in-bounds boxes,
+group-majority supervision, temporal windows and physical-path leakage.
+Validation reports include counts/class distributions by split, actor-count
+warnings and structural failures. A supplied `--manifest` is compared to the
+parsed raw annotations. Failures save reports and exit nonzero. The benchmark
+requires all 44 sources; `--allow-subset` is only for non-benchmark fixtures.
+
+See [collective-protocol.md](../docs/collective-protocol.md) for the precise split,
+preprocessing, local exports, staged commands and metric populations. Current
+feature extraction writes schema-v2 provenance sidecars and detected JSONL metadata.
+Benchmark validation rejects older caches, changed boxes/order, different checkpoint
+fingerprints, altered image size/preprocessing, wrong feature dimensions and changed
+feature bytes. Re-extract old caches or import complete verified provenance; do not
+invent metadata for unknown features. The legacy standalone trainer remains usable
+for model development on synthetic/precomputed arrays.
+
+Detector confidence is selected only from broad validation candidates with explicit
+local pretrained-weight and backend-cap provenance. Final detections reference
+the selected filters' receipt hash. Test sources cannot be relabeled as validation
+for tuning. All extraction, selection, freeze and run artifacts belong under the
+gitignored data/run directories; do not redistribute dataset imagery in reports.

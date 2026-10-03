@@ -5,7 +5,8 @@ violence and suspicious group activity in surveillance video. **Milestone 1 impl
 Sultani-style binary anomaly localization. Milestone 2A adds an independent
 Actor-Transformer baseline for Collective Activity with annotated actor boxes.**
 **Milestone 2B adds automatic person detection and GT-versus-detected box
-robustness evaluation.** The models are not connected yet. Neither model currently
+robustness evaluation. Milestone 2C adds real-data validation, frozen experiment
+receipts, validation-only tuning, seed aggregation and error analysis.** The models are not connected yet. Neither model currently
 classifies fighting, assault, or robbery. Surveillance behavior adaptation and
 the Gradio demo come later.
 
@@ -27,6 +28,60 @@ or infer criminal intent.
 
 **No benchmark results have been measured or reproduced.** Synthetic tests establish
 software behavior, not surveillance detection accuracy.
+
+## Collective benchmark workflow (Milestone 2C)
+
+The [Collective protocol](docs/collective-protocol.md) distinguishes synthetic
+software verification from measured real-data research. All settings are resolved
+from [collective_protocol.yaml](configs/experiments/collective_protocol.yaml).
+Actual dataset images/annotations and compatible local feature/detector checkpoints
+are required; none are included or downloaded automatically.
+
+```mermaid
+flowchart LR
+    L[Local Collective data] --> V[Validate annotations / split / frame geometry]
+    V --> C[Inspect and cache GT pose / RGB features]
+    C --> F[Freeze configuration and artifact hashes]
+    F --> S[GT training seeds 0, 1, 2]
+    S --> M[Select checkpoint and feature mode on validation]
+    V --> T[Validation-only detector confidence sweep]
+    T --> D[Freeze detector settings and detected-box caches]
+    M --> P[Same checkpoint: GT vs detected test evaluation]
+    D --> P
+    P --> R[Separate seed aggregates / coverage / errors / confusion]
+```
+
+The original 32/12 source assignment is retained; sources 1,2,3 form a training-only
+validation holdout. Exact identity with the paper's unpublished split IDs remains
+unverified. GT-box results are the annotated-actor baseline; detected-box results
+are the deployment-oriented adaptation. Real CCTV will not supply annotated actors.
+Test sources never enter detector tuning, checkpoint selection or feature-mode
+selection. Comparison reports distinguish all-GT actors, matched-only actor metrics,
+coverage and empty-scene abstentions. No benchmark values are claimed yet.
+
+```powershell
+python scripts/run_collective_experiment.py --stage prepare
+python scripts/run_collective_experiment.py --stage inspect --experiment pose_gt --max-scenes 10
+python scripts/run_collective_experiment.py --stage preflight --experiment pose_gt --seed 0 --max-scenes 10 --max-iterations 5
+python scripts/run_collective_experiment.py --stage extract --experiment pose_gt
+python scripts/run_collective_experiment.py --stage run --experiment pose_gt --seed 0 --dry-run --max-scenes 10 --max-iterations 5
+python scripts/run_collective_experiment.py --stage freeze --experiment pose_gt
+python scripts/run_collective_experiment.py --stage run --experiment pose_gt
+```
+
+First configure local export paths in the YAML. See the protocol document for RGB,
+fusion, detector tuning, comparison, aggregation and error-analysis commands.
+Each run stores resolved settings, environment metadata, checkpoint hashes,
+TensorBoard/history logs, metrics, predictions and error records under ignored
+`runs/collective/<experiment>/seed_<seed>/`. Preflight validates dataset structure
+and bounds extraction/training to training/validation scenes. Dry runs use
+`preflight/`, evaluate validation only, and are marked non-benchmark.
+Freeze receipts reject changed settings, source bytes or stale feature caches.
+
+`python scripts/smoke_collective_experiment.py --output outputs/collective-smoke-new`
+verifies the orchestration without real data or weights. Use a new output directory.
+The [Milestone 2C verification record](docs/milestone-2c-verification.md) records
+what was actually tested and the remaining external dependencies.
 
 ```mermaid
 flowchart TD

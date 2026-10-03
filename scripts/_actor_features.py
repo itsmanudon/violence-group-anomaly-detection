@@ -21,6 +21,13 @@ from surveillance.datasets.detected_actors import (
 from surveillance.detection.records import detection_fingerprint, write_detections
 from surveillance.features.hrnet_pose import HRNetPoseExtractor
 from surveillance.features.i3d import I3DActorExtractor
+from surveillance.features.provenance import (
+    config_fingerprint,
+    extraction_config,
+    file_sha256,
+    scene_fingerprint,
+    source_content_fingerprint,
+)
 from surveillance.training.sultani_trainer import select_device
 
 
@@ -74,6 +81,10 @@ def extract_features(modality: str) -> None:
     destination.mkdir(parents=True, exist_ok=True)
     with args.checkpoint.open("rb") as stream:
         checkpoint_hash = hashlib.file_digest(stream, "sha256").hexdigest()
+    configuration = extraction_config(
+        modality, args.image_size, checkpoint_hash, extractor.metadata, args.box_source
+    )
+    configuration_hash = config_fingerprint(configuration)
     records = []
 
     def relocated(value: str | None) -> str | None:
@@ -84,6 +95,7 @@ def extract_features(modality: str) -> None:
 
     with torch.inference_mode():
         for index, record in enumerate(dataset.records):
+            content_fingerprint = source_content_fingerprint(record, args.manifest)
             sample = dataset[index]
             if detected and len(sample["actor_boxes"]) == 0:
                 features = np.empty((0, extractor.feature_dim), dtype=np.float32)
@@ -102,6 +114,10 @@ def extract_features(modality: str) -> None:
                     .numpy()
                 )
             identity = f"{record.dataset}/{record.video_id}/{record.clip_id}"
+            identity += configuration_hash + scene_fingerprint(record)
+            if source_content_fingerprint(record, args.manifest) != content_fingerprint:
+                raise ValueError(f"Source images changed during extraction: {record.clip_id}")
+            identity += source_fingerprint(record, args.manifest) + content_fingerprint
             if detected:
                 det = dataset.detections[index]
                 identity += detection_fingerprint(det.result) + checkpoint_hash
@@ -110,6 +126,7 @@ def extract_features(modality: str) -> None:
             path = destination / f"{filename}.npy"
             np.save(path, features)
             provenance = {
+                "schema_version": 2,
                 "dataset": record.dataset,
                 "clip_id": record.clip_id,
                 "source_video_id": record.source_video_id,
@@ -119,6 +136,12 @@ def extract_features(modality: str) -> None:
                 "backbone": extractor.metadata,
                 "image_size": args.image_size,
                 "shape": list(features.shape),
+                "scene_fingerprint": scene_fingerprint(record),
+                "source_fingerprint": source_fingerprint(record, args.manifest),
+                "source_content_fingerprint": content_fingerprint,
+                "feature_sha256": file_sha256(path),
+                "extraction_config": configuration,
+                "extraction_config_hash": configuration_hash,
             }
             if detected:
                 provenance["detection_fingerprint"] = detection_fingerprint(det.result)

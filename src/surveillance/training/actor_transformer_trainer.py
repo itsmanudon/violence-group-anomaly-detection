@@ -2,11 +2,13 @@
 
 import copy
 import hashlib
+import json
 import logging
 from pathlib import Path
 
 import numpy as np
 import torch
+import yaml
 from torch import nn
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader
@@ -15,6 +17,7 @@ from torch.utils.tensorboard import SummaryWriter
 from surveillance.actor_config import validate_actor_config
 from surveillance.datasets.actor_batch import collate_actors
 from surveillance.datasets.collective import ActorFeatureDataset, read_actor_manifest
+from surveillance.evaluation.group_activity_metrics import group_activity_metrics
 from surveillance.models.actor_transformer import ActorTransformer
 from surveillance.models.actor_transformer.loss import ActorGroupLoss
 from surveillance.training.sultani_trainer import seed_everything, select_device
@@ -129,17 +132,56 @@ def load_checkpoint(
     return system.to(device).eval(), saved
 
 
-def _validation_accuracy(system, dataset, batch_size, device):
+def _batch_metrics(predictions, batch, model_config):
+    metrics = group_activity_metrics(
+        batch["group_labels"],
+        predictions["group_logits"].argmax(-1),
+        batch["actor_labels"],
+        predictions["actor_logits"].argmax(-1),
+        batch["actor_valid_mask"],
+        model_config["num_group_classes"],
+        model_config["num_actor_classes"],
+    )
+    return {
+        f"{level}_{metric}": metrics[level][metric]
+        for level in ("group", "actor")
+        for metric in ("accuracy", "macro_f1", "count")
+    }
+
+
+def _validation_metrics(system, dataset, batch_size, device):
+    """Aggregate all validation scenes; exclude padded and ignored actor labels."""
     loader = DataLoader(dataset, batch_size=batch_size, collate_fn=collate_actors)
-    correct, count = 0, 0
+    groups, group_predictions, actors, actor_predictions, masks = [], [], [], [], []
     system.eval()
     with torch.inference_mode():
         for batch in loader:
             batch = to_device(batch, device)
-            predictions = system(batch)["group_logits"].argmax(-1)
-            correct += (predictions == batch["group_labels"]).sum().item()
-            count += len(predictions)
-    return correct / count
+            predictions = system(batch)
+            groups.append(batch["group_labels"].cpu())
+            group_predictions.append(predictions["group_logits"].argmax(-1).cpu())
+            actors.append(batch["actor_labels"].reshape(-1).cpu())
+            actor_predictions.append(predictions["actor_logits"].argmax(-1).reshape(-1).cpu())
+            masks.append(batch["actor_valid_mask"].reshape(-1).cpu())
+    model = system.config["model"]
+    metrics = group_activity_metrics(
+        torch.cat(groups),
+        torch.cat(group_predictions),
+        torch.cat(actors),
+        torch.cat(actor_predictions),
+        torch.cat(masks),
+        model["num_group_classes"],
+        model["num_actor_classes"],
+    )
+    return {
+        f"{level}_{metric}": metrics[level][metric]
+        for level in ("group", "actor")
+        for metric in ("accuracy", "macro_f1", "count")
+    }
+
+
+def _validation_accuracy(system, dataset, batch_size, device):
+    return _validation_metrics(system, dataset, batch_size, device)["group_accuracy"]
 
 
 def train(config: dict, manifest: Path, output: Path, resume: Path | None = None) -> Path:
@@ -206,8 +248,30 @@ def train(config: dict, manifest: Path, output: Path, resume: Path | None = None
     loss_fn = ActorGroupLoss(**config.get("loss", {}))
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    writer = SummaryWriter(str(output / "tensorboard"))
+    (output / "resolved_config.yaml").write_text(
+        yaml.safe_dump(config, sort_keys=True), encoding="utf-8"
+    )
+    history_path = output / "history.jsonl"
+    prefix = []
+    if resume:
+        previous_history = Path(resume).parent / "history.jsonl"
+        if previous_history.is_file():
+            prefix = [
+                json.loads(line)
+                for line in previous_history.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            prefix = [row for row in prefix if row["iteration"] <= start]
+            if [row["iteration"] for row in prefix] != sorted({row["iteration"] for row in prefix}):
+                raise ValueError("Resume history contains duplicate or unordered iterations")
+    history_path.write_text(
+        "".join(json.dumps(row, sort_keys=True, allow_nan=False) + "\n" for row in prefix),
+        encoding="utf-8",
+    )
+    writer = SummaryWriter(str(output / "tensorboard"), purge_step=start + 1 if resume else None)
+    history = history_path.open("a", encoding="utf-8")
     try:
+        writer.add_text("selection/metric", selection, start)
         for iteration in range(start + 1, horizon + 1):
             seed_everything(seed + iteration)
             rng = np.random.default_rng(seed + iteration)
@@ -215,8 +279,9 @@ def train(config: dict, manifest: Path, output: Path, resume: Path | None = None
             batch = to_device(collate_actors([training[int(i)] for i in indices]), device)
             system.train()
             optimizer.zero_grad(set_to_none=True)
+            predictions = system(batch)
             components = loss_fn(
-                system(batch),
+                predictions,
                 batch["actor_labels"],
                 batch["group_labels"],
                 batch["actor_valid_mask"],
@@ -229,19 +294,46 @@ def train(config: dict, manifest: Path, output: Path, resume: Path | None = None
                 nn.utils.clip_grad_norm_(parameters, clipping)
             optimizer.step()
             scheduler.step()
+            train_metrics = {name: value.detach().item() for name, value in components.items()}
+            train_metrics.update(_batch_metrics(predictions, batch, config["model"]))
+            train_metrics["learning_rate"] = optimizer.param_groups[0]["lr"]
             for name, value in components.items():
                 writer.add_scalar(f"train/{name}", value.detach().item(), iteration)
             writer.add_scalar("train/learning_rate", optimizer.param_groups[0]["lr"], iteration)
+            writer.add_scalar("train/group_accuracy", train_metrics["group_accuracy"], iteration)
+            writer.add_scalar("train/actor_accuracy", train_metrics["actor_accuracy"], iteration)
+            writer.add_scalar("iteration", iteration, iteration)
             value = None
+            validation_metrics = None
             if len(validation):
                 if iteration % validation_interval == 0 or iteration == horizon:
-                    value = _validation_accuracy(system, validation, batch_size, device)
-                    writer.add_scalar("validation/group_accuracy", value, iteration)
+                    validation_metrics = _validation_metrics(system, validation, batch_size, device)
+                    value = validation_metrics["group_accuracy"]
+                    for name, metric in validation_metrics.items():
+                        writer.add_scalar(f"validation/{name}", metric, iteration)
             else:
                 value = -components["total"].detach().item()
             improved = value is not None and value > best
             if improved:
                 best = value
+            if value is not None:
+                writer.add_scalar("selection/value", value, iteration)
+            history.write(
+                json.dumps(
+                    {
+                        "iteration": iteration,
+                        "train": train_metrics,
+                        "validation": validation_metrics,
+                        "selection_metric": selection,
+                        "selection_value": value,
+                        "best_value": best if np.isfinite(best) else None,
+                    },
+                    sort_keys=True,
+                    allow_nan=False,
+                )
+                + "\n"
+            )
+            history.flush()
             archive = dict(
                 format_version=1,
                 checkpoint_type="actor_transformer",
@@ -272,5 +364,6 @@ def train(config: dict, manifest: Path, output: Path, resume: Path | None = None
                     device,
                 )
     finally:
+        history.close()
         writer.close()
     return output / "last.pt"
