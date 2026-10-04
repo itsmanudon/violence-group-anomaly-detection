@@ -230,10 +230,16 @@ def validate_collective(
     manifest: Path | None = None,
     require_full_split: bool = True,
     actor_count_warning: int = 30,
+    *,
+    box_policy: str = "strict",
 ) -> dict:
-    """Decode every installed frame and reuse the production annotation parser."""
+    """Decode every frame; audit explicitly allowed visible-boundary corrections."""
+    if box_policy not in {"strict", "clip_to_image"}:
+        raise ValueError("box_policy must be strict or clip_to_image")
     root = Path(root).resolve()
     report = _report("collective_root")
+    report["box_policy"] = box_policy
+    report["box_corrections"] = []
     report["root"] = str(root)
     validation = _holdout(validation_sequences, report)
     folders = {sid: root / f"seq{sid:02d}" for sid in range(1, 45)}
@@ -280,7 +286,12 @@ def validate_collective(
         scenes = {}
         if image_size is not None:
             try:
-                scenes = parse_collective_annotations(annotation, image_size)
+                scenes = parse_collective_annotations(
+                    annotation,
+                    image_size,
+                    box_policy=box_policy,
+                    corrections=report["box_corrections"],
+                )
                 # Check every referenced frame, including nonselected centers and NA actors.
                 for number, line in enumerate(
                     annotation.read_text(encoding="utf-8").splitlines(), 1
@@ -328,6 +339,12 @@ def validate_collective(
                 )
             )
     _counts(rows, report, actor_count_warning)
+    if report["box_corrections"]:
+        selected = sum(c["selected_supervised"] for c in report["box_corrections"])
+        report["warnings"].append(
+            f"Clipped {len(report['box_corrections'])} boundary boxes under {box_policy}; "
+            f"{selected} belong to selected supervised actors. Raw annotations were not changed."
+        )
     if manifest is not None:
         try:
             report["manifest_validation"] = validate_manifest(

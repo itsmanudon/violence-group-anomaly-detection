@@ -13,6 +13,7 @@ data/splits/*.txt
 checkpoints/
 runs/
 outputs/
+configs/experiments/collective_pose_local.yaml
 *.pt
 *.pth
 *.npy

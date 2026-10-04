@@ -39,11 +39,12 @@ def prepare_data(protocol: dict) -> dict:
     if output.exists():
         raise FileExistsError(f"Manifest already exists: {output}; choose a new protocol path")
     validation = protocol["dataset"]["validation_sequences"]
-    report = validate_collective(root, validation_sequences=validation)
+    box_policy = protocol["dataset"].get("annotation_box_policy", "strict")
+    report = validate_collective(root, validation_sequences=validation, box_policy=box_policy)
     held_out = {f"collective:seq{sid:02d}" for sid in validation}
     records = [
         replace(row, split="val") if row.source_video_id in held_out else row
-        for row in prepare_collective(root)
+        for row in prepare_collective(root, box_policy=box_policy, corrections=[])
     ]
     write_actor_manifest(records, output)
     write_json(Path(protocol["output_root"]) / "dataset_validation.json", report)
@@ -72,6 +73,7 @@ def preflight_experiment(
             Path(protocol["dataset"]["root"]),
             validation_sequences=protocol["dataset"]["validation_sequences"],
             manifest=authority,
+            box_policy=protocol["dataset"].get("annotation_box_policy", "strict"),
         )
     rows = read_actor_manifest(authority)
     selected = []
@@ -120,6 +122,7 @@ def inspect_features(protocol: dict, experiment: str, max_scenes: int = 10) -> N
             Path(protocol["dataset"]["root"]),
             validation_sequences=protocol["dataset"]["validation_sequences"],
             manifest=source,
+            box_policy=protocol["dataset"].get("annotation_box_policy", "strict"),
         )
     rows = [row for row in read_actor_manifest(source) if row.split == "train"][:max_scenes]
     if not rows or max_scenes < 1:

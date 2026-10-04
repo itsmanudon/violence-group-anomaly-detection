@@ -95,6 +95,8 @@ class LocalActorBackbone(nn.Module):
         except (ValueError, TypeError) as error:
             raise _checkpoint_error(f"missing or invalid embedded {METADATA_FILENAME}") from error
         self.metadata = _validate_metadata(metadata, architecture, endpoint, channels)
+        if self.metadata.get("inference_only") is True and not frozen:
+            raise _checkpoint_error("this eval-traced archive is inference-only; use frozen=True")
         self.frozen = frozen
         self.clip_outside = clip_outside
         preprocessing = self.metadata["preprocessing"]

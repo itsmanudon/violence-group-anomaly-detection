@@ -5,6 +5,12 @@ archives**. It never downloads weights, silently initializes random backbones, o
 substitutes another architecture. No research repository is vendored. Precomputed
 actor features remain usable without either archive.
 
+For the official COCO `pose_hrnet_w32_256x192.pth`, use the repository's
+[local HRNet exporter](hrnet-export.md). It imports a supplied official checkout,
+loads the complete checkpoint strictly, bypasses only the final heatmap head and
+verifies the resulting archive through the existing adapter. These exports are
+explicitly inference-only; `frozen=False` is rejected. No upstream code is vendored.
+
 ## Python API
 
 ```python

@@ -2,6 +2,7 @@
 
 import json
 import math
+import warnings
 from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -126,16 +127,29 @@ def temporal_frame_indices(center: int, num_frames: int) -> list[int]:
     return [max(1, min(num_frames, center + offset)) for offset in range(-5, 5)]
 
 
-def parse_collective_annotations(path: Path, image_size: tuple[int, int]) -> dict[int, dict]:
+def parse_collective_annotations(
+    path: Path,
+    image_size: tuple[int, int],
+    *,
+    box_policy: str = "strict",
+    corrections: list[dict] | None = None,
+) -> dict[int, dict]:
     """Read frame,x,y,w,h,action[,unused metadata]; raw 1=NA, raw 2..6 become 0..4.
 
     Select source frames 1,11,21,... as the published related author loader does.
     Drop NA actors; fail if a selected scene has no supervised actors. Ties choose
     the smallest class ID deterministically. No tracking/interpolation is claimed.
+    Strict bounds remain the default. Explicit ``clip_to_image`` retains only
+    positive visible intersections, recording raw and clipped geometry in
+    ``corrections``; if no audit list is supplied, corrections emit a warning.
+    Annotation order, labels and source files are unchanged by clipping.
     """
     height, width = image_size
     if min(height, width) <= 0:
         raise ValueError("Image dimensions must be positive")
+    if box_policy not in {"strict", "clip_to_image"}:
+        raise ValueError("box_policy must be strict or clip_to_image")
+    changed = []
     scenes = {}
     seen = set()
     for number, line in enumerate(Path(path).read_text(encoding="utf-8").splitlines(), 1):
@@ -148,9 +162,29 @@ def parse_collective_annotations(path: Path, image_size: tuple[int, int]) -> dic
             frame, x, y, w, h, action = (int(v) for v in values[:6])
             if frame < 1 or action not in range(1, 7):
                 raise ValueError("frame must be positive and raw action in 1..6")
-            if w <= 0 or h <= 0 or x < 0 or y < 0 or x + w > width or y + h > height:
+            if w <= 0 or h <= 0:
+                raise ValueError("box must have positive area")
+            raw_box = [x, y, x + w, y + h]
+            box = [max(0, x), max(0, y), min(width, x + w), min(height, y + h)]
+            if box_policy == "strict" and box != raw_box:
                 raise ValueError("box must have positive area and lie inside the source image")
-            identity = (frame, x, y, w, h)
+            if box[0] >= box[2] or box[1] >= box[3]:
+                raise ValueError("box must have a positive visible intersection with the image")
+            if box != raw_box:
+                correction = {
+                    "annotation_path": str(Path(path).resolve()),
+                    "annotation_line": number,
+                    "frame_index": frame,
+                    "raw_xywh": [x, y, w, h],
+                    "clipped_xyxy": box,
+                    "image_size": [height, width],
+                    "raw_action": action,
+                    "selected_supervised": frame % 10 == 1 and action != 1,
+                }
+                changed.append(correction)
+                if corrections is not None:
+                    corrections.append(correction)
+            identity = (frame, *box)
             if identity in seen:
                 raise ValueError("duplicate actor box in a frame")
             seen.add(identity)
@@ -159,7 +193,9 @@ def parse_collective_annotations(path: Path, image_size: tuple[int, int]) -> dic
             scene = scenes.setdefault(frame, {"actor_boxes": [], "actor_labels": []})
             if action == 1:
                 continue
-            scene["actor_boxes"].append([x / width, y / height, (x + w) / width, (y + h) / height])
+            scene["actor_boxes"].append(
+                [box[0] / width, box[1] / height, box[2] / width, box[3] / height]
+            )
             scene["actor_labels"].append(action - 2)
         except ValueError as error:
             raise ValueError(f"{path}: annotation line {number}: {error}") from error
@@ -170,6 +206,12 @@ def parse_collective_annotations(path: Path, image_size: tuple[int, int]) -> dic
         if not counts:
             raise ValueError(f"{path}: frame {frame} has no actors with five-class labels")
         scene["group_label"] = min(counts, key=lambda label: (-counts[label], label))
+    if changed and corrections is None:
+        warnings.warn(
+            f"{path}: Clipped {len(changed)} boundary boxes; supply corrections for an audit",
+            UserWarning,
+            stacklevel=2,
+        )
     return scenes
 
 
@@ -178,6 +220,9 @@ def prepare_collective(
     train_sequences: list[int] | tuple[int, ...] = TRAIN_SEQUENCES,
     test_sequences: list[int] | tuple[int, ...] = TEST_SEQUENCES,
     require_full_split: bool = True,
+    *,
+    box_policy: str = "strict",
+    corrections: list[dict] | None = None,
 ) -> list[ActorRecord]:
     """Prepare locally installed seqNN/annotations.txt and frameNNNN.jpg files."""
     train, test = list(train_sequences), list(test_sequences)
@@ -210,7 +255,12 @@ def prepare_collective(
         image = cv2.imread(str(frames[1]))
         if image is None:
             raise ValueError(f"Cannot decode {frames[1]}")
-        scenes = parse_collective_annotations(folder / "annotations.txt", image.shape[:2])
+        scenes = parse_collective_annotations(
+            folder / "annotations.txt",
+            image.shape[:2],
+            box_policy=box_policy,
+            corrections=corrections,
+        )
         for center, scene in sorted(scenes.items()):
             indices = temporal_frame_indices(center, len(frames))
             records.append(

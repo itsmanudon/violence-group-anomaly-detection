@@ -1,5 +1,6 @@
 """Local HRNet-W32 pre-heatmap features for annotated actor crops."""
 
+from contextlib import nullcontext
 from pathlib import Path
 
 import torch
@@ -35,7 +36,17 @@ class HRNetPoseExtractor(LocalActorBackbone):
             crops = roi_align_actors(
                 frames, boxes, valid_mask, (256, 192), clip_outside=self.clip_outside
             )
-            features = self.backbone(self._normalize(crops))
+            # GPU profiling can rewrite a trace after its cold call (e.g. fold
+            # batch norms), changing rounding and cached actor features. Keep
+            # inference-only exports on one graph from the first call onward.
+            # Other scripted/fine-tunable backbones retain their caller policy.
+            execution = (
+                torch.jit.optimized_execution(False)
+                if self.metadata.get("inference_only") is True
+                else nullcontext()
+            )
+            with execution:
+                features = self.backbone(self._normalize(crops))
             expected = (int(valid_mask.sum()), 32, 64, 48)
             if not isinstance(features, torch.Tensor) or tuple(features.shape) != expected:
                 raise ValueError(

@@ -32,8 +32,12 @@ constant valid dimensions within a source, annotation vocabulary and geometry,
 and compares a supplied manifest to parsed annotations. Manifest checks detect
 duplicates, temporal sampling errors, incorrect source splits, majority-label
 errors and physical frame/feature leakage. Missing sources/frames, nonfinite or
-out-of-bounds boxes and malformed annotations are structural failures. Boxes are
-not silently corrected; repair requires documenting an explicit dataset revision.
+out-of-bounds boxes and malformed annotations are structural failures under the
+default strict policy. Newly versioned protocols may explicitly enable
+`dataset.annotation_box_policy: clip_to_image` for positive visible intersections;
+the full raw-to-clipped geometry audit accompanies validation. Fully outside,
+nonpositive and duplicate clipped boxes still fail. No source annotations are
+rewritten. See [the real pose execution policy](milestone-2c-real-pose.md#visible-boundary-actors-in-the-installed-release).
 Large actor counts generate warnings. A failure carries a JSON validation report.
 
 ## Feature contracts and cache provenance

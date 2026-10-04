@@ -65,6 +65,8 @@ def extraction_config(
         config.update(
             pose_crop_size=[256, 192], feature_shape=[32, 64, 48], pose_frame="annotation_center"
         )
+        if backbone_metadata.get("inference_only") is True:
+            config["jit_execution_policy"] = "unoptimized_inference_only"
     else:
         config.update(
             temporal_pooling="mean",

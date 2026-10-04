@@ -69,6 +69,7 @@ def validate_inputs(
             Path(protocol["dataset"]["root"]),
             validation_sequences=protocol["dataset"]["validation_sequences"],
             manifest=Path(protocol["dataset"]["manifest"]) if allow_subset else manifest,
+            box_policy=protocol["dataset"].get("annotation_box_policy", "strict"),
         )
         if allow_subset:
             authority = Path(protocol["dataset"]["manifest"])

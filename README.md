@@ -26,8 +26,42 @@ or infer criminal intent.
   individual/group heads, fusion, training, evaluation, and inference. Local
   HRNet/I3D feature exports or precomputed actor features are required for real use.
 
-**No benchmark results have been measured or reproduced.** Synthetic tests establish
-software behavior, not surveillance detection accuracy.
+**The first real Collective pose/GT-box seed-0 baseline is measured:** group
+accuracy **68.00%** (macro F1 **0.65482**), actor accuracy **59.01%** (macro F1
+**0.56979**), on 775 held-out scenes / 3,420 actors. This uses **our frozen
+protocol**, not an exact paper reproduction. Surveillance anomaly accuracy,
+RGB/detected-box results and multi-seed variance remain unmeasured. Synthetic
+tests establish software behavior, not surveillance detection accuracy.
+
+## First real pose baseline (Milestone 2C-R1)
+
+The [real pose workflow](docs/milestone-2c-real-pose.md) targets Collective Activity
+with **GT actor boxes, official COCO HRNet-W32 256x192 weights and pose-only
+Actor-Transformer**. A [local exporter](docs/hrnet-export.md) now converts a supplied
+official HRNet checkout/checkpoint into the existing frozen pre-head feature archive.
+It validates weights, endpoint equality, shapes, determinism, provenance and adapter
+acceptance. No dataset, upstream code or model weights are downloaded or vendored.
+
+```powershell
+.\.venv\Scripts\python.exe scripts/export_hrnet_features.py --hrnet-repo "D:/path/to/deep-high-resolution-net.pytorch" --checkpoint checkpoints/external/pose_hrnet_w32_256x192.pth --output checkpoints/hrnet_w32_features_fp32_cudnn.pt
+```
+
+Follow the linked workflow to configure the archive/hash, validate all 44 sources,
+inspect ten training scenes, run a five-step validation-only preflight, extract
+all GT pose caches and freeze. Run **seed 0 explicitly first**, inspect its health,
+then authorize seeds 1/2 with identical settings after review. Each run selects checkpoints using validation
+only and performs its held-out evaluation once. Read saved results for analysis.
+Call any measured result **our frozen Collective protocol**, not an exact paper
+reproduction. Historical split equivalence remains unverified, and our crop
+preprocessing differs from upstream pose preprocessing.
+
+Supplied local official assets now pass export and real feature checks. Full
+pose extraction and the 20,000-iteration seed-0 run completed; checkpoint
+selection used validation only, and held-out inference ran once. The selected
+checkpoint is iteration 1,100. Validation group accuracy (50.59%) trails its
+70.59% majority baseline, despite decreasing training loss; review this gap
+before further seeds. See the [execution evidence and limitations](docs/milestone-2c-real-pose.md#first-real-execution-2026-10-0304).
+Seeds 1/2, RGB and detected-box experiments have not run.
 
 ## Collective benchmark workflow (Milestone 2C)
 

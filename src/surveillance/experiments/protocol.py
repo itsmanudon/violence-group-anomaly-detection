@@ -56,14 +56,19 @@ def load_protocol(path: Path) -> dict:
     ):
         raise ValueError("seeds must be unique nonnegative integers")
     dataset = protocol["dataset"]
-    if set(dataset) != {
+    dataset_required = {
         "root",
         "manifest",
         "validation_sequences",
         "train_sequences",
         "test_sequences",
-    }:
+    }
+    if not dataset_required <= set(dataset) or set(dataset) - (
+        dataset_required | {"annotation_box_policy"}
+    ):
         raise ValueError("Invalid dataset protocol keys")
+    if dataset.get("annotation_box_policy", "strict") not in {"strict", "clip_to_image"}:
+        raise ValueError("annotation_box_policy must be strict or clip_to_image")
     if tuple(sorted(dataset["train_sequences"])) != tuple(sorted(TRAIN_SEQUENCES)) or (
         tuple(sorted(dataset["test_sequences"])) != tuple(sorted(TEST_SEQUENCES))
     ):

@@ -28,8 +28,12 @@ unreleased split is not asserted. Explicit sequence lists can override the defau
 
 Implementation decisions: NA actors are excluded from the five-class task; an
 all-NA scene fails preparation. A majority tie chooses the smallest class ID.
-Boxes must have positive area inside the source image; malformed boxes fail rather
-than being silently clipped. The annotation center is used for static pose at
+Strict parsing requires positive-area boxes inside the source image. A newly
+versioned benchmark protocol can explicitly select audited `clip_to_image`
+handling for partially visible actors; raw annotations stay unchanged and every
+correction is recorded. Fully outside/nonpositive/duplicate visible boxes still
+fail. See [the execution policy](milestone-2c-real-pose.md#visible-boundary-actors-in-the-installed-release).
+The annotation center is used for static pose at
 train and test time. Center boxes also identify RGB RoIs. No actor tracking or
 box interpolation is claimed. Unlike the related loader's forward-only clips,
 our temporal windows are centered and clamped to the first/last existing frame.

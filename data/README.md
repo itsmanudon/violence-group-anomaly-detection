@@ -369,3 +369,42 @@ local pretrained-weight and backend-cap provenance. Final detections reference
 the selected filters' receipt hash. Test sources cannot be relabeled as validation
 for tuning. All extraction, selection, freeze and run artifacts belong under the
 gitignored data/run directories; do not redistribute dataset imagery in reports.
+
+## First real pose baseline (Milestone 2C-R1)
+
+Acquire the original `dataset.ver1` manually from the
+[authors' Collective dataset page](https://cvgl.stanford.edu/projects/collective/collectiveActivity.html)
+and install all 44 sequences under the layout above. Use the original five-class
+release, not the augmented dancing/jogging variant. The official annotation rows are
+`frame x y width height class_id pose_id`; the existing parser uses the first
+six fields and ignores the trailing pose ID. No actor identities or tracking
+labels are inferred. Validate the unchanged test IDs and training-only holdout
+1,2,3 through the frozen protocol tooling, not a new random split.
+
+Supply a vetted local official HRNet checkout and
+`checkpoints/pose_hrnet_w32_256x192.pth` (official COCO keypoint weights). Follow
+[hrnet-export.md](../docs/hrnet-export.md) to create
+`checkpoints/hrnet_w32_features.pt`. The protocol records the converted archive's
+SHA256; its metadata also records the original checkpoint and source hashes.
+The [pose-only real workflow](../docs/milestone-2c-real-pose.md) gives commands for
+data preparation/validation, ten-scene inspection, optional ignored GT-box overlays,
+five-step preflight, full pose cache extraction, freeze, seed-0 training and seed
+aggregation. These caches are `[actors,98304]` in annotation order, not synthetic
+arrays. Existing provenance checks reject changed images/annotations, actor order,
+checkpoint identity, preprocessing or feature content.
+
+No real Collective tree or official HRNet assets were bundled during tooling
+implementation. Subsequently supplied local assets validated successfully, and
+the first pose/GT seed-0 run is recorded in the linked real workflow. Dataset
+images, overlays, exports, caches and run outputs must remain ignored. No
+detector or RGB asset is needed for this phase. Seeds 1/2 await review.
+## Visible Collective boundary boxes
+
+Strict annotation bounds remain the default. For the real release's partially
+visible actors, an experiment may explicitly set
+`dataset.annotation_box_policy: clip_to_image` in a newly versioned protocol.
+Validation logs every raw-to-visible box correction; it preserves actor order and
+labels and rejects fully outside/nonpositive/duplicate visible boxes. Original
+annotations are never rewritten. The validation CLI exposes the same choice via
+`--box-policy clip_to_image`. See
+[the real pose execution policy](../docs/milestone-2c-real-pose.md#visible-boundary-actors-in-the-installed-release).

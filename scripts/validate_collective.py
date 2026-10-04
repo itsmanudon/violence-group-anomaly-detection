@@ -15,6 +15,7 @@ def main() -> int:
     parser.add_argument("--val-sequences", nargs="*", type=int, default=[1, 2, 3])
     parser.add_argument("--allow-subset", action="store_true")
     parser.add_argument("--actor-count-warning", type=int, default=30)
+    parser.add_argument("--box-policy", choices=["strict", "clip_to_image"], default="strict")
     args = parser.parse_args()
     try:
         report = validate_collective(
@@ -23,6 +24,7 @@ def main() -> int:
             args.manifest,
             not args.allow_subset,
             args.actor_count_warning,
+            box_policy=args.box_policy,
         )
         status = 0
     except DatasetValidationError as error:
