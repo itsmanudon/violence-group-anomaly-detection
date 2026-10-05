@@ -692,3 +692,12 @@ detector benchmark results. Real RGB detected-box accuracy is documented above. 
 surveillance adaptation, Sultani cascade, or UI is added in this milestone.
 See [person-detection.md](docs/person-detection.md) for policies, APIs, local
 checkpoint compatibility, cache provenance, and limitations.
+
+The subsequent [matched-only actor-set diagnostic](docs/collective-detected-actor-ablation.md)
+uses GT matching to remove unmatched detections while retaining their detected
+geometry/features and the same RGB checkpoint. This oracle-assisted setting is
+not deployable: group accuracy falls from 74.32% to 72.65%, while macro F1 rises
+from 0.7383 to 0.7536. Waiting improves but walking degrades. It recovers 42 of
+the original 73 GT-correct/detected-wrong scenes, yet introduces other errors;
+the result does not support blanket actor removal. No fine-tuning or threshold
+retuning was performed.
