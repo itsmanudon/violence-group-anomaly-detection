@@ -68,6 +68,8 @@ def extraction_config(
         if backbone_metadata.get("inference_only") is True:
             config["jit_execution_policy"] = "unoptimized_inference_only"
     else:
+        if backbone_metadata.get("inference_only") is True:
+            config["jit_execution_policy"] = "unoptimized_inference_only"
         config.update(
             temporal_pooling="mean",
             feature_map_size=[90, 160],

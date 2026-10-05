@@ -1,5 +1,6 @@
 """Local I3D Mixed_4f actor features with explicit temporal/spatial pooling."""
 
+from contextlib import nullcontext
 from pathlib import Path
 
 import torch
@@ -41,7 +42,15 @@ class I3DActorExtractor(LocalActorBackbone):
                 align_corners=False,
             )
             inputs = self._normalize(resized).reshape(batch, time, channels, *self.input_size)
-            features = self.backbone(inputs.permute(0, 2, 1, 3, 4).contiguous())
+            # Keep eval-traced exports on the same graph from the cold call;
+            # profiling/folding can otherwise change cached feature rounding.
+            execution = (
+                torch.jit.optimized_execution(False)
+                if self.metadata.get("inference_only") is True
+                else nullcontext()
+            )
+            with execution:
+                features = self.backbone(inputs.permute(0, 2, 1, 3, 4).contiguous())
             if (
                 not isinstance(features, torch.Tensor)
                 or features.ndim != 5

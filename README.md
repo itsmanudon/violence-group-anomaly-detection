@@ -26,11 +26,16 @@ or infer criminal intent.
   individual/group heads, fusion, training, evaluation, and inference. Local
   HRNet/I3D feature exports or precomputed actor features are required for real use.
 
-**The first real Collective pose/GT-box seed-0 baseline is measured:** group
-accuracy **68.00%** (macro F1 **0.65482**), actor accuracy **59.01%** (macro F1
-**0.56979**), on 775 held-out scenes / 3,420 actors. This uses **our frozen
-protocol**, not an exact paper reproduction. Surveillance anomaly accuracy,
-RGB/detected-box results and multi-seed variance remain unmeasured. Synthetic
+**The three-seed real Collective pose/GT-box baseline is measured:** group
+accuracy **67.44% +/- 0.58 percentage points** (macro F1 **0.6458 +/- 0.0110**),
+actor accuracy **58.72% +/- 1.21 points** (macro F1 **0.5643 +/- 0.0114**).
+These are means and sample standard deviations across seeds 0/1/2 on the same
+775 held-out scenes / 3,420 actors. This uses **our frozen protocol**, not an
+exact paper reproduction. **The real RGB/GT-box seed-0 baseline is also measured:**
+group accuracy **77.55%** (macro F1 **0.7947**), actor accuracy **78.22%**
+(macro F1 **0.7923**) on that same held-out population. See the
+[RGB execution evidence and pose comparison](docs/collective-rgb-execution.md).
+Surveillance anomaly and detected-box accuracy remain unmeasured. Synthetic
 tests establish software behavior, not surveillance detection accuracy.
 
 ## First real pose baseline (Milestone 2C-R1)
@@ -56,12 +61,32 @@ reproduction. Historical split equivalence remains unverified, and our crop
 preprocessing differs from upstream pose preprocessing.
 
 Supplied local official assets now pass export and real feature checks. Full
-pose extraction and the 20,000-iteration seed-0 run completed; checkpoint
-selection used validation only, and held-out inference ran once. The selected
-checkpoint is iteration 1,100. Validation group accuracy (50.59%) trails its
-70.59% majority baseline, despite decreasing training loss; review this gap
-before further seeds. See the [execution evidence and limitations](docs/milestone-2c-real-pose.md#first-real-execution-2026-10-0304).
-Seeds 1/2, RGB and detected-box experiments have not run.
+pose extraction and all three 20,000-iteration runs completed. Checkpoint
+selection used validation only, and held-out inference ran once per seed.
+Selected iterations are 1,100 / 600 / 3,000 for seeds 0/1/2. Every head predicts
+all five test classes, but validation remains below its 70.59% majority baseline,
+despite decreasing training loss. The unchanged validation set lacks waiting and
+queueing group scenes. See the [three-seed evidence and limitations](docs/milestone-2c-real-pose.md#multi-seed-pose-only-gt-baseline).
+The RGB-only seed-0 experiment has now completed under a separate frozen receipt;
+fusion and real detected-box experiments have not run.
+
+## Real RGB-only GT-box baseline
+
+The [I3D exporter](docs/i3d-export.md) strictly validates a supplied
+`piergiaj/pytorch-i3d` source snapshot and **converted DeepMind ImageNet+Kinetics
+I3D RGB weights**. These are not official PyTorch weights. The feature contract is
+ten RGB frames at 480x720, `Mixed_4f`, temporal mean, resize to 90x160 and 5x5
+RoIAlign, producing 20,800 values per annotated actor.
+
+[collective_rgb_gt_v1.yaml](configs/experiments/collective_rgb_gt_v1.yaml) freezes
+this experiment separately from pose. All 2,547 scenes / 12,874 actors were cached;
+seed 0 trained for 20,000 iterations and validation selected iteration 1,300.
+Held-out inference ran once. The [execution report](docs/collective-rgb-execution.md)
+records assets, GPU benchmark, inspection, preflight, cache identities, curves,
+class metrics and limitations. Group crossing/walking swaps did not improve
+overall despite the higher aggregate scores. One RGB seed does not establish
+variance or prove that motion alone caused the gain; the backbones and existing
+training batch sizes differ. No fusion experiment has started.
 
 ## Collective benchmark workflow (Milestone 2C)
 
@@ -91,7 +116,8 @@ unverified. GT-box results are the annotated-actor baseline; detected-box result
 are the deployment-oriented adaptation. Real CCTV will not supply annotated actors.
 Test sources never enter detector tuning, checkpoint selection or feature-mode
 selection. Comparison reports distinguish all-GT actors, matched-only actor metrics,
-coverage and empty-scene abstentions. No benchmark values are claimed yet.
+coverage and empty-scene abstentions. Pose/GT-box and RGB/GT-box results are
+measured above; detected-box benchmark values remain unmeasured.
 
 ```powershell
 python scripts/run_collective_experiment.py --stage prepare
@@ -425,8 +451,9 @@ classifier state dictionaries. See [the full export contract](docs/actor-backbon
 for embedded JSON metadata, exact endpoints, export commands, preprocessing, and
 references to the original backbones. HRNet-W32 must emit pre-final-layer
 `[actors,32,64,48]` features; I3D must emit `[B,832,t,h,w]` at `Mixed_4f`.
-This repository implements the adapters, crop/pooling/RoI operations and validation;
-it does not ship or independently verify a complete pretrained HRNet/I3D export.
+This repository implements the adapters, crop/pooling/RoI operations and validation,
+with [HRNet](docs/hrnet-export.md) and [I3D](docs/i3d-export.md) export boundaries
+validated against supplied local assets. Upstream code and weights are not shipped.
 Missing or incompatible local exports fail clearly. No weights are downloaded.
 
 Raw training uses the same trainer: copy a config, set `data.input_mode: raw`,
@@ -489,7 +516,7 @@ encoder layer/head; FF=256; dropout 0.1; 2D sinusoidal position; actor/group hea
 max pooling; equal loss weights; Adam iteration schedule; pose-weighted late fusion.
 
 The following are explicit implementation choices, so this is **not an exact
-paper reproduction or a measured benchmark result**:
+paper reproduction**; measured pose/GT-box results use our declared protocol:
 
 - Center-frame pose for both training and testing, rather than random training
   frames; no tracking/interpolation of center annotations.
@@ -508,7 +535,9 @@ Modern `MultiheadAttention` is used with explicit `key_padding_mask=~valid`,
 post-norm residual blocks, and `average_attn_weights=False`. This avoids opaque
 padding semantics and exposes per-head attention. Synthetic tests verify masking,
 coordinates, gradients, frozen/unfrozen extraction and deterministic resume.
-Real checkpoint export compatibility and Collective accuracy remain unverified.
+Official HRNet export, converted I3D export and real pose/RGB GT-box accuracy are
+now verified under our frozen protocols; fusion and detected-box accuracy remain
+unmeasured.
 
 Run the offline workflow (creates its own tiny features, then trains, saves,
 reloads, evaluates and infers on scenes with different actor counts):

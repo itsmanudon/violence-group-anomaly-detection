@@ -5,7 +5,9 @@ The tooling remains verified on artificial fixtures. The first genuine real
 seed-0 experiment has now completed: **68.00% group accuracy / 0.65482 macro F1;
 59.01% actor accuracy / 0.56979 macro F1**. See the
 [real execution record](#first-real-execution-2026-10-0304). This is our frozen
-Collective protocol, not an exact paper reproduction; seeds 1/2 have not run.
+Collective protocol, not an exact paper reproduction. The authorized seeds 1/2
+have now completed under identical settings; see the
+[three-seed baseline](#multi-seed-pose-only-gt-baseline).
 
 ## Assets and protocol
 
@@ -396,3 +398,174 @@ the uncommitted execution corrections' source hashes and Git parent are saved in
 `freeze_verification.json`. Review seed 0 before authorizing additional seeds.
 Box-stretch preprocessing and unverified historical split equivalence continue
 to preclude an exact Gavrilyuk et al. reproduction claim.
+
+## Multi-seed Pose-Only GT Baseline
+
+Completed on 2026-10-04: **Collective / Pose / GT boxes / seeds 0,1,2 /
+our frozen protocol**. This is our measured frozen-protocol baseline. It is
+**not claimed as an exact reproduction of Gavrilyuk et al.** The earlier
+seed-0-only execution record above describes the state before these additional
+runs were authorized.
+
+### Source, protocol and feature identities
+
+The committed execution-source baseline is
+`527a88f4aea3e3fbc0f4c1733afa04f26ac7706c`, on
+`feat/collective-pose-real-baseline`. Seeds 1/2 record this commit. Seed 0 ran
+before its execution corrections were committed and retains its original
+recorded parent `319b7bb88d78e41f54c9c50920e6c27cad41509e`. Its saved execution
+correction hashes match the committed files, and scientific configurations
+match across all runs except the seed. The original seed-0 metadata was not
+rewritten: **every seed-0 artifact is byte-for-byte unchanged**.
+
+All three runs reuse these identities:
+
+| Artifact | Identity |
+| --- | --- |
+| Protocol | `collective_pose_visible_boxes_fp32_cudnn_v2` |
+| Protocol SHA256 | `8ecc63d9f81fe817a645fe249894f5bd2d15a1e3565922405f8995c661737314` |
+| Freeze hash | `9e023a1caf9323ae0f18e4a01d8ac71c067d7d3226c22fb0d85ffab1fe9d41ee` |
+| Receipt file SHA256 | `376fb30ac6549d41569278bb464a1a847fe8067aa33f3de8749685e438340e2f` |
+| Pose manifest SHA256 | `3e8c1f6e25672fe9a9377a51a402afa23291c10f353b1827384eb8e649258257` |
+| HRNet feature archive SHA256 | `d4bc248337ff4d7a0d60681552a6e73cd0cce7e46e9a5c37350e0b5601227220` |
+
+The complete cache (2,547 scenes / 12,874 actors) and receipt were validated
+and reused; no HRNet extraction was repeated. Optimization uses 1,687 scenes /
+9,027 actors, validation 85 / 427, and held-out test 775 / 3,420. All populations,
+actor order/labels, preprocessing and selection rules remain identical.
+
+Environment: repository venv, Python 3.13.5, torch `2.13.0+cu126`, torchvision
+`0.28.0+cu126`, CUDA 12.6, NVIDIA GeForce RTX 4070 Laptop GPU.
+`CUBLAS_WORKSPACE_CONFIG=:4096:8` and existing CUDA/cuDNN/TF32 behavior were
+preserved. No packages, model mathematics, feature settings or protocol values
+changed during these runs.
+
+### Sequential execution and selected checkpoints
+
+Seed 1 completed and passed its execution checks before seed 2 was launched.
+Each completed **20,000 iterations**, 200 scheduled validation checks and the
+unchanged LR drops at 5,000/10,000. Loss histories, saved model/optimizer state,
+probabilities and counts passed verification. Each selected its checkpoint using
+**validation group accuracy only, earliest maximum on ties**, then evaluated
+held-out test once. Report verification/aggregation read saved predictions;
+they did not repeat test inference.
+
+| Seed | Selected iteration | Selected checkpoint SHA256 |
+| --- | ---: | --- |
+| 0 | 1,100 | `f87a60f5d3ef07f99d50335588056beaa3f0d154fde6f548a21a391111c49630` |
+| 1 | 600 | `ad0e0242125b622cc6f7499879c927bf4fa71ef406ac36b26ca7355c16c5f6af` |
+| 2 | 3,000 | `0f70c1178f221dd2dbe51ffe929e95c1f95688abde6b229b0ff84b129c0b1ada` |
+
+Checkpoint iterations range from 600 to 3,000 (mean 1,566.67; sample std
+1,266.23). All are early relative to 20,000, with a fivefold range. This
+variation is reported without changing selection policy.
+
+### Held-out results
+
+Accuracy is a percentage; F1 is on the 0..1 scale. Spread is **sample standard
+deviation across three seeds (ddof=1)**, not a confidence interval. Every seed
+evaluates the same 775 scenes / 3,420 actors, with zero invalid/abstained scenes.
+
+| Seed | Group accuracy | Group macro F1 | Actor accuracy | Actor macro F1 |
+| --- | ---: | ---: | ---: | ---: |
+| 0, unchanged | 68.00% | 0.6548 | 59.01% | 0.5698 |
+| 1 | 67.48% | 0.6490 | 59.77% | 0.5720 |
+| 2 | 66.84% | 0.6335 | 57.40% | 0.5512 |
+| Mean +/- sample std | **67.44 +/- 0.58%** | **0.6458 +/- 0.0110** | **58.72 +/- 1.21%** | **0.5643 +/- 0.0114** |
+
+Accuracy standard deviations are percentage points. The held-out majority
+baseline is 218/775 = **28.13%**; every seed exceeds it and both prediction
+heads predict all five test classes. Aggregate variance is modest in these
+three runs; class-specific variation, especially actor queueing, is larger.
+Three seeds do not establish uncertainty across different datasets or splits.
+
+### Selected-checkpoint validation results
+
+| Seed | Group accuracy | Group macro F1 | Actor accuracy | Actor macro F1 |
+| --- | ---: | ---: | ---: | ---: |
+| 0 | 50.59% | 0.2158 | 46.14% | 0.2196 |
+| 1 | 49.41% | 0.2045 | 47.07% | 0.2138 |
+| 2 | 45.88% | 0.2003 | 47.31% | 0.2110 |
+| Mean +/- sample std | 48.63 +/- 2.45% | 0.2069 +/- 0.0080 | 46.84 +/- 0.62% | 0.2148 +/- 0.0044 |
+
+The unchanged v1 validation population is heavily walking-dominated:
+crossing 24, waiting 0, queueing 0, walking 60, talking 1. Its group majority
+baseline is **70.59%**; every selected checkpoint falls below it. Validation
+macro F1 follows the existing fixed five-class vocabulary, including absent
+classes. It is not directly comparable to the test population's macro F1.
+The validation imbalance was not repaired or used to change this experiment.
+
+Training loss fell substantially in each run (first/last 100-iteration means):
+seed 0, 1.59047 / 0.001501; seed 1, 1.56577 / 0.001868;
+seed 2, 1.63069 / 0.003067. Validation did not track this improvement, leaving
+a substantial training/validation gap. Saved plots show both behaviors.
+
+### Class-level and confusion analysis
+
+Per-class recall is class accuracy; all values below are percentages with
+sample standard deviation in percentage points. Class supports per seed are
+group [147,135,93,218,182] and actor [692,502,481,963,782] in table order.
+
+| Class | Group recall mean +/- std | Actor recall mean +/- std |
+| --- | ---: | ---: |
+| crossing | 63.72 +/- 1.42% | 56.21 +/- 3.58% |
+| waiting | 37.78 +/- 3.23% | 28.55 +/- 4.53% |
+| queueing | 60.57 +/- 4.35% | 54.61 +/- 9.55% |
+| walking | 67.58 +/- 1.06% | 63.86 +/- 5.46% |
+| talking | 95.79 +/- 0.63% | 76.51 +/- 1.75% |
+
+Full class F1 mean/std and individual seed values are retained in `analysis.json`.
+Integer confusion counts are summed before deriving pooled recalls; matrices
+are not averaged. Pooled counts represent repeated scene-seed/actor-seed outcomes,
+not three times as many independent dataset examples.
+
+| Group confusion | Seed 0 | Seed 1 | Seed 2 | Summed count |
+| --- | ---: | ---: | ---: | ---: |
+| walking -> crossing | 51 | 56 | 53 | 160 |
+| crossing -> walking | 55 | 52 | 48 | 155 |
+| waiting -> queueing | 27 | 33 | 58 | 118 |
+| waiting -> crossing | 40 | 42 | 15 | 97 |
+| queueing -> talking | 19 | 16 | 21 | 56 |
+
+Crossing/walking confusion persists across every seed. Waiting -> crossing also
+occurs in every seed, but waiting -> queueing is more prominent in seed 2.
+Incorrect group scenes number 248/252/257; high-confidence incorrect scenes
+(existing confidence >=0.8 diagnostic) number 137/90/165. These observations
+do not establish behavioral causes or justify test-based tuning.
+
+### Preserved artifacts and verification
+
+Under the ignored output root `runs/collective/fp32_cudnn_v2/`:
+
+- `pose_gt/seed_{0,1,2}/`: checkpoints, resolved configs, environment, metrics,
+  predictions, errors, full history, TensorBoard and training/confusion plots.
+- `multiseed/prerun_verification.json`: committed-source/cache/receipt identity
+  and the original seed-0 file hashes.
+- `multiseed/seed1_to_seed2_verification.json`: seed-1 completion and unchanged
+  source/seed-0/assets before seed 2.
+- `multiseed/aggregate.json` / `aggregate.md`: existing aggregation-tool outputs.
+- `multiseed/analysis.json` / `analysis.md`: validation aggregates, class metrics,
+  selected iterations, summed counts, source identities and final seed-0 hash check.
+
+The existing orchestration/aggregation invocations used were:
+
+```powershell
+$env:CUBLAS_WORKSPACE_CONFIG=':4096:8'
+.\.venv\Scripts\python.exe scripts/run_collective_experiment.py --protocol configs/experiments/collective_pose_local.yaml --stage run --experiment pose_gt --seed 1
+# Only after seed 1 completes and its evidence passes verification:
+.\.venv\Scripts\python.exe scripts/run_collective_experiment.py --protocol configs/experiments/collective_pose_local.yaml --stage run --experiment pose_gt --seed 2
+.\.venv\Scripts\python.exe scripts/aggregate_experiments.py --runs runs/collective/fp32_cudnn_v2/pose_gt/seed_0/metrics.json runs/collective/fp32_cudnn_v2/pose_gt/seed_1/metrics.json runs/collective/fp32_cudnn_v2/pose_gt/seed_2/metrics.json --output runs/collective/fp32_cudnn_v2/multiseed
+```
+
+These runs already exist; read their saved reports rather than rerunning them.
+Pre-run verification: **392 pytest tests passed**, Ruff lint/format and
+`git diff --check` passed. No implementation bug or source change was required;
+the tests used the identical execution sources. Upstream TorchScript deprecation
+warnings remain. Dataset/features/checkpoints/runs stay gitignored; only
+documentation was updated. No commit/push or next-milestone experiment occurred.
+
+Recommended scientific follow-up, after review: preregister a separate protocol
+to assess checkpoint-selection sensitivity using a more representative
+training-source-only validation holdout. Preserve this baseline and held-out
+test population, avoid tuning to these test errors, and label the new protocol
+separately. No such experiment was started here.

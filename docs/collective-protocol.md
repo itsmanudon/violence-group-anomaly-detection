@@ -1,7 +1,8 @@
 # Collective benchmark protocol (Milestone 2C)
 
-The implementation is verified with artificial fixtures. No real Collective
-benchmark has been run here. The checked-in YAML is a **candidate configuration**;
+The implementation is verified with artificial fixtures and a measured
+[three-seed real pose/GT-box baseline](milestone-2c-real-pose.md#multi-seed-pose-only-gt-baseline).
+The checked-in YAML is a **candidate configuration**;
 the `freeze` stage creates the immutable receipt for a runnable experiment once
 its real artifacts exist. A receipt does not certify paper reproduction.
 
@@ -210,8 +211,9 @@ git diff --check
 
 The smoke fixture contains artificial feature values, two seeds, variable actor
 counts, missed/extra actors and an empty scene. Its metrics are never benchmark
-results. Real HRNet/I3D/detector quality, CUDA operation and real-data accuracy
-remain unverified until actual artifacts are installed and measured.
+results. Official HRNet export, CUDA operation and pose/GT-box accuracy are now
+measured under our frozen protocol; I3D/detector benchmark quality remains
+unverified. The fixture results above remain synthetic evidence.
 
 The `preflight` stage checks the full dataset's structural integrity but bounds
 expensive extraction and training. It extracts actual local exports on training
