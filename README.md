@@ -35,6 +35,10 @@ exact paper reproduction. **The real RGB/GT-box seed-0 baseline is also measured
 group accuracy **77.55%** (macro F1 **0.7947**), actor accuracy **78.22%**
 (macro F1 **0.7923**) on that same held-out population. See the
 [RGB execution evidence and pose comparison](docs/collective-rgb-execution.md).
+**The predefined pose-weighted late-fusion GT-box seed-0 experiment is measured:**
+group accuracy **71.48%** (macro F1 **0.6919**), actor accuracy **62.11%**
+(macro F1 **0.6079**). It improves walking group recall but underperforms RGB
+overall. See the [fixed 2:1 fusion evidence and comparison](docs/collective-late-fusion-execution.md).
 Surveillance anomaly and detected-box accuracy remain unmeasured. Synthetic
 tests establish software behavior, not surveillance detection accuracy.
 
@@ -67,8 +71,8 @@ Selected iterations are 1,100 / 600 / 3,000 for seeds 0/1/2. Every head predicts
 all five test classes, but validation remains below its 70.59% majority baseline,
 despite decreasing training loss. The unchanged validation set lacks waiting and
 queueing group scenes. See the [three-seed evidence and limitations](docs/milestone-2c-real-pose.md#multi-seed-pose-only-gt-baseline).
-The RGB-only seed-0 experiment has now completed under a separate frozen receipt;
-fusion and real detected-box experiments have not run.
+The RGB-only and predefined late-fusion seed-0 experiments have completed under
+separate frozen receipts. Real detected-box experiments have not run.
 
 ## Real RGB-only GT-box baseline
 
@@ -86,7 +90,26 @@ records assets, GPU benchmark, inspection, preflight, cache identities, curves,
 class metrics and limitations. Group crossing/walking swaps did not improve
 overall despite the higher aggregate scores. One RGB seed does not establish
 variance or prove that motion alone caused the gain; the backbones and existing
-training batch sizes differ. No fusion experiment has started.
+training batch sizes differ.
+
+## Real predefined late-fusion GT-box baseline
+
+[collective_pose_rgb_late_gt_v1.yaml](configs/experiments/collective_pose_rgb_late_gt_v1.yaml)
+reuses both immutable feature caches after exact semantic alignment of all
+2,547 scenes / 12,874 actors. Independent 128-d pose/RGB Actor-Transformers are
+jointly trained with the existing fixed probability rule `(2*pose + rgb)/3`,
+not a post-hoc ensemble of the separately trained classifiers. Seed 0 completed
+20,000 iterations; validation selected iteration 2,900, then held-out inference
+ran once. No model mathematics, split, preprocessing or fusion weights changed.
+
+Walking group recall rose to **74.31%**, and crossing/walking group swaps fell
+to **93** (Pose 106 / RGB 108). Queueing/talking group recalls fell to
+**72.04% / 95.60%** from RGB's 100% / 100%; overall group/actor metrics were
+lower than RGB. The [execution report](docs/collective-late-fusion-execution.md)
+records both recall tables, confusion matrices, freeze identities, validation-only
+attention and limitations. This negative result applies to the predefined 2:1
+configuration, not every possible fusion method. RGB remains the recommended
+current GT-box reference; no detected-box or additional fusion-seed run has started.
 
 ## Collective benchmark workflow (Milestone 2C)
 
@@ -535,9 +558,9 @@ Modern `MultiheadAttention` is used with explicit `key_padding_mask=~valid`,
 post-norm residual blocks, and `average_attn_weights=False`. This avoids opaque
 padding semantics and exposes per-head attention. Synthetic tests verify masking,
 coordinates, gradients, frozen/unfrozen extraction and deterministic resume.
-Official HRNet export, converted I3D export and real pose/RGB GT-box accuracy are
-now verified under our frozen protocols; fusion and detected-box accuracy remain
-unmeasured.
+Official HRNet export, converted I3D export and real pose/RGB/predefined-fusion
+GT-box accuracy are now verified under our frozen protocols; detected-box
+accuracy remains unmeasured.
 
 Run the offline workflow (creates its own tiny features, then trains, saves,
 reloads, evaluates and infers on scenes with different actor counts):
