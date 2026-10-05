@@ -8,6 +8,8 @@ import torch
 import torchvision
 from torch import nn
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
+from torchvision.models.detection.rpn import RPNHead
+from torchvision.ops.feature_pyramid_network import FeaturePyramidNetwork
 from torchvision.ops.misc import FrozenBatchNorm2d
 
 from surveillance.detection.config import DetectionConfig
@@ -24,6 +26,51 @@ def _frozen_batch_norm(module):
             setattr(module, name, replacement)
         else:
             _frozen_batch_norm(child)
+
+
+def _compatible_checkpoint_keys(
+    state: dict[str, torch.Tensor], model: nn.Module
+) -> tuple[set[str], list[dict[str, str]]]:
+    """Validate names after only TorchVision's versioned FPN/RPN migrations.
+
+    Official COCO v1 files predate sequential FPN/RPN conv wrappers. Native
+    ``load_state_dict(strict=True)`` migrates these names without changing tensors.
+    Check the resulting key set first, including buffers that FrozenBatchNorm
+    would otherwise silently discard, and reject ambiguous old/new duplicates.
+    """
+    keys = set(state)
+    migrations = []
+    metadata = getattr(state, "_metadata", {})
+    for name, module in model.named_modules():
+        version = metadata.get(name, {}).get("version")
+        if version is not None and version >= 2:
+            continue
+        prefix = f"{name}." if name else ""
+        aliases = []
+        if isinstance(module, FeaturePyramidNetwork):
+            for block in ("inner_blocks", "layer_blocks"):
+                for index in range(len(module.inner_blocks)):
+                    for field in ("weight", "bias"):
+                        aliases.append(
+                            (
+                                f"{prefix}{block}.{index}.{field}",
+                                f"{prefix}{block}.{index}.0.{field}",
+                            )
+                        )
+        elif isinstance(module, RPNHead):
+            aliases = [
+                (f"{prefix}conv.{field}", f"{prefix}conv.0.0.{field}")
+                for field in ("weight", "bias")
+            ]
+        for old, new in aliases:
+            if old not in keys:
+                continue
+            if new in keys:
+                raise ValueError(f"Ambiguous legacy/current checkpoint keys: {old}, {new}")
+            keys.remove(old)
+            keys.add(new)
+            migrations.append({"from": old, "to": new})
+    return keys, migrations
 
 
 class TorchvisionPersonDetector:
@@ -59,6 +106,7 @@ class TorchvisionPersonDetector:
         )
         _frozen_batch_norm(self.model.backbone)
         checkpoint_hash = None
+        checkpoint_key_migrations = []
         if checkpoint is not None:
             with checkpoint.open("rb") as stream:
                 checkpoint_hash = hashlib.file_digest(stream, "sha256").hexdigest()
@@ -75,11 +123,12 @@ class TorchvisionPersonDetector:
                     raise ValueError("Expected a bare tensor state_dict")
                 # Reject extras explicitly: FrozenBatchNorm silently removes num_batches_tracked.
                 expected = self.model.state_dict()
-                if set(state) != set(expected):
+                keys, checkpoint_key_migrations = _compatible_checkpoint_keys(state, self.model)
+                if keys != set(expected):
                     raise ValueError(
                         "state_dict keys differ: "
-                        f"missing={sorted(set(expected) - set(state))[:5]}, "
-                        f"unexpected={sorted(set(state) - set(expected))[:5]}"
+                        f"missing={sorted(set(expected) - keys)[:5]}, "
+                        f"unexpected={sorted(keys - set(expected))[:5]}"
                     )
                 self.model.load_state_dict(state, strict=True)
             except (RuntimeError, ValueError, TypeError) as error:
@@ -93,6 +142,7 @@ class TorchvisionPersonDetector:
             "num_classes": 91,
             "checkpoint_sha256": checkpoint_hash,
             "checkpoint": str(checkpoint.resolve()) if checkpoint else None,
+            "checkpoint_key_migrations": checkpoint_key_migrations,
             "untrained": checkpoint is None,
             "torch_version": str(torch.__version__),
             "torchvision_version": str(torchvision.__version__),

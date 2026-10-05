@@ -1,4 +1,5 @@
 import importlib.util
+from collections import OrderedDict
 from pathlib import Path
 
 import cv2
@@ -6,6 +7,8 @@ import numpy as np
 import pytest
 import torch
 from torch import nn
+from torchvision.models.detection.rpn import RPNHead
+from torchvision.ops.feature_pyramid_network import FeaturePyramidNetwork
 from torchvision.ops.misc import FrozenBatchNorm2d
 
 from surveillance.datasets.collective import ActorRecord, write_actor_manifest
@@ -30,6 +33,69 @@ class FakeModel(nn.Module):
                 "labels": torch.tensor([1, 2]),
             }
         ]
+
+
+class LegacyLayoutModel(FakeModel):
+    """Small real TorchVision FPN/RPN modules exercise native version migrations."""
+
+    def __init__(self):
+        super().__init__()
+        self.backbone.fpn = FeaturePyramidNetwork([2, 2], 2)
+        self.rpn = nn.Module()
+        self.rpn.head = RPNHead(2, 1)
+
+
+def legacy_layout_state(model):
+    backend._frozen_batch_norm(model.backbone)
+    modern = model.state_dict()
+    legacy = OrderedDict()
+    for key, value in modern.items():
+        old = key.replace(".conv.0.0.", ".conv.")
+        if ".inner_blocks." in old or ".layer_blocks." in old:
+            parts = old.split(".")
+            del parts[-2]
+            old = ".".join(parts)
+        legacy[old] = value.clone()
+    return modern, legacy
+
+
+def test_official_legacy_layout_uses_native_strict_migration(monkeypatch, tmp_path):
+    monkeypatch.setattr(backend, "fasterrcnn_resnet50_fpn", lambda **kw: LegacyLayoutModel())
+    modern, legacy = legacy_layout_state(LegacyLayoutModel())
+    checkpoint = tmp_path / "official-layout.pth"
+    torch.save(legacy, checkpoint)
+    detector = backend.TorchvisionPersonDetector(checkpoint, device="cpu")
+    actual = detector.model.state_dict()
+    assert set(actual) == set(modern)
+    assert all(torch.equal(actual[key], value) for key, value in modern.items())
+    assert len(detector.metadata["checkpoint_key_migrations"]) == 10
+
+
+@pytest.mark.parametrize(
+    "corruption", ["missing", "shape", "extra", "duplicate", "discarded_buffer", "version"]
+)
+def test_legacy_layout_rejects_incompatible_or_ambiguous_weights(monkeypatch, tmp_path, corruption):
+    monkeypatch.setattr(backend, "fasterrcnn_resnet50_fpn", lambda **kw: LegacyLayoutModel())
+    modern, legacy = legacy_layout_state(LegacyLayoutModel())
+    key = "backbone.fpn.inner_blocks.0.weight"
+    if corruption == "missing":
+        legacy.pop(key)
+    elif corruption == "shape":
+        legacy[key] = torch.ones(1)
+    elif corruption == "extra":
+        legacy["backbone.unknown.weight"] = torch.ones(1)
+    elif corruption == "duplicate":
+        legacy["backbone.fpn.inner_blocks.0.0.weight"] = modern[
+            "backbone.fpn.inner_blocks.0.0.weight"
+        ]
+    elif corruption == "discarded_buffer":
+        legacy["backbone.0.num_batches_tracked"] = torch.tensor(0)
+    else:
+        legacy._metadata = {"backbone.fpn": {"version": 2}, "rpn.head": {"version": 2}}
+    checkpoint = tmp_path / f"{corruption}.pth"
+    torch.save(legacy, checkpoint)
+    with pytest.raises(ValueError, match="Incompatible"):
+        backend.TorchvisionPersonDetector(checkpoint, device="cpu")
 
 
 def test_real_architecture_without_download(monkeypatch):

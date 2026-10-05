@@ -39,7 +39,10 @@ group accuracy **77.55%** (macro F1 **0.7947**), actor accuracy **78.22%**
 group accuracy **71.48%** (macro F1 **0.6919**), actor accuracy **62.11%**
 (macro F1 **0.6079**). It improves walking group recall but underperforms RGB
 overall. See the [fixed 2:1 fusion evidence and comparison](docs/collective-late-fusion-execution.md).
-Surveillance anomaly and detected-box accuracy remain unmeasured. Synthetic
+The real same-checkpoint RGB detected-box result is **74.32% group accuracy**
+(macro F1 **0.7383**) and **75.64% actor accuracy** (macro F1 **0.7756**, matched
+actors only). See the [detected-box execution and coverage report](docs/collective-rgb-detected-execution.md).
+Surveillance anomaly accuracy remains unmeasured. Synthetic
 tests establish software behavior, not surveillance detection accuracy.
 
 ## First real pose baseline (Milestone 2C-R1)
@@ -72,7 +75,8 @@ all five test classes, but validation remains below its 70.59% majority baseline
 despite decreasing training loss. The unchanged validation set lacks waiting and
 queueing group scenes. See the [three-seed evidence and limitations](docs/milestone-2c-real-pose.md#multi-seed-pose-only-gt-baseline).
 The RGB-only and predefined late-fusion seed-0 experiments have completed under
-separate frozen receipts. Real detected-box experiments have not run.
+separate frozen receipts. Same-checkpoint RGB detected-box evaluation has also
+completed without retraining.
 
 ## Real RGB-only GT-box baseline
 
@@ -109,7 +113,26 @@ lower than RGB. The [execution report](docs/collective-late-fusion-execution.md)
 records both recall tables, confusion matrices, freeze identities, validation-only
 attention and limitations. This negative result applies to the predefined 2:1
 configuration, not every possible fusion method. RGB remains the recommended
-current GT-box reference; no detected-box or additional fusion-seed run has started.
+current GT-box reference; its same-checkpoint detected-box comparison is now
+measured below. No additional fusion-seed run has started.
+
+## Real RGB detected-box comparison
+
+The same frozen RGB `best.pt` is evaluated with COCO v1 Faster R-CNN ResNet-50
+FPN boxes, without training. Validation-only confidence selection chooses 0.7;
+NMS/matching IoU 0.5 and all other geometry/cap rules remain fixed. All 2,547
+scenes receive independent detected-box I3D caches with unchanged preprocessing.
+The [execution report](docs/collective-rgb-detected-execution.md) records the
+official checkpoint, native legacy-key loading correction, receipts and results.
+
+Test group accuracy falls **77.55% -> 74.32%**, macro F1 **0.7947 -> 0.7383**.
+Waiting recall falls **65.93% -> 37.78%** while walking rises **60.55% -> 72.94%**;
+queueing/talking recalls stay 100%. Test actor coverage is **86.55%**: 2,960 matches,
+460 misses and 2,333 unmatched detections; no scene abstains. Detected actor metrics
+are conditional on matching. On the same matched subset, GT/detected actor
+accuracy is **76.55% / 75.64%**, a **0.91-point** decline. Unmatched detections
+may be unannotated people, duplicates or poor localization, not necessarily false
+person detections. No detected-box fine-tuning or surveillance adaptation has run.
 
 ## Collective benchmark workflow (Milestone 2C)
 
@@ -137,10 +160,11 @@ The original 32/12 source assignment is retained; sources 1,2,3 form a training-
 validation holdout. Exact identity with the paper's unpublished split IDs remains
 unverified. GT-box results are the annotated-actor baseline; detected-box results
 are the deployment-oriented adaptation. Real CCTV will not supply annotated actors.
-Test sources never enter detector tuning, checkpoint selection or feature-mode
-selection. Comparison reports distinguish all-GT actors, matched-only actor metrics,
+Test sources never enter detector tuning or checkpoint selection. The current RGB
+reference was explicitly user-selected after the measured GT modality comparison.
+Comparison reports distinguish all-GT actors, matched-only actor metrics,
 coverage and empty-scene abstentions. Pose/GT-box and RGB/GT-box results are
-measured above; detected-box benchmark values remain unmeasured.
+measured above; the same-checkpoint RGB detected-box result is also measured.
 
 ```powershell
 python scripts/run_collective_experiment.py --stage prepare
@@ -559,8 +583,8 @@ post-norm residual blocks, and `average_attn_weights=False`. This avoids opaque
 padding semantics and exposes per-head attention. Synthetic tests verify masking,
 coordinates, gradients, frozen/unfrozen extraction and deterministic resume.
 Official HRNet export, converted I3D export and real pose/RGB/predefined-fusion
-GT-box accuracy are now verified under our frozen protocols; detected-box
-accuracy remains unmeasured.
+GT-box accuracy are now verified under our frozen protocols. The RGB detected-box
+comparison is also measured with the same checkpoint and separate frozen settings.
 
 Run the offline workflow (creates its own tiny features, then trains, saves,
 reloads, evaluates and infers on scenes with different actor counts):
@@ -664,7 +688,7 @@ git diff --check
 The smoke creates synthetic RGB images, fixture detections and simple crop-mean
 features, trains a tiny scorer, and exercises live detection, cached comparison,
 misses/extras, and empty-scene abstention. These fixtures are not HRNet/I3D or
-detector benchmark results. Real accuracy remains unmeasured. No tracking,
+detector benchmark results. Real RGB detected-box accuracy is documented above. No tracking,
 surveillance adaptation, Sultani cascade, or UI is added in this milestone.
 See [person-detection.md](docs/person-detection.md) for policies, APIs, local
 checkpoint compatibility, cache provenance, and limitations.

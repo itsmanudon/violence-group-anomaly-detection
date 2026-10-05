@@ -56,6 +56,13 @@ pretrained v1 model (for example an already locally acquired official
 custom class heads, Lightning wrappers, or `module.`-prefixed dictionaries require
 an explicit, independently verified conversion; they are not silently accepted.
 Loading uses `weights_only=True`, exact keys and strict parameter shapes.
+Official historical COCO v1 checkpoints use older FPN/RPN convolution names.
+The adapter admits only TorchVision's native versioned name migrations before
+checking the complete expected key set, then loads with `strict=True`. Tensor
+values and architecture are unchanged. Conflicting old/new aliases, missing or
+extra parameters, incompatible shapes and silently discarded buffers are rejected.
+`checkpoint_key_migrations` records every admitted name change. See the
+[real RGB detected-box execution](collective-rgb-detected-execution.md).
 
 In a trusted environment where the correct pretrained model is already loaded:
 
@@ -183,10 +190,14 @@ Tests use synthetic images, feature archives, injected detectors and structural
 TorchVision models; no downloads or CUDA are required. `scripts/smoke_detection.py`
 explicitly uses crop-mean fixture features, never claiming those are HRNet/I3D.
 Actual HRNet/I3D crop/coordinate contracts are separately covered with synthetic
-local exports. The original 123 tests remain required. Real detector/Collective
-accuracy is unmeasured until the user supplies the data and vetted checkpoints.
+local exports. The original 123 tests remain required. The subsequent real
+[same-checkpoint RGB Collective experiment](collective-rgb-detected-execution.md)
+now measures detector coverage and GT-versus-detected accuracy with supplied
+official COCO v1 weights and the validated converted I3D export.
 
 Occlusion, center-frame misses, crowded-scene truncation, unannotated people,
 calibration and distribution shift can affect results. Attention is descriptive,
 not proof of causality or intent. No identity association is maintained across
-clips. GPU determinism and real pretrained checkpoint behavior remain unverified.
+clips. Repeated synthetic CUDA detector inference and real COCO v1 loading are
+now verified; this does not establish determinism across all hardware or software
+versions, or surveillance-domain accuracy.
