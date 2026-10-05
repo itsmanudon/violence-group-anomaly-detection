@@ -14,6 +14,13 @@ the Gradio demo come later.
 it does not infer that a person intrinsically "is a goon," assign character labels,
 or infer criminal intent.
 
+The end-to-end surveillance MVP is being developed on
+`feat/end-to-end-surveillance-mvp`. The initial asset gate found no local DCSASS
+or UCF-Crime installation and no C3D backbone or real Sultani checkpoint.
+Dataset-dependent work is blocked pending those inputs; the existing Collective
+results remain the measured baseline. See the [execution journal](docs/end-to-end-execution-log.md)
+and [required assets and acquisition instructions](docs/end-to-end-required-assets.md).
+
 ## Papers and current status
 
 - Sultani, Chen, and Shah (CVPR 2018), [Real-world Anomaly Detection in Surveillance Videos](https://openaccess.thecvf.com/content_cvpr_2018/html/Sultani_Real-World_Anomaly_Detection_CVPR_2018_paper.html).
