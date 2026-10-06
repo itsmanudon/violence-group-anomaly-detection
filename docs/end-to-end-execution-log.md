@@ -244,3 +244,31 @@ Next bounded execution: cache all 6,491 selected clips under
 `runs/dcsass/human_rgb_detected_v1_cache`, reporting coverage including no actors.
 The cache registration freezes sampling/model/filter/manifest identities before
 execution; resumptions reject changed identities and validate each artifact.
+
+Correction to the preceding preflight detection timing: the saved report records
+**3.7792 seconds**, not 3.54. Its population is 12 clips / 9 covered / 3 no-actor
+clips; extraction is 2.2221 seconds. Three empty scenes remain explicit records.
+The source/taxonomy/C3D/cache milestone was locally committed as `322ab2b`.
+
+### Phase D real preflight
+
+Added a validated, preloaded covered-feature dataset, group-only trainer, explicit
+covered-training class weights, validation-only checkpoint selection and a separate
+held-out evaluation command that refuses existing evaluation output. The trainer
+never opens test features. Model assets and split receipts are checked before work.
+
+New full verification: **463 tests passed / 325 warnings / 189.47 seconds**.
+The subsequent real five-iteration preflight completed on the registered 12
+training/validation clips: group loss 3.1129 -> 0.5764, gradients finite, checkpoint
+saved and selected checkpoint reloaded with identical validation macro F1.
+This uses unit class weights solely for bounded plumbing verification; the real
+run derives balanced weights from all covered training examples. The tiny
+preflight validation scores (selected macro F1 0.1111) are non-benchmark evidence.
+Outputs: `runs/dcsass/behavior_preflight_v1/`; log:
+`runs/dcsass/behavior-verification/real-preflight.log`.
+
+Full fixed-threshold detection/extraction is running in a separate registered
+cache. At roughly 0.27–0.29 seconds/clip, detection is a bounded half-hour job.
+No threshold adjustment, additional seed, test behavior inference or model-selection
+change has occurred. UCF's pending download ZIP was inspected read-only; it lacks
+a readable completed ZIP directory and remains untouched.
