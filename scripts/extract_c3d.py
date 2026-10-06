@@ -1,7 +1,6 @@
 """Extract normalized C3D feature bags from an installed video manifest."""
 
 import argparse
-import os
 from dataclasses import replace
 from pathlib import Path
 
@@ -9,6 +8,7 @@ import numpy as np
 from _common import run_cli
 
 from surveillance.datasets.common import check_leakage, read_manifest, resolve_path, write_manifest
+from surveillance.datasets.preparation import manifest_path
 from surveillance.features.c3d import C3DExtractor
 from surveillance.training.sultani_trainer import select_device
 
@@ -50,12 +50,8 @@ def main() -> None:
         result.append(
             replace(
                 row,
-                path=Path(
-                    os.path.relpath(video_path, args.output_manifest.resolve().parent)
-                ).as_posix(),
-                feature_path=Path(
-                    os.path.relpath(feature_path.resolve(), args.output_manifest.resolve().parent)
-                ).as_posix(),
+                path=manifest_path(video_path, args.output_manifest),
+                feature_path=manifest_path(feature_path, args.output_manifest),
             )
         )
         print(f"[{i}/{len(rows)}] {row.video_id} -> {feature_path}")

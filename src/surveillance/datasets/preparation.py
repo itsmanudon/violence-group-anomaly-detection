@@ -12,6 +12,14 @@ from surveillance.video.decode import probe_video
 VIDEO_SUFFIXES = {".mp4", ".avi", ".mov", ".mkv"}
 
 
+def manifest_path(path: Path, manifest: Path) -> str:
+    """Use relative paths on one volume, absolute paths for external drives."""
+    try:
+        return Path(os.path.relpath(path.resolve(), manifest.resolve().parent)).as_posix()
+    except ValueError:
+        return path.resolve().as_posix()
+
+
 def source_identity(path: Path, source_map: dict[str, str]) -> str:
     """Recover UCF basename before _x264/clip suffix; otherwise require mapping.
 
@@ -71,7 +79,7 @@ def make_record(
         dataset,
         relative.with_suffix("").as_posix(),
         source.casefold() if source else source_identity(relative, source_map),
-        Path(os.path.relpath(path.resolve(), output.resolve().parent)).as_posix(),
+        manifest_path(path, output),
         "train",
         label,
         anomaly_type,

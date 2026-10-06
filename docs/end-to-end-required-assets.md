@@ -3,7 +3,7 @@
 The initial 2026-10-06 inspection found Collective data/models but no installed
 DCSASS, UCF-Crime, C3D bags/weights or real Sultani checkpoint. The user subsequently
 supplied DCSASS and modern C3D weights. DCSASS is fully audited, frozen and evaluated
-for behavior; C3D conversion is validated. UCF-Crime remains unavailable locally,
+for behavior; C3D conversion is validated. UCF-Crime is now installed externally,
 and the separate real DCSASS Sultani run has completed training and evaluation.
 The five pinned deployment assets and genuine example caches are installed. This document
 retains acquisition instructions for a fresh installation.
@@ -76,9 +76,10 @@ archive availability has not been verified by downloading it.
 
 Expected installation:
 
-The user is downloading UCF-Crime to `C:\Users\manan\Downloads`, with an estimated
-three-hour wait. Use its final extracted external root directly once the download
-is complete; do not copy the large dataset again or read an incomplete archive.
+The user completed extraction at `E:\anomaly-detection-dataset-UCF`. Use this
+external root directly; no second repository copy is needed. All 1,900 author-listed
+anomaly videos are present and audited. The separate 50 event-recognition Normal
+videos and ZIPs are retained. See [the frozen source/content protocol](ucf-sultani-execution.md).
 
 ```text
 data/raw/ucf_crime/<category>/<original_video>.mp4

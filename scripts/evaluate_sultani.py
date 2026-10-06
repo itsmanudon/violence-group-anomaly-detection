@@ -14,7 +14,9 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--split", choices=["val", "test"], default="test")
     parser.add_argument("--mode", choices=["bag", "frame"], default="bag")
-    parser.add_argument("--projection", choices=["repeat", "interpolate"], default="repeat")
+    parser.add_argument(
+        "--projection", choices=["repeat", "interpolate", "c3d_units"], default="repeat"
+    )
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--output", type=Path, default=Path("outputs/metrics.json"))
     args = parser.parse_args()

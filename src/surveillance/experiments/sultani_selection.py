@@ -1,5 +1,6 @@
 """Freeze completed Sultani validation selection without inspecting held-out scores."""
 
+import json
 import math
 from pathlib import Path
 
@@ -7,6 +8,17 @@ from surveillance.datasets.dcsass_audit import sha256
 from surveillance.evaluation.evaluate import evaluate
 from surveillance.experiments.dcsass_cache import write_json
 from surveillance.training.sultani_trainer import load_checkpoint
+
+
+def validate_evaluation_policy(selected: dict, mode: str, projection: str | None) -> str:
+    """Resolve frozen defaults and reject changes before any held-out access."""
+    expected_mode = selected.get("evaluation_mode", "bag")
+    expected_projection = selected.get("frame_projection", "repeat")
+    if mode != expected_mode or (
+        mode == "frame" and projection is not None and projection != expected_projection
+    ):
+        raise ValueError("Requested held-out mode/projection differs from frozen evaluation policy")
+    return expected_projection if projection is None else projection
 
 
 def freeze_sultani_selection(run: Path, manifest: Path, population: str) -> dict:
@@ -48,5 +60,11 @@ def freeze_sultani_selection(run: Path, manifest: Path, population: str) -> dict
         "threshold_selection": "fixed prospective default; not tuned on test or demo",
         "held_out_used_for_selection": False,
     }
+    protocol_path = run.parent / "protocol.json"
+    if protocol_path.is_file():
+        protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+        receipt["protocol_sha256"] = sha256(protocol_path)
+        receipt["evaluation_mode"] = "frame" if protocol.get("frame_projection") else "bag"
+        receipt["frame_projection"] = protocol.get("frame_projection", "repeat")
     write_json(destination, receipt)
     return receipt

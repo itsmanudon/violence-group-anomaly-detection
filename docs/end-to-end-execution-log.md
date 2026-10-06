@@ -588,3 +588,127 @@ The UCF frame-benchmark phase remains blocked on this mandatory external asset;
 the provided-data surveillance demo is usable locally. Next: validate the final
 UCF acquisition once complete, preserve shared held-out DCSASS sources, freeze
 its compatible protocol before extraction/training, and complete frame evaluation.
+
+## UCF-Crime external-drive acquisition available
+
+User supplied `E:/anomaly-detection-dataset-UCF` with extracted videos and ZIPs.
+Read-only inventory found 1,950 videos / 104,888,485,756 bytes, including 50 duplicate
+filename event-recognition Normal videos. The anomaly-detection population has
+exactly all 1,900 author-listed filenames: 1,610 train and 290 test, no missing,
+extra or overlapping names. Event-recognition videos and ZIPs are not used.
+The root train list and temporal annotations match pinned author bytes exactly;
+the nested train file is empty, so use the verified root list.
+
+Ruling: preserve shared DCSASS source assignments; exclude its held-out test
+sources present in the authors' train list, while keeping the full original UCF
+290-video test set. Remaining unshared training sources get a deterministic
+category-aware 15% validation split. This prevents cascade source leakage and
+changes the training population relative to the paper; disclose the deviation.
+No UCF model/test scores have been inspected. Config remains the existing seed-0,
+20-epoch Adagrad/MIL baseline; validation bag ROC-AUC and threshold 0.5 stay fixed.
+
+Regression tests exposed original archive Normal-folder incompatibility and
+cross-volume `os.path.relpath` failure. Added explicit archive-folder support,
+event-recognition exclusion and absolute external-drive path fallback. Added exact
+`c3d_units` frame projection matching the already validated 16-frame extraction
+partitions; old uniform imported-feature modes remain available. Seven regression
+tests passed after observed failures. A subsequent cache regression passed after
+the missing-function failure, proving byte-bound reuse and stale/nonfinite rejection.
+
+New audit/freeze CLI: `scripts/prepare_ucf_surveillance.py`. It checks author
+provenance, shared-source isolation, metadata, first/last reported frames, content
+hashes and duplicates. Full decode is verified at extraction before training, not
+claimed from metadata probes. Resumable extraction CLI:
+`scripts/extract_ucf_sultani.py`, with separate train/validation-only preflight.
+Plan/settings are in `docs/ucf-sultani-execution.md`. Next: software gate, actual
+audit/source freeze, bounded extraction/backprop/reload, then full extraction.
+
+The first preparation run correctly rejected Arson011's endpoint: official end
+1267 versus 1266 reported/decoded frames. A complete metadata check of the 290
+annotated videos found exactly five overruns, all one or two frames. Arson011,
+Arson016, Explosion033, Fighting003 and Shooting015 each match original ZIP CRC
+and uncompressed byte size; full decode matches metadata. Evidence saved in
+`runs/ucf-crime/annotation-boundary-diagnostic.json` and
+`annotation-boundary-integrity.json`. No incomplete extracted file was found.
+
+Ruling: explicitly intersect these verified-original annotation intervals with
+available frames, record original/effective endpoints, and reject larger overruns
+or intervals starting after the video. This changes no label on an existing
+frame. Raw videos/annotations remain untouched; the generic API stays strict by
+default. Regression observed missing-keyword failure, then passed the bounded
+intersection/default-rejection tests. Nine new regressions now pass. Full gate
+before this annotation change passed 518 tests / 325 warnings / 184.52 seconds;
+the post-change full gate and read-only hash/boundary-frame audit are running.
+
+Independent review confirmed source protection, external-drive paths and bounded
+endpoint handling, and found two Important scientific guards to strengthen before
+extraction/training: registered frame evaluation could default to uniform repeat
+rather than the frozen C3D projection, and downstream feature loaders ignored
+cache digests after extraction. Reproduced both missing guard behaviors in tests.
+Added per-bag `feature_sha256` to new UCF manifests and byte verification in the
+shared trainer/validation/evaluation loader; old manifests remain readable.
+Completed selection receipts now pin parent protocol SHA plus prospective
+evaluation mode/projection. Registered test rejects policy/protocol drift before
+held-out directory creation and resolves omitted projection from the receipt.
+Twenty-one targeted tests passed. The prior full gate passed 519 tests / 325
+warnings / 192.05 seconds; the full post-review-fix gate is running. No held-out
+model predictions or test-informed hyperparameter changes have occurred.
+
+Full post-review gate passed **521 tests / 325 warnings / 215.84 seconds**, Ruff
+and formatting clean (191 files), diff check passed. Independent reviewer verified
+both fixes with 19 targeted tests. The actual audit completed 1,900 videos with no
+file failures in 525.60 seconds, but correctly blocked protocol freeze on exact
+duplicates. There are 21 groups: eight Normal train/test pairs, eleven Normal
+train/train pairs, one Assault050/Robbery138 binary-positive train alias, and one
+Normal test/test pair. All 42 duplicate-group files match archive CRCs and sizes.
+Both anomaly aliases are absent from the earlier DCSASS manifests, so no frozen
+DCSASS experiment is changed by this finding.
+
+Ruling: remove exact duplicate *training entries* before splitting, prioritizing
+all published test entries; retain the 936/937 test duplicate and disclose its
+weighting. Keep raw data and binary labels unchanged. This resolves eight actual
+content-leakage pairs and prevents train/validation aliases. A regression failed
+for the missing helper, then all 12 UCF tests passed, including conflicting-label
+rejection. `scripts/freeze_ucf_protocol.py` then froze the saved complete audit:
+1,309 train / 254 validation / 290 test (289 unique test contents), binary counts
+664/645 train, 117/137 validation, 150/140 test. Excluded 20 duplicate training
+copies plus 27 shared DCSASS held-out sources. Explicit source/content overlap is
+zero. No model scores have been used for these preparation decisions.
+
+Raw manifest SHA256 `13a071d986ef4c4d62691a11b16b3052955b9b98bcbd2019b52f579437b62826`;
+audit SHA256 `03aff4b4bfc8109affc98758429d0e726ce5ce9b723240102edbf718dfea9a77`.
+Resolution is uniformly 320x240; actual FPS values 25/29.970029/30 are preserved.
+Reported total 13,768,423 frames / 127.51 hours; maximum video is 32,550.1 seconds.
+Streaming extraction is necessary. The new full gate/review is finishing before
+bounded GPU extraction and backprop/reload.
+
+Final preparation quality gate passed **522 tests / 325 warnings / 165.24 seconds**,
+Ruff and formatting clean for 192 files, diff check passed. Independent review
+passed 12 tests and verified exact accounting of every audited file, both excluded
+populations, all receipt hashes, shared assignments and zero source/content leakage.
+Existing deployed model identities also reload correctly. Started bounded
+eight-video train/validation-only real C3D extraction with fixed batch 4, seed 0
+and two OpenMP/MKL threads; no test scoring. Next: five real MIL iterations,
+checkpoint reload, representative extraction timing, then full streaming extraction.
+
+Eight real UCF train/validation videos extracted in 3.8975 seconds, with full
+sequential decode/count checks, finite `[32,4096]` bags and registered feature
+checksums. Five real MIL iterations passed: losses 1.97010, 1.86905, 1.78078,
+1.74711, 1.67920; finite gradients and exact checkpoint reload confirmed. This
+preflight checkpoint remains dry-run and cannot be served. No held-out scoring.
+Receipts: `runs/ucf-crime/sultani_shared_safe_v1/preflight_cache/extraction.json`
+and `preflight_training/report.json`. Representative C3D benchmark started on
+training frame-count median (2,189 frames) and 95th percentile (24,320 frames),
+using unchanged batch 4 and backbone preprocessing. Its valid caches can seed
+the full run; no architecture or extraction precision changes are being made.
+
+Benchmark completed: median-training sample 2,189 frames in 3.0172 seconds;
+95th-percentile sample 24,320 frames in 33.2855 seconds. RTX 4070 Laptop peak
+allocated CUDA memory 678,444,544 bytes, fixed batch 4. P95 stages: decode 8.5797 s,
+preprocessing 10.5067 s, C3D 13.1275 s. Both cache entries are finite/byte-bound.
+Started full unchanged streaming extraction at UTC 16:15:35, command
+`python -u scripts/extract_ucf_sultani.py`, log `runs/ucf-crime/full-extraction.log`.
+This is expected to take multiple hours; keep the external drive connected.
+No UCF model or held-out score has been selected/evaluated yet. Next: inspect full
+completion receipt, train seed 0, freeze validation choice and run registered frame
+evaluation using its prospective exact C3D projection.

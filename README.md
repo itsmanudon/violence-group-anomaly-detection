@@ -18,8 +18,10 @@ The supplied [Sports-1M C3D weights pass strict conversion and FC6 validation](d
 [DCSASS adaptation is measured](docs/dcsass-surveillance-results-v1.md). The selected
 seed-0 Actor-Transformer has **51.02% conditional accuracy / 0.2140 macro F1** with
 **69.22% test actor coverage**. These are weak results, particularly for Abuse,
-Assault and Fighting; this is not reliable violence recognition. UCF-Crime is still
-downloading. The separate real DCSASS binary-label Sultani baseline is complete:
+Assault and Fighting; this is not reliable violence recognition. UCF-Crime is
+installed at `E:\anomaly-detection-dataset-UCF`; its audited source/content-safe
+[protocol is frozen](docs/ucf-sultani-execution.md), with extraction/training pending.
+The separate real DCSASS binary-label Sultani baseline is complete:
 **0.6583 held-out bag ROC-AUC**, with a frozen **0.5** alert threshold. This is
 not a UCF-Crime frame benchmark. All five model assets and eight genuine cascade
 example caches are installed; uploaded videos support live inference. See the
