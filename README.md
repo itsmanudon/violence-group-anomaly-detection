@@ -20,11 +20,18 @@ seed-0 Actor-Transformer has **51.02% conditional accuracy / 0.2140 macro F1** w
 **69.22% test actor coverage**. These are weak results, particularly for Abuse,
 Assault and Fighting; this is not reliable violence recognition. UCF-Crime is
 installed at `E:\anomaly-detection-dataset-UCF`; its audited source/content-safe
-[protocol is frozen](docs/ucf-sultani-execution.md), with extraction/training pending.
-The separate real DCSASS binary-label Sultani baseline is complete:
+[protocol is frozen](docs/ucf-sultani-execution.md). Real C3D extraction and fixed
+seed-0 training are complete. The validation-selected epoch-20 scorer achieved
+**0.7441 held-out frame ROC-AUC** on **290 videos / 1,111,808 frames**, with
+**0.1912 precision / 0.5189 recall / 0.2794 F1** at the fixed 0.5 threshold.
+See [UCF results and protocol limitations](docs/sultani-ucf-results-v1.md).
+This source-safe modern-C3D experiment is not an exact paper reproduction.
+The separate historical DCSASS binary-label Sultani baseline is complete:
 **0.6583 held-out bag ROC-AUC**, with a frozen **0.5** alert threshold. This is
-not a UCF-Crime frame benchmark. All five model assets and eight genuine cascade
-example caches are installed; uploaded videos support live inference. See the
+not a UCF-Crime frame benchmark. The default deployment now uses the UCF scorer,
+with the unchanged validation-selected DCSASS behavior model. All five model
+assets and genuine cascade example caches are installed; uploaded videos support
+live inference. See the
 [execution journal](docs/end-to-end-execution-log.md) and
 [asset requirements](docs/end-to-end-required-assets.md).
 
@@ -63,8 +70,9 @@ with `python scripts/verify_demo_assets.py`. Missing assets return useful errors
 no preflight model is substituted. Use the
 [demo runbook](docs/demo-runbook.md), [professor talk track](docs/professor-demo-talk-track.md)
 and [measured integration evidence](docs/integration-demo-v1.md) to follow readiness.
-The warm GPU cascade took 1.10 seconds on a two-second example; CPU fallback
-completed the same full path in 27.4 seconds. These are short-clip diagnostics.
+The historical DCSASS deployment's warm GPU cascade took 1.10 seconds on a
+two-second example; CPU fallback completed that full path in 27.4 seconds.
+These are short-clip diagnostics for the preserved older model version.
 Keep the validated CUDA packages; see installation and subsystem commands below.
 
 | Collective seed-0 representation | Group accuracy | Group macro F1 |
@@ -85,6 +93,16 @@ model, and uncovered test clips abstain. The selected random-initialization cont
 won validation macro F1 over Collective transfer; it was not selected on test.
 Both experiments and the frozen source/coverage populations remain documented.
 
+The [registered complete cascade evaluation](docs/cascade-results-ucf-v1.md)
+covers all 991 held-out DCSASS clips / 31 protected sources. Clip-alert F1 is
+**0.4733**, ROC-AUC **0.5118**, with **40.22% normal-clip false alerts**.
+Routed behavior is covered on **311 clips (31.38% overall)**, with **45.66%
+conditional accuracy / 0.1888 macro F1**. These are separate weak-label cascade
+measurements, not UCF temporal localization or standalone detector coverage.
+Mean inference latency is **0.505s**, p95 **1.346s**, excluding model loading/UI.
+Nine examples include a clearly disclosed curated correct Robbery case and all
+eight original cases, including failures. No test-informed tuning followed.
+
 To train or inspect the surveillance adaptation, use
 `configs/experiments/dcsass_human_rgb_detected_v1.yaml` and the commands in
 [the DCSASS results](docs/dcsass-surveillance-results-v1.md). The generic anomaly
@@ -96,8 +114,10 @@ Known limitations include Collective validation imbalance, mostly seed-0 evidenc
 converted I3D weights, detector misses/extras, DCSASS clip/source context bias,
 absent actor-level supervision, weak Sultani supervision, domain shift and false
 alarms. The modern C3D channel mean differs from the original Caffe volume mean.
-The provisional DCSASS Sultani population has no temporal ground truth: bag ROC-AUC
-cannot be called UCF-Crime frame ROC-AUC. Future work should prioritize independent
+The DCSASS Sultani population has no temporal ground truth: bag ROC-AUC cannot be
+called UCF-Crime frame ROC-AUC. The UCF frame false-positive rate is 18.02% at 0.5;
+the retained author test list also contains one exact-content duplicate pair.
+Future work should prioritize independent
 surveillance validation, multi-seed evidence and detected-box adaptation before
 deployment or edge/privacy-preserving extensions.
 
@@ -131,8 +151,9 @@ The real same-checkpoint RGB detected-box result is **74.32% group accuracy**
 actors only). See the [detected-box execution and coverage report](docs/collective-rgb-detected-execution.md).
 The [real DCSASS Sultani evaluation](docs/sultani-dcsass-results-v1.md) reports
 0.6583 bag ROC-AUC and a 35.35% normal-clip false-positive rate at threshold 0.5.
-UCF-Crime frame evaluation remains pending. Synthetic tests establish software
-behavior, not surveillance detection accuracy.
+The [real UCF frame evaluation](docs/sultani-ucf-results-v1.md) reports 0.7441
+ROC-AUC with a fixed 0.5 threshold. Synthetic tests establish software behavior,
+not surveillance detection accuracy.
 
 ## First real pose baseline (Milestone 2C-R1)
 

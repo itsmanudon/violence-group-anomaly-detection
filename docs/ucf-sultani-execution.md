@@ -129,3 +129,15 @@ Use existing frozen receipts rather than overwriting them. The full cache and
 feature manifest are in the repository's ignored run/data directories on D:;
 original videos stay on E:. The extraction process revalidates completed entries
 when resumed, rejects stale bytes/provenance and verifies full decoded frame counts.
+
+## Completed seed-0 execution
+
+All 1,853 retained videos fully decoded and passed cache validation. Extraction
+took 17,284.65 seconds on the RTX 4070 Laptop. Fixed 20-epoch training completed;
+epoch 20 was selected by validation bag ROC-AUC 0.9109 before held-out scoring.
+The single registered 290-video frame test gives ROC-AUC 0.7441, precision 0.1912,
+recall 0.5189 and F1 0.2794 at the unchanged 0.5 threshold. See
+[the complete UCF results and provenance](sultani-ucf-results-v1.md).
+The modern C3D preprocessing and protected training exclusions mean this is
+not an exact paper reproduction. Preserve the completed run rather than rerunning
+its registered test.

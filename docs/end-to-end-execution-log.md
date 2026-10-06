@@ -777,3 +777,187 @@ excluded from UCF optimization. No held-out inference occurred. Full extraction
 now 886/1853, healthy. Next: wait for full extraction receipt, inspect all cache
 identities/counts, run frozen seed-0 UCF training, freeze validation selection and
 execute its registered frame test before versioned cascade evaluation.
+
+Prepared an ignored local orchestration helper
+`runs/ucf-crime/continue-training-after-extraction.py`, waiting in its own process.
+It validates the full extraction completion receipt, all 1,853 feature hashes,
+finite `[32,4096]` tensors, cache provenance and unchanged source/label metadata,
+then invokes the existing frozen 20-epoch seed-0 training CLI. It stops after
+training for validation inspection; it cannot score test data. Configuration and
+protocol hashes are captured before waiting; an existing training run is preserved.
+Launcher uses two OpenMP/MKL threads and `CUBLAS_WORKSPACE_CONFIG=:4096:8`.
+Fixed only the helper's UTF-16 PowerShell log decoding, restarting its waiting
+process with a separate `training-after-extraction-v2.log`; extraction was untouched.
+
+Generalized the API verification script with `--config`. It verifies server model
+provenance and all 32 anomaly scores against genuine frozen example caches rather
+than hardcoding the old scorer's classifications. Five actual cached/live/upload
+requests passed (`runs/ucf-crime/demo-api-versioned-config.json`), Ruff/format/diff
+clean. This is software consistency evidence, not a model accuracy measurement.
+
+Completion audit added at `docs/end-to-end-completion-audit.md`, mapping all twenty
+deliverables to inspected evidence and remaining UCF-specific verification.
+Confirmed actual DCSASS held-out confusion/coverage and explicit absence of box
+GT in the detection report. Both extraction (`44384`) and training launcher
+(`38498`) remain live. D: has 327.73 GB free and E: has 1,628.23 GB free, adequate
+for the remaining feature/checkpoint artifacts without copying original footage.
+
+Before any UCF scoring, fixed fourteen timeline illustrations in
+`runs/ucf-crime/sultani_shared_safe_v1/timeline_selection.json`: first author-held-out
+video by ID per category, including Normal. No model output informed selection.
+After the registered frame pass, render saved scores with the supplied temporal
+annotations and exact C3D-unit boundaries. These illustrations are not another
+test-selection/tuning pass. Extraction has progressed to 1183/1853 with no failures.
+
+Long-recording extraction gates also completed without failure:
+`Normal_Videos307_x264`, 628,020 frames / 20,934 seconds, in 772.99 seconds;
+`Normal_Videos308_x264`, 976,503 frames / 32,550.1 seconds (the longest installed
+video), in 1,195.06 seconds. The unchanged batch-4 path produced valid caches and
+continued to 1350/1853. Live process polls and GPU activity confirmed these were
+compute waits, not terminal failures; no restarts or scientific setting changes.
+The full extraction completion receipt remains pending, so the launcher has not
+started training or any held-out scoring.
+
+Full UCF extraction completed with exit code 0: all 1,853 retained original videos
+fully decoded with frame-count checks in 17,284.6454 seconds (4.80 hours), two valid
+benchmark entries reused. Feature manifest SHA256
+`2a888b0e0da7b0115efab7a8641f67490ef0a7d4cf9ef17238aac5ca9c9302e0`.
+The launcher independently validated every feature's byte identity, finite
+`[32,4096]` values, cache provenance and unchanged source/label metadata. Counts
+remain 1309 train / 254 validation / 290 test. Validation receipt:
+`runs/ucf-crime/sultani_shared_safe_v1/feature_validation_before_training.json`.
+Protocol SHA256 `a163f05823825daf647622eb3f776ca3de4cefaf77c55ccf0aac6b2ecbf40c9d`;
+training config SHA256
+`3fe7c63a81e6b5bdd1ec121903c1a6d2f4c5bca31bfa0a86d6852614a09b4394`.
+
+The fixed seed-0, 20-epoch CUDA training command started automatically only after
+those gates. At epoch 8, loss decreased 1.754039 -> 1.160637 and validation bag
+ROC-AUC improved 0.875413 -> 0.901803, without held-out scoring. Log:
+`runs/ucf-crime/seed-0-training.log`. Next: verify completed training/reloaded
+validation selection, freeze it, then perform the one registered frame pass.
+## Cascade progress recovery and bounded atomic write retry
+
+The first registered full cascade process stopped after saving clip
+`Robbery054_x264_8`: Windows denied replacement of `progress.json.tmp` over
+`progress.json` (WinError 5). The committed progress receipt contained 478 clips;
+the complete staged receipt contained 479. No checkpoint, threshold or source
+protocol changed. Both original progress versions were preserved under
+`runs/integration/ucf_sultani_human_v1/recovery/` before recovery.
+
+Every one of the 479 saved results passed file SHA256, clip/source/label,
+original input SHA256, schema, five-model provenance and frozen routing-policy
+validation. The only difference was the one completely serialized extra clip.
+The recovery receipt declares no model scoring. An initial recovery-helper
+assertion compared result policy to the smaller identity policy; inspection showed
+the result's additional fixed confidence/fallback fields, which were then checked
+explicitly. This failed assertion preceded all mutations.
+
+`write_json` now retries only PermissionError during atomic replacement, at most
+eight attempts with bounded backoff; a permanent denial preserves the old file
+and the staged data. Regression tests first failed, then passed for transient
+and permanent denial. Full gate: 540 passed, 325 warnings, 142.40 seconds;
+Ruff, formatting (201 files), and diff check passed.
+
+Recovery command: `python runs/ucf-crime/recover-cascade-progress.py`, receipt/log
+`recover-cascade-progress-v2.log`. Resume command:
+`python scripts/evaluate_surveillance_cascade.py --config configs/surveillance_demo_ucf_v1.yaml --resume`.
+It uses the same canonical registration, verifies/reuses the 479 outputs, and
+scores only the 512 remaining clips. Original failed execution log is retained;
+resumed log is `runs/ucf-crime/full-cascade-evaluation-resume-v1.log`.
+
+## UCF selection, one registered frame test and deployment
+
+Fixed seed-0 training completed all 20 epochs, loss 1.754039 -> 0.894434.
+Epoch 20 won validation bag ROC-AUC 0.910911; reloaded CPU validation matched
+the training selection. Checkpoint SHA256
+`7e5b548ea6260614209a727a947e6270a1a1af2185d29accf1778f91b4af7c66`.
+Selection bound the prospective protocol, feature manifest, evaluation mode
+`frame`, `c3d_units` projection and fixed 0.5 threshold before test scoring.
+
+`python scripts/evaluate_registered_sultani.py --run runs/ucf-crime/sultani_shared_safe_v1/seed_0 --manifest data/manifests/ucf_sultani_shared_safe_features_v1.jsonl --mode frame`
+completed once: 290 videos, 1,111,808 frames, ROC-AUC 0.7440528; precision
+0.1911977, recall 0.5188646, F1 0.2794282, negative-frame false-positive rate
+0.1801639. Confusion `[[842357,185113],[40578,43760]]`. No test-driven changes.
+Fourteen predeclared timelines and the ROC plot read saved predictions only;
+secondary bag ROC-AUC 0.8539048 is clearly separated from frame results.
+Full report: `docs/sultani-ucf-results-v1.md`.
+
+Verified all five CUDA deployment assets. Versioned UCF configuration and eight
+genuine example caches preserve the same original clip choices and all failures.
+The default config now uses the selected UCF scorer; the exact older DCSASS
+configuration remains `configs/surveillance_demo_dcsass_v1.yaml`. All behavior,
+I3D and detector settings remain unchanged. Validation-only live cascade preflight
+on Abuse014_x264_22 and Robbery016_x264_27 exercised actual suspicious-window
+behavior inference before the canonical held-out cascade.
+
+Five actual cached/live/upload API requests passed against the new deployment
+(`runs/ucf-crime/demo-api-ucf-v1.json`). The original Robbery example is now a
+Sultani miss; the Normal example is a retained Robbery false alert. Browser
+inspection confirmed the latter's genuine timeline, overlays, disagreement and
+no-actor window (`outputs/demo/ucf_v1/visual-false-alert.jpg`). Demo outcomes are
+curated illustrations, not benchmark metrics.
+
+## Complete registered cascade, final runtime and quality gates
+
+The resumed canonical cascade completed with exit 0 on all 991 clips / 31
+protected sources. All result SHA256s, original input hashes, source/labels,
+schema and five-asset provenance were independently verified; saved-score
+summary recomputation exactly matches `metrics.json`. Its SHA256 is
+`58eb76d828dbd1cd519437cb76f07a592d2b85fb8156d971b9be7f5d6f0e3a51`.
+The completion receipt and original registration are preserved.
+
+Clip alerts: accuracy 0.5418769, ROC-AUC 0.5117938, precision 0.4766355,
+recall 0.4700461, F1 0.4733179, false-positive rate 0.4021544;
+confusion `[[333,224],[230,204]]`. Routed 428, bypassed 563; 311 covered,
+117 routed no-actor clips, 680 behavior abstentions; 1,020 analyzed windows,
+339 no-actor windows. Conditional accuracy 0.4565916, macro F1 0.1887641.
+No correct Abuse/Assault/Fighting classification. These weak-label cascade
+results remain separate from standalone behavior and UCF frame benchmarks.
+No parameters changed. Mean runtime 0.505093s, median 0.200839s, p95 1.346321s,
+excluding model loading, serialization and UI.
+
+For the professor presentation, added one explicitly disclosed post-hoc correct
+Robbery case: first eligible clip by ID in saved registered results,
+`Robbery020_x264_10`. Copied only this clip into `data/examples/`; its cache reads
+the genuine registered inference without rescoring. All eight original cases,
+including failures, remain. Receipt:
+`runs/ucf-crime/demo-supplemental-correct-robbery-v1.json`. This is presentation
+curation, not benchmark evidence or tuning.
+
+The frozen four-second case completed exact repeated GPU inference (scores,
+boxes, probabilities and alert), warm total 1.090948s; full CPU fallback completed
+33.211586s, same alert with expected floating-point differences. Model loading
+was 2.050689s GPU / 1.502774s CPU, separately. Receipt:
+`runs/ucf-crime/deployment-runtime-v1.json`. Final server session 21323 uses the
+default UCF config and nine entries. Six actual cached/live/upload API requests
+passed plus the empty-input error, including a genuine uploaded Robbery actor
+path: `runs/ucf-crime/demo-api-ucf-final-v2.json`.
+
+Read-only milestone review caught the old API validator default output pointing
+to historical DCSASS evidence. Fixed deployment-specific UUID receipt defaults,
+explicit existing-path rejection and exclusive final creation. Two preservation
+tests failed before the fix then passed. Reviewer confirmed the fix, recovery
+hash accounting and UCF report; no remaining issues in that scope.
+Final full suite: 542 passed / 325 expected upstream warnings / 145.48s;
+Ruff passed, all 202 Python files formatted, diff check passed. New results,
+README, asset instructions, runbook and talk track reflect the UCF deployment
+and clearly retain its substantial failures.
+
+Final browser inspection of the nine-example UCF deployment verified cached and
+genuine on-demand Robbery, explicit no-actor and Normal disagreement windows,
+anomaly timeline and detector overlays. Video is four seconds, browser readyState
+4, no media error. Saved proof: `outputs/demo/ucf_v1/visual-live-cascade.jpg`;
+retained-failure proofs: `visual-false-alert.jpg` and `visual-disagreement.jpg`.
+The correct-case source menu discloses its curated selection, and on-demand mode
+is visibly labelled. Final receipt/atomic regression recheck: four passed;
+Ruff/format/diff remained clean after documentation and six-request API completion.
+
+Final read-only review verified the completed metrics/provenance, all nine
+video/cache identities, original eight selection policies and six-case API
+receipt. Corrected three documentation points: original cases include a correct
+normal bypass; standalone middle-frame coverage is explicitly distinct from
+routed cascade coverage in the talk track; poor short-clip generalization is an
+interpretation, not a measured causal domain-shift effect. No implementation or
+scientific-integrity blockers remain. Final default asset verifier passed on
+CUDA (`runs/ucf-crime/final-default-asset-verification.log`). Local milestone
+checkpoint only; no push, merge, architecture replacement or data deletion.

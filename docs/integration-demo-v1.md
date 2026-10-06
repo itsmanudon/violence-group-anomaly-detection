@@ -105,3 +105,12 @@ a presentation check, while the genuine live-upload API path has passed.
 While the server runs, `python scripts/validate_demo_api.py` checks its public
 API. The cache generator reuses matching existing caches without loading models;
 it rejects changed identities. Use a new receipt output path to preserve history.
+# Historical deployment version
+
+The measurements in this report use the original DCSASS-trained anomaly scorer and remain
+unchanged. Its launch configuration is preserved as
+`configs/surveillance_demo_dcsass_v1.yaml`. The common default configuration now
+uses the validation-selected UCF scorer, versioned separately in
+`configs/surveillance_demo_ucf_v1.yaml`; see
+[the UCF results](sultani-ucf-results-v1.md). Do not attribute these historical
+latencies or example outcomes to the newer model version.

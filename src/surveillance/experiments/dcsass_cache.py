@@ -23,10 +23,18 @@ I3D_SHA256 = "fe7fc30ca6f26430232e2e0f6bdffd8514478a071db065e452bff46f60f4e0c4"
 
 
 def write_json(path: Path, value: dict) -> None:
+    """Commit atomically, retrying brief Windows reader/scanner replacement locks."""
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    for attempt in range(8):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 7:
+                raise
+            time.sleep(0.05 * (attempt + 1))
 
 
 def detection_payload(row: dict, window: dict, result: DetectionResult) -> dict:

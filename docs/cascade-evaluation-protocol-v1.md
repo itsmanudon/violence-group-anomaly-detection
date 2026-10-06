@@ -56,4 +56,7 @@ only scores pending clips under the same registration, verifies saved result
 hashes, and preserves partial outputs for diagnosis if an interrupted write is
 not registered. `completion.json` is written after all clips and metrics exist.
 
-No metrics are available for this experiment yet; full UCF extraction is running.
+The protocol above was fixed before scoring. The registered pass is now complete
+on all 991 clips; see [results and limitations](cascade-results-ucf-v1.md).
+The Windows progress-write interruption was recovered from verified serialized
+outputs, preserving the same registration and scoring only pending clips.

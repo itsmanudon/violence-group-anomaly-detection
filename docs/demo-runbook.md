@@ -2,10 +2,14 @@
 
 ## Readiness status
 
-The interface, real trained DCSASS models and eight genuine cascade example caches
-are installed. Sultani held-out bag ROC-AUC is 0.6583; the six-class behavior model
-has 51.02% conditional accuracy, 0.2140 macro F1 and 69.22% coverage. These results
-show substantial weaknesses. UCF-Crime remains a separate pending frame benchmark.
+The offline interface, all five pinned model assets and nine genuine cascade
+example caches are installed. The default Sultani scorer is trained on protected
+UCF sources: held-out frame ROC-AUC 0.7441. The DCSASS six-class behavior model has
+51.02% standalone conditional accuracy, 0.2140 macro F1 and 69.22% actor coverage.
+The separate complete cascade has clip-alert F1 0.4733 and 31.38% overall behavior
+coverage. These results show substantial weaknesses; this is a research demo.
+See [UCF evidence](sultani-ucf-results-v1.md) and
+[cascade evidence](cascade-results-ucf-v1.md).
 
 ## Environment and launch
 
@@ -74,28 +78,46 @@ check video playback and confirm the cache/live mode label. Keep a known limitat
 example visible for discussion. Model selection and thresholds are frozen before
 choosing presentation clips. Do not adjust settings to improve the displayed clips.
 
-Verify the running interface with `python scripts/validate_demo_api.py`. The warm
-GPU two-second example takes about 1.10 seconds, while the full CPU fallback was
-27.4 seconds. Cache mode shows recorded inference time, not current playback time.
-See [measured integration evidence](integration-demo-v1.md) for timing scope and
-the retained failures. Browser control subsequently recovered: Normal playback,
-cached Robbery, disagreement, reference overlays, timeline and table readability
-are visually verified. Switching source clears prior evidence; uploading or
+Verify the running interface with `python scripts/validate_demo_api.py`. Each run
+writes a unique receipt under the configured deployment's `api-validation/`
+output directory; an explicit existing receipt path is rejected. The actual
+curated four-second Robbery case takes 1.09 seconds on warm GPU and 33.21 seconds
+on CPU, excluding model loading. Cache mode shows recorded inference time, not
+current playback time. The full 991-clip cascade averages 0.505 seconds (p95 1.346),
+including bypasses; this cannot establish full-video real-time FPS. See
+[measured cascade evidence](cascade-results-ucf-v1.md) for timing scope and failures.
+The [historical deployment report](integration-demo-v1.md) preserves older timings.
+Switching source clears prior evidence; uploading or
 clearing a video selects upload mode. Perform a manual upload/playback check before
 class; automated file selection is blocked by the Chrome extension's file-access
 permission, while the real live-upload server API test passes.
 
-Eight real held-out clips are installed in `data/examples/` and recorded in
-`configs/demo_examples.json`: one per dataset label and a separate high-confidence
-behavior mistake. They were selected transparently, include several failures, and
-decode successfully. All have measured cascade caches. A supplemental
-**Normal: no-alert example** was selected after evaluation to illustrate bypass;
-its post-hoc selection is disclosed and all original failures remain. Show that
-example, **Robbery example**, then **Limitation: high-confidence mistake** for
-anomaly/Normal disagreement. **Normal example** is a retained false alert;
-**Assault example** and **Vandalism example** are retained missed anomalies.
-Every entry records source, dataset label and selection policy.
+Nine real held-out clips are installed in `data/examples/` and recorded in
+`configs/demo_examples_ucf_v1.json`. Show **Normal activity (previous bypass example)**,
+then **Robbery: correct cascade example (curated)**, then
+**Limitation: high-confidence mistake** for anomaly/Normal disagreement.
+The correct Robbery case is explicitly post-hoc: first correct Robbery alert by
+clip ID in saved registered results. It illustrates the interface and is not an
+accuracy benchmark. All eight original cases remain, including failures.
+**Normal example** is a false Robbery alert; the original **Robbery example** and
+**Assault example** are missed anomalies. **Fighting example**, **Abuse example**
+and **Vandalism example** alert with the wrong Robbery behavior. The previous
+Normal bypass case still bypasses under the new model. Every entry records source,
+dataset label and selection policy. Models and threshold remain frozen.
 Never substitute synthetic test videos as research examples.
+
+The default config is `configs/surveillance_demo.yaml`, identical to the versioned
+UCF deployment. To inspect the preserved older DCSASS anomaly deployment, launch
+with `--config configs/surveillance_demo_dcsass_v1.yaml`; its original caches and
+measurements remain separate. Prerecorded uploads and examples are supported;
+webcam capture is not part of this tested MVP.
+
+Keep the repository, virtual environment, checkpoints, selected run/selection
+receipts, `data/examples/` and `outputs/demo/` on the Windows machine. Raw datasets
+may remain on E: for research; installed cached examples and uploaded-video
+inference do not require the entire UCF archive. Do not copy the Windows virtual
+environment to a Mac as a portable executable environment: recreate dependencies
+for that platform. The validated presentation hardware is this Windows GPU system.
 
 ## Troubleshooting
 

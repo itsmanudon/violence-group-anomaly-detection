@@ -4,7 +4,8 @@ The initial 2026-10-06 inspection found Collective data/models but no installed
 DCSASS, UCF-Crime, C3D bags/weights or real Sultani checkpoint. The user subsequently
 supplied DCSASS and modern C3D weights. DCSASS is fully audited, frozen and evaluated
 for behavior; C3D conversion is validated. UCF-Crime is now installed externally,
-and the separate real DCSASS Sultani run has completed training and evaluation.
+with completed seed-0 training and registered frame evaluation. The separate
+historical DCSASS Sultani run also completed training and evaluation.
 The five pinned deployment assets and genuine example caches are installed. This document
 retains acquisition instructions for a fresh installation.
 
@@ -122,11 +123,13 @@ documented common research split and label results accordingly.
 | Converted supplied C3D FC6 | `checkpoints/c3d_fc6_openmmlab_v1.pt` |
 | Validation-selected DCSASS behavior control | `runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt` |
 | Validation-selected DCSASS Sultani scorer | `runs/dcsass/sultani_generic_v1/seed_0/best.pt` |
+| Default validation-selected UCF Sultani scorer | `runs/ucf-crime/sultani_shared_safe_v1/seed_0/best.pt` |
 
 Run `python scripts/verify_demo_assets.py` to verify hashes and load all five
-interfaces. See [the real Sultani evidence](sultani-dcsass-results-v1.md).
+interfaces. See [the deployed UCF evidence](sultani-ucf-results-v1.md) and
+[the preserved historical DCSASS evidence](sultani-dcsass-results-v1.md).
 
 Do not download replacements or change the matched torch/torchvision/CUDA setup.
-Once mandatory inputs are available, resume from
-[the execution journal](end-to-end-execution-log.md). None of the missing-asset
-steps require modifying the approved architectures.
+For fresh installations, follow acquisition requirements before starting the
+commands in [the execution journal](end-to-end-execution-log.md). The current
+local installation is complete; acquisition does not require changing architectures.
