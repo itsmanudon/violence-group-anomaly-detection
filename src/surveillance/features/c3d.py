@@ -1,5 +1,6 @@
 """C3D FC6 architecture and strictly local checkpoint adapter; never downloads."""
 
+import time
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Protocol
@@ -71,6 +72,7 @@ class C3DExtractor:
     """
 
     feature_dim = 4096
+    temporal_unit_frames = 16
 
     def __init__(
         self,
@@ -125,11 +127,27 @@ class C3DExtractor:
             raise ValueError("Video needs positive FPS")
         outputs = []
         batch = []
-        for clip in iter_clips(path):
+        timings = dict(video_decode_seconds=0.0, c3d_preprocess_seconds=0.0, c3d_seconds=0.0)
+        clips = iter(iter_clips(path))
+        while True:
+            started = time.perf_counter()
+            try:
+                clip = next(clips)
+            except StopIteration:
+                timings["video_decode_seconds"] += time.perf_counter() - started
+                break
+            timings["video_decode_seconds"] += time.perf_counter() - started
+            started = time.perf_counter()
             batch.append(c3d_transform(clip, self.mean, self.channel_order))
+            timings["c3d_preprocess_seconds"] += time.perf_counter() - started
             if len(batch) == self.batch_size:
+                started = time.perf_counter()
                 outputs.append(self.model(torch.stack(batch).to(self.device)).cpu().numpy())
+                timings["c3d_seconds"] += time.perf_counter() - started
                 batch = []
         if batch:
+            started = time.perf_counter()
             outputs.append(self.model(torch.stack(batch).to(self.device)).cpu().numpy())
+            timings["c3d_seconds"] += time.perf_counter() - started
+        self.last_timings = timings
         return aggregate_segments(np.concatenate(outputs), num_segments)

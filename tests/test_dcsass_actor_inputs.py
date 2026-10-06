@@ -64,7 +64,13 @@ def test_group_only_batch_does_not_fabricate_actor_targets():
     assert batch["actor_valid_mask"].tolist() == [[True, False], [True, True]]
 
 
-def test_clip_cache_binds_video_identity_and_reference_without_global_frame_guess():
+@pytest.mark.parametrize(
+    "changed_filter", [None, "nms_iou_threshold", "max_actors", "min_box_width", "min_box_area"]
+)
+def test_clip_cache_binds_video_identity_and_reference_without_global_frame_guess(changed_filter):
+    from dataclasses import asdict
+
+    from surveillance.detection.config import DetectionConfig
     from surveillance.detection.person_detector import DetectionResult
     from surveillance.experiments.dcsass_cache import detection_payload, validate_detection_cache
 
@@ -86,12 +92,20 @@ def test_clip_cache_binds_video_identity_and_reference_without_global_frame_gues
         torch.empty(0),
         torch.empty(0, dtype=torch.long),
         (24, 32),
-        {"checkpoint_sha256": "detector", "filter_config": {"confidence_threshold": 0.7}},
+        {
+            "checkpoint_sha256": "detector",
+            "filter_config": asdict(DetectionConfig(confidence_threshold=0.7)),
+        },
     )
     payload = detection_payload(row, window, result)
     validate_detection_cache(payload, row, "detector")
     assert payload["reference_frame_coordinate_system"] == "zero_based_clip_local"
     assert payload["boxes"] == []
+    if changed_filter:
+        payload["metadata"]["filter_config"][changed_filter] += 0.1
+        with pytest.raises(ValueError, match="provenance"):
+            validate_detection_cache(payload, row, "detector")
+        return
     payload["clip_id"] = "different-clip"
     with pytest.raises(ValueError, match="identity"):
         validate_detection_cache(payload, row, "detector")

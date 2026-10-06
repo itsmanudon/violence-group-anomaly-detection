@@ -1,10 +1,12 @@
 import json
+from dataclasses import asdict
 
 import numpy as np
 import pytest
 import torch
 
 from surveillance.datasets.dcsass_audit import sha256
+from surveillance.detection.config import DetectionConfig
 from surveillance.detection.person_detector import DetectionResult
 from surveillance.experiments.dcsass_cache import DETECTOR_SHA256, I3D_SHA256, detection_payload
 
@@ -25,7 +27,10 @@ def test_feature_loader_rejects_changed_feature_bytes_and_excludes_no_actors(tmp
         torch.tensor([0.9]),
         torch.tensor([1]),
         (24, 32),
-        {"checkpoint_sha256": DETECTOR_SHA256, "filter_config": {"confidence_threshold": 0.7}},
+        {
+            "checkpoint_sha256": DETECTOR_SHA256,
+            "filter_config": asdict(DetectionConfig(confidence_threshold=0.7)),
+        },
     )
     payload = detection_payload(
         row,

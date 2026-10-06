@@ -1,11 +1,20 @@
 # Required local assets for the surveillance MVP
 
 The initial 2026-10-06 inspection found Collective data/models but no installed
-DCSASS, UCF-Crime, C3D bags/weights or real Sultani checkpoint. The complete MVP is
-blocked by these assets. This document describes acquisition; it does not assert
-that any dataset has been installed, audited or evaluated.
+DCSASS, UCF-Crime, C3D bags/weights or real Sultani checkpoint. The user subsequently
+supplied DCSASS and modern C3D weights. DCSASS is fully audited, frozen and evaluated
+for behavior; C3D conversion is validated. UCF-Crime remains unavailable locally,
+and the separate real DCSASS Sultani run is still extracting features. This document
+retains acquisition instructions for a fresh installation.
 
-## DCSASS — next mandatory input
+Current installed dataset root:
+`data/raw/dcsass/DCSASS Dataset/DCSASS Dataset/`. Use the frozen
+`data/manifests/dcsass_human_centric_v1_final.jsonl`, not a newly randomized clip
+split. Actual audits and experiment receipts are linked from
+[the protocol](dcsass-human-centric-protocol.md) and
+[the measured results](dcsass-surveillance-results-v1.md).
+
+## DCSASS — installed; fresh acquisition instructions
 
 1. Open the repository's documented
    [DCSASS Kaggle dataset](https://www.kaggle.com/datasets/mateohervas/dcsass-dataset).
@@ -40,9 +49,9 @@ that any dataset has been installed, audited or evaluated.
 
    This command creates a generic binary research manifest. It does **not** yet
    implement the requested class-aware six-class Human-Centric v1 audit/freeze.
-   Its split must not be treated as the final surveillance protocol. The next
-   implementation stage audits the installed export and freezes the new protocol
-   before detection or optimization.
+   Its split must not be treated as the final surveillance protocol. The audited
+   Human-Centric v1 protocol has now been frozen separately with the new audit/freeze
+   scripts. Do not replace its scientific population or assignments.
 
 The existing parser recognizes `Fighting001_x264_12` and `Fighting001_x264` as
 `fighting001`. Renamed/ambiguous clips require a verified source-map JSON. Source
@@ -84,7 +93,11 @@ parameters. Caffe/foreign layouts require explicit, verified conversion. An arbi
 Verified pretrained C3D `[32,4096]` bags can unblock training/evaluation after
 manifest and protocol validation. They do not alone enable uploaded-video inference;
 that deliverable also requires the C3D extraction model and its verified preprocessing.
-No particular third-party PyTorch C3D download has been approved or silently selected.
+The user-supplied official OpenMMLab Sports1M archive has been verified and converted
+to `checkpoints/c3d_fc6_openmmlab_v1.pt`. Its raw SHA256, pinned upstream source,
+FC6 equivalence and channel-mean caveat are in
+[the conversion validation](c3d-openmmlab-validation.md). It is a modern compatible
+backbone, with preprocessing explicitly distinguished from the original Caffe model.
 See [the existing C3D contract](../data/README.md#local-c3d-checkpoint).
 
 Before freezing DCSASS, identify the UCF held-out sources. The datasets share
@@ -100,6 +113,8 @@ documented common research split and label results accordingly.
 | Frozen I3D Mixed_4f archive | `checkpoints/i3d_mixed4f_collective_rgb_v1.pt` |
 | Converted DeepMind RGB weights | `checkpoints/external/pytorch-i3d/models/rgb_imagenet.pt` |
 | COCO_V1 Faster R-CNN | `checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth` |
+| Converted supplied C3D FC6 | `checkpoints/c3d_fc6_openmmlab_v1.pt` |
+| Validation-selected DCSASS behavior control | `runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt` |
 
 Do not download replacements or change the matched torch/torchvision/CUDA setup.
 Once mandatory inputs are available, resume from

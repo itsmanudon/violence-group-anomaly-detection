@@ -19,6 +19,7 @@ def evaluate(
     mode: str = "bag",
     threshold: float = 0.5,
     projection: str = "repeat",
+    include_predictions: bool = False,
 ) -> dict:
     """Evaluate held-out videos; frame mode refuses unknown abnormal annotations."""
     model, saved = load_checkpoint(checkpoint)
@@ -30,11 +31,25 @@ def evaluate(
         raise ValueError(f"No records in split {split}")
     if mode not in {"bag", "frame"}:
         raise ValueError("mode must be bag or frame")
-    labels, scores = [], []
+    labels, scores, predictions = [], [], []
     for row in records:
         prediction = model(
             record_features(row, manifest, config["num_segments"], config["feature_dim"])
         ).numpy()
+        if include_predictions:
+            predictions.append(
+                {
+                    "video_id": row.video_id,
+                    "source_video_id": row.source_video_id,
+                    "path": row.path,
+                    "bag_label": row.label,
+                    "anomaly_type": row.anomaly_type,
+                    "segment_scores": prediction.tolist(),
+                    "overall_score": float(prediction.max()),
+                    "num_frames": row.num_frames,
+                    "fps": row.fps,
+                }
+            )
         if mode == "bag":
             labels.append(np.array([row.label]))
             scores.append(np.array([prediction.max()]))
@@ -60,4 +75,6 @@ def evaluate(
         if mode == "bag"
         else "Frame-level evaluation using temporal ground truth and projected segment scores.",
     )
+    if include_predictions:
+        result["predictions"] = predictions
     return result

@@ -142,7 +142,9 @@ def train_behavior(
     seed = int(config["seed"])
     seed_everything(seed)
     device = select_device(config["device"])
-    model, transfer = transfer_rgb_model(checkpoint, seed)
+    model, transfer = transfer_rgb_model(
+        checkpoint, seed, initialization=config.get("initialization", "collective_transfer")
+    )
     model = model.to(device)
     loss_fn = GroupOnlyLoss(torch.tensor(weights, device=device))
     settings = config["training"]

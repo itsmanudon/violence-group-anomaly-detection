@@ -2,6 +2,7 @@
 
 import json
 import time
+from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
@@ -58,7 +59,8 @@ def validate_detection_cache(payload: dict, row: dict, detector_hash: str) -> De
         or payload.get("frame_indices") != centered_frame_indices(row["num_frames"])
         or payload.get("reference_frame") != payload["frame_indices"][5]
         or payload["metadata"].get("checkpoint_sha256") != detector_hash
-        or payload["metadata"].get("filter_config", {}).get("confidence_threshold") != 0.7
+        or payload["metadata"].get("filter_config")
+        != asdict(DetectionConfig(confidence_threshold=0.7))
     ):
         raise ValueError("Stale DCSASS detection provenance")
     result = DetectionResult(

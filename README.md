@@ -1,14 +1,10 @@
 # Surveillance behavior anomaly research
 
-A modular HCI research project for a future classroom/professor demonstration of
-violence and suspicious group activity in surveillance video. **Milestone 1 implements
-Sultani-style binary anomaly localization. Milestone 2A adds an independent
-Actor-Transformer baseline for Collective Activity with annotated actor boxes.**
-**Milestone 2B adds automatic person detection and GT-versus-detected box
-robustness evaluation. Milestone 2C adds real-data validation, frozen experiment
-receipts, validation-only tuning, seed aggregation and error analysis.** The models are not connected yet. Neither model currently
-classifies fighting, assault, or robbery. Surveillance behavior adaptation and
-the Gradio demo come later.
+A surveillance-video research prototype based on Sultani's weakly supervised
+anomaly localization and Gavrilyuk's Actor-Transformer group reasoning. The cascade
+proposes suspicious intervals, detects people, extracts frozen RGB actor features
+and predicts observable behavior for human review. Separate model outputs,
+disagreement and no-actor abstention remain visible.
 
 "Goons" is informal project framing. The system detects **observable behavior**;
 it does not infer that a person intrinsically "is a goon," assign character labels,
@@ -19,10 +15,77 @@ The end-to-end surveillance MVP is being developed on
 [fully audited and split by original source](docs/dcsass-human-centric-protocol.md):
 6,491 valid human-centric clips across 203 sources, with zero source overlap.
 The supplied [Sports-1M C3D weights pass strict conversion and FC6 validation](docs/c3d-openmmlab-validation.md).
-DCSASS detected-actor adaptation is in progress; its behavior accuracy is not yet
-measured. UCF-Crime copying and real Sultani training remain pending. See the
+[DCSASS adaptation is measured](docs/dcsass-surveillance-results-v1.md). The selected
+seed-0 Actor-Transformer has **51.02% conditional accuracy / 0.2140 macro F1** with
+**69.22% test actor coverage**. These are weak results, particularly for Abuse,
+Assault and Fighting; this is not reliable violence recognition. UCF-Crime is still
+downloading. A separate real DCSASS binary-label Sultani baseline is extracting
+features; its bag evaluation and final live demo assets remain pending. See the
 [execution journal](docs/end-to-end-execution-log.md) and
 [asset requirements](docs/end-to-end-required-assets.md).
+
+```mermaid
+flowchart TD
+    Video[Surveillance video] --> C3D[C3D FC6]
+    C3D --> MIL[Sultani MIL scorer]
+    MIL --> Timeline[32-segment anomaly timeline]
+    Timeline --> Window[Top suspicious windows]
+    Window --> Detector[Faster R-CNN people]
+    Window --> I3D[I3D Mixed_4f RGB]
+    Detector --> ROI[RoIAlign 5 x 5]
+    I3D --> ROI
+    ROI --> AT[Actor-Transformer]
+    AT --> Behavior[Six observable behavior probabilities]
+    Behavior --> Review[Human-review alert]
+    Timeline --> Review
+```
+
+The two papers have complementary roles: Sultani proposes when to inspect;
+Actor-Transformer reasons over actor relationships in those windows. A normal
+anomaly result skips actor inference. An anomaly with no actors preserves a
+generic alert. An anomaly with a Normal behavior prediction shows disagreement.
+Scores are uncalibrated and do not establish intent or guilt.
+
+The local Gradio interface supports uploaded videos and explicitly cached installed
+examples. Launch from the repository root after installing the completed model
+assets and optional demo dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe -m surveillance.demo
+```
+
+Final trained Sultani pins and example caches are still pending at this checkpoint.
+Missing assets return useful errors; no preflight model is substituted. Use the
+[demo runbook](docs/demo-runbook.md), [professor talk track](docs/professor-demo-talk-track.md)
+and [execution gates](docs/end-to-end-implementation-plan.md) to follow readiness.
+Keep the validated CUDA packages; see installation and subsystem commands below.
+
+| Collective seed-0 representation | Group accuracy | Group macro F1 |
+|---|---:|---:|
+| Pose / GT boxes | 68.00% | 0.6548 |
+| RGB / GT boxes | 77.55% | 0.7947 |
+| Fixed pose-heavy fusion / GT boxes | 71.48% | 0.6919 |
+| RGB / detected boxes | 74.32% | 0.7383 |
+
+These measured Collective results select RGB with automatic people for deployment.
+They are a separate benchmark population from DCSASS surveillance labels. Synthetic
+tests are never included in these tables. Fixed fusion was not retuned after test.
+
+DCSASS uses six classes: Normal, Abuse, Assault, Fighting, Robbery and Vandalism.
+Binary-normal clips map to Normal regardless of source category. All split sources
+are disjoint; no actor labels are invented. Only covered clips optimize the actor
+model, and uncovered test clips abstain. The selected random-initialization control
+won validation macro F1 over Collective transfer; it was not selected on test.
+Both experiments and the frozen source/coverage populations remain documented.
+
+Known limitations include Collective validation imbalance, mostly seed-0 evidence,
+converted I3D weights, detector misses/extras, DCSASS clip/source context bias,
+absent actor-level supervision, weak Sultani supervision, domain shift and false
+alarms. The modern C3D channel mean differs from the original Caffe volume mean.
+The provisional DCSASS Sultani population has no temporal ground truth: bag ROC-AUC
+cannot be called UCF-Crime frame ROC-AUC. Future work should prioritize independent
+surveillance validation, multi-seed evidence and detected-box adaptation before
+deployment or edge/privacy-preserving extensions.
 
 ## Papers and current status
 
@@ -52,7 +115,7 @@ overall. See the [fixed 2:1 fusion evidence and comparison](docs/collective-late
 The real same-checkpoint RGB detected-box result is **74.32% group accuracy**
 (macro F1 **0.7383**) and **75.64% actor accuracy** (macro F1 **0.7756**, matched
 actors only). See the [detected-box execution and coverage report](docs/collective-rgb-detected-execution.md).
-Surveillance anomaly accuracy remains unmeasured. Synthetic
+Real Sultani anomaly evaluation remains pending. Synthetic
 tests establish software behavior, not surveillance detection accuracy.
 
 ## First real pose baseline (Milestone 2C-R1)

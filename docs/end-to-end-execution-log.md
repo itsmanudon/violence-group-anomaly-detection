@@ -272,3 +272,211 @@ cache. At roughly 0.27–0.29 seconds/clip, detection is a bounded half-hour job
 No threshold adjustment, additional seed, test behavior inference or model-selection
 change has occurred. UCF's pending download ZIP was inspected read-only; it lacks
 a readable completed ZIP directory and remains untouched.
+
+## Phase B/C/D outcomes and E-C control gate
+
+Full fixed-threshold detection completed in **1,864.98 seconds**. Coverage is
+4,589/6,491 clips (70.70%); 1,902 clips have no actors. Train/val/test coverage is
+3,211/4,478 (71.71%), 692/1,022 (67.71%), 686/991 (69.22%). These are coverage
+statistics, not detector precision/recall/IoU; no DCSASS GT boxes exist.
+Frozen I3D extraction completed in **986.14 seconds**, with 4,589 validated covered
+feature tensors and 1,902 explicit empty records. No model or filter changed.
+
+Covered training counts: Normal 1,398; Abuse 306; Assault 103; Fighting 62;
+Robbery 1,135; Vandalism 207. Covered validation counts: 358/56/48/**2**/194/34.
+Fighting validation now has only two covered clips from one source. The detector
+threshold remains 0.7; no test-guided coverage tuning occurred.
+
+The pre-training full gate passed **472 tests / 325 warnings / 143.22 seconds**.
+Transfer seed 0 completed 20,000 iterations in about 934 training-loop seconds.
+Validation selected iteration **1,900**, macro F1 **0.3059814160**, accuracy
+**0.5014450867**, binary AUC **0.6197688422**. Validation predicts five classes;
+no Fighting prediction occurs in that tiny covered validation population.
+Checkpoint reload passed; `selection.json` freezes its SHA256 before test inference.
+
+The single held-out transfer pass measured, on **686 covered test clips**:
+
+- Accuracy **52.0408%**, macro F1 **0.2464143424**, balanced accuracy **0.2444544986**.
+- Binary accuracy **58.1633%**, precision **0.6034985423**, recall **0.5782122905**,
+  F1 **0.5905848787**, ROC-AUC **0.6303055593**, fixed threshold 0.5.
+- Correct 357, incorrect 329, uncovered/abstained 305: total 991. No actor accuracy
+  was computed. Multiclass figures are conditional on actor coverage.
+- Per-class recall: Normal .5915, Abuse .1321, Assault .0417, Fighting **0**,
+  Robbery .6349, Vandalism .0667. This is weak behavior recognition, not a successful
+  violence benchmark. Full errors/confusions and no-actor cases are preserved in
+  `runs/dcsass/human_rgb_detected_v1/seed_0/held_out/`.
+
+**E-C decision:** run exactly one predefined controlled random-initialization
+comparison. Only the Actor-Transformer representation initialization changes;
+the new group head uses the same seed and initialization, and all architecture,
+data/cache/split, optimizer, class weights, schedule and seed remain fixed.
+Selection between runs uses validation macro F1 only. The original transfer test
+artifacts are immutable; no threshold/label/split change, seed 1/2 or architecture
+replacement is authorized by this gate. Regression verifies unchanged head seed
+and changed representation weights. The random control output is separate.
+
+## Provisional Sultani DCSASS clip baseline while UCF remains unavailable
+
+The user instructed continued use of the supplied weights and DCSASS during UCF
+download. The existing Milestone 1 already supports DCSASS binary bags. A separate,
+prospectively registered real Sultani baseline now uses every readable clip with
+a valid binary annotation, including the actor-excluded categories and no-actor
+clips. This is **not** UCF frame-level reproduction and does not replace the pending
+UCF benchmark. Positive frame annotations are unknown; evaluation is clip/bag only.
+
+Generic population: **16,590 clips / 519 sources** (49 annotation failures remain
+quarantined). Train/val/test sources **333/81/105**; clips **10,642/2,590/3,358**.
+Normal/anomaly counts: train 5,680/4,962; val 1,608/982; test 2,212/1,146.
+All 203 actor-source memberships are preserved, and all installed published UCF
+test sources stay held out. Test reservations increase the generic test fraction;
+no source overlap is permitted. Protocol: `runs/dcsass/sultani_generic_v1/protocol.json`;
+manifest: `data/manifests/dcsass_sultani_generic_v1.jsonl`.
+
+Settings preserve 32 segments, C3D FC6, MIL ranking, sparsity/smoothness and Adagrad
+1e-3 from the existing baseline; seed 0, 20 epochs and 30 positive/normal pairs
+are explicit in `configs/experiments/dcsass_sultani_generic_v1.yaml`. No test clips
+entered the eight-clip real C3D preflight. Full suite: **473 passed / 325 warnings /
+135.63 seconds**. Real five-step MIL preflight produced finite gradients/losses
+1.9752 -> 1.7670 and bit-identical checkpoint reload. Outputs are separate from
+full execution. Full extraction must follow the latest control/software gate.
+
+## Integration and interface groundwork (not measured end-to-end inference)
+
+Added tested routing, normal bypass, model disagreement and anomaly-preserving
+no-actor fallback. Raw C3D timestamp mapping now follows exact 16-frame unit
+partitions and clamps padding; imported bags without unit provenance retain their
+documented uniform approximation. Scores/loss/model architecture are unchanged.
+
+Gradio 6.29.1 was installed as a pinned optional dependency from PyPI without a
+torch/torchvision change. The local interface builds and launches at loopback only;
+system fonts and disabled analytics support offline presentation. Browser review
+found dark-mode contrast and width issues; theme corrections are in progress.
+The interface explicitly reports absent trained assets and never substitutes
+preflight/random weights. Cached examples and uploaded live inference are distinct.
+No end-to-end accuracy, usable demo clip cache or latency benchmark is claimed yet.
+
+The latest gate passed **474 tests / 325 warnings / 136.26 seconds**, with Ruff
+and formatting clean. Random control launched with `--initialization random`,
+separate output `runs/dcsass/human_rgb_detected_v1/random_init_seed_0/`; no other
+training setting changed. Full generic C3D extraction launched after the successful
+real five-step Sultani preflight. Log: `runs/dcsass/sultani-full-extraction.log`.
+The source-safe generic test reservation is larger than 15% because installed
+official UCF test sources cannot be moved into optimization.
+
+## Controlled initialization outcome and independent deployment review
+
+The predeclared E-C random control completed 20,000 iterations in 894.8 seconds.
+Validation selection chose iteration 2,900, SHA256
+`7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69`.
+Validation macro F1 = **0.4111765855**, accuracy = **0.4913294798**, compared with
+transfer **0.3059814160 / 0.5014450867**. Select random initialization by validation
+macro F1 only. The two covered Fighting validation clips make this difference
+unstable: one correct Fighting prediction contributes F1 0.6667 for that class.
+This does not establish strong aggressive-behavior recognition. No other settings
+changed and no further tuning is planned. The original transfer held-out artifacts
+remain intact. Selected-control test evaluation has not yet run at this entry.
+
+Applied the requesting-code-review skill, which explicitly required a fresh
+read-only reviewer; applied receiving-code-review to verify its findings before
+implementation. The reviewer independently confirmed the manifest hash, six-class
+mapping, zero actor source/content overlap, and identical split assignment across
+all 203 actor/generic shared sources. It ran 41 CPU tests and no training/test jobs.
+
+Four concrete deployment gaps were reproduced: live Sultani preflight acceptance,
+truncated/inaccurate decode count versus exact frame mapping, unchecked live I3D/
+detector hashes, and cached examples lacking model/policy provenance. Fixes reject
+explicit preflight markers, require complete consistent decode counts, compare live
+backbones with training hashes, and pin full checkpoint/preprocessing/policy identity
+for live/cached results. Completed frozen checkpoint-selection receipts are required
+for live learned models. Offline caches can validate pins without loading models.
+Also tightened detection-cache filters from confidence-only to the entire frozen
+DetectionConfig. This is a guard correction, not a change to actual cached actors.
+
+Red regression cases reproduced these failures before fixes; 33 targeted tests
+then passed. A broader suite exposed one old incomplete synthetic filter fixture;
+it is being updated to the full detector metadata contract. Ruff and formatting
+checks pass for 170 files before the later selection helper. Added separate stage
+timing instrumentation without changing feature values or learning settings.
+
+The Gradio preview was restarted after dark-mode/width fixes, but browser inspection
+then failed because the Chrome debugger was unattached. This is a browser-review
+limitation; application startup still reports its loopback URL. Final UI validation,
+usable example caches, actual cascade inference and latency remain outstanding.
+
+The revised full suite passed **494 tests / 325 warnings / 232.70 seconds**;
+Ruff, formatting (173 files) and diff check passed. Subsequent targeted cascade
+guards also passed eight tests, rejecting fractional/bool window budgets and any
+invalid anomaly score even beyond the top-window budget. The reviewer followed up
+with 42 CPU tests and found all five findings resolved, with no remaining findings
+in its scope. Final asset pins, live cascade results and demo caches remain pending.
+
+Frozen E-C selection was written with `scripts/select_dcsass_behavior.py` after
+checking the two resolved configurations differ only in initialization. The helper
+never opens held-out artifacts. Receipt: `initialization_selection.json`. Then
+`scripts/evaluate_dcsass_behavior.py --run .../random_init_seed_0` completed one
+held-out pass. Covered test accuracy **0.5102040816**, macro F1 **0.2140469448**,
+balanced accuracy **0.2286685165**. Binary fixed-0.5 accuracy **0.5830903790**,
+precision **0.5962566845**, recall **0.6229050279**, F1 **0.6092896175**,
+ROC-AUC **0.6307228505**, false-positive rate **0.4603658537**. Population remains
+991 total / 686 covered / 305 abstained, with 350 covered correct / 336 incorrect.
+
+The selected control has zero correct held-out Abuse, Assault and Fighting
+predictions; Normal and Robbery dominate outputs. Better validation macro F1 did
+not generalize, consistent with its tiny covered Fighting support. Retain the
+validation-selected control, preserve transfer results, and do not select using
+test. These two experiments establish a weak surveillance adaptation rather than
+reliable violence recognition; they do not prove fundamental non-learnability.
+Continue the requested interpretable research demo with this limitation visible.
+Complete metrics/confusions are documented in `docs/dcsass-surveillance-results-v1.md`.
+
+UCF still has no installed raw tree; the visible archive remains incomplete at
+1,423,573,551 bytes. Requested its final folder asynchronously while continuing
+the supplied-data work. No downloader, partially copied data or archive was changed.
+
+## Cascade software / presentation-example milestone
+
+The expanded suite passed **506 tests / 325 warnings / 221.17 seconds**. Ruff and
+formatting passed (180 files), and the independent deployment follow-up found no
+remaining findings in its scope. These are software gates, not end-to-end metrics.
+Real Sultani training still awaits completion of its 16,590-bag feature extraction.
+
+Added a selection freezer that refuses incomplete/preflight Sultani runs, reloads
+the best checkpoint and verifies validation bag ROC-AUC before writing its receipt.
+`scripts/evaluate_registered_sultani.py` permits one frozen held-out bag pass and
+saves all 32 scores per clip for later analysis without repeated model evaluation.
+Existing Sultani objective/optimizer/selection behavior is reused unchanged.
+
+Stage timings now distinguish decoding, input preprocessing, C3D, Sultani, person
+detection, I3D, Actor-Transformer and other overhead. Lazy demo model-loading time
+is recorded separately from pipeline inference. Live loading seeds deterministic
+evaluation and configures the supported cuBLAS workspace. Actual latency is pending.
+
+`scripts/prepare_demo_examples.py` copied seven real test clips into `data/examples/`,
+leaving raw data intact. It verifies video/manifest/model identity and chooses the
+first covered clip by ID for each label (at least two seconds), independently of
+prediction correctness. A seventh post-hoc high-confidence mistake is included for
+discussion. `configs/demo_examples.json` records labels, sources, baseline outputs,
+hashes and this selection policy. These examples are not a new accuracy benchmark.
+
+Examples: Normal `Abuse004_x264_0`; Abuse `Abuse004_x264_1`; Assault
+`Assault011_x264_10`; Fighting `Fighting003_x264_20`; Robbery `Robbery018_x264_10`;
+Vandalism `Vandalism015_x264_10`; limitation `Fighting003_x264_24`. Several chosen
+representatives are actual baseline mistakes. No success-only presentation selection.
+First/middle/last frames decoded successfully for all seven and were manually
+inspected in `outputs/demo/example-contact-sheet.jpg`. Dataset clip labels do not
+imply frame-level event annotations; the 17-second Abuse examples emphasize that
+a middle ten-frame window may omit much of a labelled clip's interaction.
+
+Gradio API checks against the running loopback app passed empty-input and missing
+Sultani responses without crashing (`runs/dcsass/demo-api-smoke.json`). Browser
+debugger attachment remains unavailable despite a fresh tab inventory; final visual
+review is still pending. Example selection now previews its video, with explicitly
+allowed local example paths. The demo config points to the separately identified
+DCSASS Sultani population and selected random behavior checkpoint. Four model hashes
+are pinned; the missing Sultani pin will be filled only after full validation selection.
+
+README, measured behavior report, draft demo runbook and professor talk track now
+state current results and pending assets. No claim of UCF frame ROC-AUC, reliable
+six-class violence recognition, completed live cascade, or usable cached example
+results has been made. Next: complete extraction, real Sultani train/freeze/test,
+then pin deployment and measure actual cascades/caches before final readiness.

@@ -3,6 +3,23 @@
 import numpy as np
 
 
+def c3d_segment_frame_ranges(
+    num_frames: int, num_segments: int = 32, unit_frames: int = 16
+) -> list[tuple[int, int]]:
+    """Map exact FC6 unit partitions to zero-based half-open original frames.
+
+    The final padded unit ends at the last real frame. Short videos repeat
+    their unit ranges exactly as feature aggregation repeats temporal units.
+    """
+    if num_frames < 1 or unit_frames < 1:
+        raise ValueError("Frame count and C3D unit size must be positive")
+    units = (num_frames + unit_frames - 1) // unit_frames
+    return [
+        (int(group[0]) * unit_frames, min((int(group[-1]) + 1) * unit_frames, num_frames))
+        for group in segment_indices(units, num_segments)
+    ]
+
+
 def segment_indices(length: int, num_segments: int = 32) -> list[np.ndarray]:
     """Partition every unit once if N >= S; repeat ordered units if N < S.
 

@@ -14,29 +14,38 @@ Local milestone commits follow verified phase boundaries; no remote operations.
 - [x] Reproduce/fix video-directory discovery; implement raw CSV parsing and the
   six-class observable-behavior taxonomy, with explicit invalid-label quarantine.
 - [x] Verify full software suite and ten-clip decode preflight.
-- [ ] Fully decode/hash all files in one explicit DCSASS installation root.
-- [ ] Inspect source identity samples, missing/invalid annotations and exact
+- [x] Fully decode/hash all files in one explicit DCSASS installation root.
+- [x] Inspect source identity samples, missing/invalid annotations and exact
   duplicates. Verify identical second-copy files separately without doubling the
   research population. Quarantine unresolved labels and content conflicts.
-- [ ] Freeze deterministic category-aware original-source splits with all published
+- [x] Freeze deterministic category-aware original-source splits with all published
   UCF test sources reserved. Verify zero original-source/content overlap and
   training/validation class support. Save manifests, split identity and audit report.
-- [ ] Detect on clip-local middle frames using existing COCO_V1 Faster R-CNN at 0.7.
+- [x] Detect on clip-local middle frames using existing COCO_V1 Faster R-CNN at 0.7.
   Store separate per-clip caches with actual local indices; do not invent original
   timestamps or adapt Collective's source-center uniqueness by renaming sources.
-- [ ] Validate coverage without GT detector metrics. Preserve all no-actor records;
+- [x] Validate coverage without GT detector metrics. Preserve all no-actor records;
   exclude them only from actor-model optimization and conditional evaluation.
-- [ ] Cache deterministic middle-centered ten-frame windows with short-clip edge
+- [x] Cache deterministic middle-centered ten-frame windows with short-clip edge
   replication, the existing RGB preprocessing, I3D Mixed_4f and 5x5 RoIAlign.
   Bind video bytes, sample indices, detector output, backbone and feature bytes.
-- [ ] Transfer projection/encoder/position/group representation from the selected
+- [x] Transfer projection/encoder/position/group representation from the selected
   Collective RGB checkpoint; reset the six-class group head. Retain/freeze the
   unused actor head structurally; do not manufacture actor supervision or metrics.
-- [ ] Derive class weights from covered training clips only, run a real five-step
+- [x] Derive class weights from covered training clips only, run a real five-step
   preflight/reload, then freeze optimization and select on validation macro F1.
-- [ ] Run seed 0, freeze selected checkpoint, then perform one held-out pass.
+- [x] Run seed 0, freeze selected checkpoint, then perform one held-out pass.
   Save multiclass/binary metrics, coverage accounting and structured errors.
-- [ ] Apply phase E's evidence gate without post-test tuning.
+- [x] Apply phase E's evidence gate without post-test tuning.
+
+The E-C random initialization control wins on the predeclared validation macro F1
+metric. Its comparison receipt and single held-out evaluation are complete. The
+poor held-out minority-class performance is documented; keep the validation-selected
+model and proceed to an honest demonstration without further test-informed tuning.
+
+While UCF downloads, the separately identified DCSASS generic Sultani population
+is source-safe and has passed its real five-step preflight. Full C3D extraction
+is in progress. It supports bag evaluation, not frame-ground-truth reproduction.
 
 ## Subsequent gates
 

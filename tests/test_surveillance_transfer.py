@@ -66,3 +66,44 @@ def test_transfer_preserves_rgb_representation_and_replaces_only_group_head(tmp_
     GroupOnlyLoss()(output["group_logits"], torch.tensor([3])).backward()
     assert adapted.model.rgb_projection.weight.grad is not None
     assert adapted.model.branches["rgb"].actor_classifier.weight.grad is None
+
+
+def test_controlled_random_init_changes_representation_but_preserves_head_seed(tmp_path):
+    config = {
+        "model": {
+            "mode": "rgb_only",
+            "rgb_feature_dim": 20800,
+            "embedding_dim": 8,
+            "num_actor_classes": 5,
+            "num_group_classes": 5,
+            "transformer": {"num_layers": 1, "num_heads": 1, "feedforward_dim": 16},
+        }
+    }
+    source = ActorTransformerSystem(config)
+    path = tmp_path / "source.pt"
+    torch.save(
+        dict(
+            format_version=1,
+            checkpoint_type="actor_transformer",
+            config=config,
+            model_state=source.state_dict(),
+            optimizer_state={},
+            scheduler_state={},
+            iteration=1,
+            best_value=0.0,
+            selection_metric="validation_group_accuracy",
+            manifest_fingerprint="fixture",
+            backbone_metadata={},
+        ),
+        path,
+    )
+    transferred, _ = transfer_rgb_model(path, seed=0)
+    control, receipt = transfer_rgb_model(path, seed=0, initialization="random")
+    assert not torch.equal(
+        control.model.rgb_projection.weight, transferred.model.rgb_projection.weight
+    )
+    torch.testing.assert_close(
+        control.model.branches["rgb"].group_classifier.weight,
+        transferred.model.branches["rgb"].group_classifier.weight,
+    )
+    assert receipt["initialization"] == "random"

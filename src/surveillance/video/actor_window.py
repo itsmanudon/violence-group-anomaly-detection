@@ -1,5 +1,6 @@
 """Deterministic clip-local ten-frame RGB windows for the frozen I3D path."""
 
+import time
 from pathlib import Path
 
 import cv2
@@ -31,6 +32,7 @@ def read_actor_window(
     No source-wide frame index is inferred from a derived clip number.
     """
     indices = centered_frame_indices(num_frames, center, start, end)
+    before = time.perf_counter()
     cap = cv2.VideoCapture(str(path))
     decoded = {}
     wanted = set(indices)
@@ -45,14 +47,21 @@ def read_actor_window(
                 decoded[index] = frame
     finally:
         cap.release()
+    decoding = time.perf_counter() - before
+    before = time.perf_counter()
     reference = cv2.cvtColor(decoded[indices[5]], cv2.COLOR_BGR2RGB)
     frames = np.stack(
         [cv2.cvtColor(cv2.resize(decoded[i], (720, 480)), cv2.COLOR_BGR2RGB) for i in indices]
     )
-    return {
+    result = {
         "frame_indices": indices,
         "reference_frame": indices[5],
         "image_size": list(reference.shape[:2]),
         "reference_rgb": torch.from_numpy(reference.copy()).permute(2, 0, 1).float() / 255,
         "frames": torch.from_numpy(frames).permute(0, 3, 1, 2).float() / 255,
     }
+    result["timings"] = {
+        "video_decode_seconds": decoding,
+        "actor_preprocess_seconds": time.perf_counter() - before,
+    }
+    return result
