@@ -95,6 +95,13 @@ class C3DExtractor:
         checkpoint_data = torch.load(checkpoint, map_location="cpu", weights_only=True)
         if not isinstance(checkpoint_data, dict):
             raise ValueError("C3D checkpoint must contain a state_dict mapping")
+        self.metadata = checkpoint_data.get("metadata", {})
+        preprocessing = self.metadata.get("preprocessing", {})
+        if preprocessing and (
+            tuple(preprocessing.get("mean", ())) != self.mean
+            or preprocessing.get("channel_order") != self.channel_order
+        ):
+            raise ValueError("C3D preprocessing differs from exported checkpoint provenance")
         state = checkpoint_data.get("state_dict", checkpoint_data)
         if not isinstance(state, dict):
             raise ValueError("C3D checkpoint must contain a state_dict mapping")

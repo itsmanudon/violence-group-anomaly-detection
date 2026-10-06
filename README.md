@@ -15,11 +15,14 @@ it does not infer that a person intrinsically "is a goon," assign character labe
 or infer criminal intent.
 
 The end-to-end surveillance MVP is being developed on
-`feat/end-to-end-surveillance-mvp`. The initial asset gate found no local DCSASS
-or UCF-Crime installation and no C3D backbone or real Sultani checkpoint.
-Dataset-dependent work is blocked pending those inputs; the existing Collective
-results remain the measured baseline. See the [execution journal](docs/end-to-end-execution-log.md)
-and [required assets and acquisition instructions](docs/end-to-end-required-assets.md).
+`feat/end-to-end-surveillance-mvp`. The supplied DCSASS installation has been
+[fully audited and split by original source](docs/dcsass-human-centric-protocol.md):
+6,491 valid human-centric clips across 203 sources, with zero source overlap.
+The supplied [Sports-1M C3D weights pass strict conversion and FC6 validation](docs/c3d-openmmlab-validation.md).
+DCSASS detected-actor adaptation is in progress; its behavior accuracy is not yet
+measured. UCF-Crime copying and real Sultani training remain pending. See the
+[execution journal](docs/end-to-end-execution-log.md) and
+[asset requirements](docs/end-to-end-required-assets.md).
 
 ## Papers and current status
 

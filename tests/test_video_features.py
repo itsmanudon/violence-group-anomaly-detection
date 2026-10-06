@@ -6,7 +6,7 @@ import pytest
 import torch
 
 from surveillance.datasets.dcsass import prepare_dcsass
-from surveillance.datasets.preparation import source_identity
+from surveillance.datasets.preparation import discover_videos, source_identity
 from surveillance.datasets.ucf_crime import (
     apply_frame_annotations,
     apply_official_splits,
@@ -88,3 +88,10 @@ def test_c3d_fc6_shape_without_weights_or_allocation():
     with torch.device("meta"):
         model = C3DFC6()
         assert model(torch.empty(2, 3, 16, 112, 112)).shape == (2, 4096)
+
+
+def test_discovery_ignores_source_directories_named_mp4(tmp_path):
+    clip = tmp_path / "Fighting002_x264.mp4" / "Fighting002_x264_0.mp4"
+    clip.parent.mkdir()
+    clip.write_bytes(b"fixture")
+    assert discover_videos(tmp_path) == [clip]

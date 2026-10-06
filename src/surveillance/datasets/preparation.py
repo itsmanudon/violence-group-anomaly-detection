@@ -46,7 +46,9 @@ def discover_videos(root: Path) -> list[Path]:
     """Enumerate installed videos; do not download anything."""
     if not root.is_dir():
         raise FileNotFoundError(f"Dataset directory not found: {root}. See data/README.md.")
-    videos = sorted(p for p in root.rglob("*") if p.suffix.lower() in VIDEO_SUFFIXES)
+    videos = sorted(
+        p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in VIDEO_SUFFIXES
+    )
     if not videos:
         raise ValueError(f"No videos found under {root}; expected mp4/avi/mov/mkv files")
     return videos

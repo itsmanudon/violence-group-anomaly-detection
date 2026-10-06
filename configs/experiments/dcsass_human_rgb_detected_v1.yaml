@@ -1,0 +1,46 @@
+# Prospective seed-0 settings; checkpoint selection uses validation macro F1 only.
+protocol_id: dcsass_human_centric_v1
+seed: 0
+device: auto
+manifest: data/manifests/dcsass_human_centric_v1_final.jsonl
+split_receipt: runs/dcsass/human_centric_v1/final_split_receipt.json
+classes: [Normal, Abuse, Assault, Fighting, Robbery, Vandalism]
+cache: runs/dcsass/human_rgb_detected_v1_cache
+transfer_checkpoint: runs/collective/rgb_gt_v1/rgb_gt/seed_0/best.pt
+transfer_checkpoint_sha256: 40a5fc3687c277914335916bd46dff72ccde5e4b6518c677f193178090de7fcd
+detector:
+  checkpoint: checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth
+  checkpoint_sha256: 258fb6c638b15964ddcdd1ae0748c5eef1be9e732750120cc857feed3faac384
+  confidence_threshold: 0.7
+  nms_iou_threshold: 0.5
+  max_actors: 20
+i3d:
+  checkpoint: checkpoints/i3d_mixed4f_collective_rgb_v1.pt
+  checkpoint_sha256: fe7fc30ca6f26430232e2e0f6bdffd8514478a071db065e452bff46f60f4e0c4
+  frozen: true
+  frames: 10
+  image_size: [480, 720]
+  endpoint: Mixed_4f
+  temporal_pool: mean
+  spatial_resize: [90, 160]
+  roi_size: [5, 5]
+  actor_feature_dim: 20800
+supervision: group_only
+actor_head: retained_frozen_not_evaluated
+class_weights: balanced_inverse_frequency_from_covered_training_only
+training:
+  optimizer: adam
+  learning_rate: 0.0001
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+  batch_size: 8
+  max_iterations: 20000
+  lr_milestones: [5000, 10000]
+  lr_gamma: 0.1
+  gradient_clip: 1.0
+  validation_interval: 100
+  checkpoint_interval: 100
+checkpoint_selection: validation_macro_f1
+binary_threshold: 0.5
+no_actor_training: exclude
+no_actor_evaluation: abstain_report_coverage_and_conditional_metrics
