@@ -480,3 +480,111 @@ state current results and pending assets. No claim of UCF frame ROC-AUC, reliabl
 six-class violence recognition, completed live cascade, or usable cached example
 results has been made. Next: complete extraction, real Sultani train/freeze/test,
 then pin deployment and measure actual cascades/caches before final readiness.
+
+## Real DCSASS Sultani seed 0 completed
+
+Full C3D extraction completed **16,590** finite bags with the approved backbone;
+feature-manifest SHA256
+`f7124bb4903285531e1bd4a4214514eb1e0d7705a3d59a06da5de58831820893`.
+Confirmed 10,642 train / 2,590 validation / 3,358 test clips and 519 sources.
+The pre-training gate passed **509 tests / 325 warnings / 162.26 seconds**, with
+Ruff and formatting clean for 184 files.
+
+Reused `scripts/train_sultani.py` with the frozen generic config and completed
+20 seed-0 epochs on CUDA. PowerShell represented the first INFO stderr line as
+`NativeCommandError`, so its process-wrapper exit was 1. This was a shell logging
+artifact: the log records all 20 epochs and the final saved checkpoint, and the
+subsequent completion/reload/validation gate passed. No Python training exception
+or numerical failure was reported. Preserve that raw log rather than rewriting it.
+
+`scripts/freeze_sultani.py` confirmed completed epoch 20 and selected **epoch 2**
+by validation bag ROC-AUC **0.6705405001** (the earlier tail-only progress update
+showed later epochs around 0.6691). Reloaded validation reproduces selection.
+Selected SHA256: `cb51fdd02c3ba2e258c648a59673d9aa701e7f5132470338832096a3ac159872`.
+Fixed threshold stays **0.5**, with no test/demo tuning. CPU validation/evaluation
+used two OpenMP/MKL threads for bounded scoring; learned settings are unchanged.
+
+One registered held-out bag pass completed on **3,358** clips: ROC-AUC
+**0.6582629572**, precision **0.4569444444**, recall **0.5741710297**, F1
+**0.5088940449**, false-positive rate **0.3535262206**. Confusion matrix
+`[[1430,782],[488,658]]`. Per-clip 32-score predictions are saved for analysis.
+These are real but weak DCSASS bag metrics, not UCF frame metrics or measured
+temporal localization quality. See `docs/sultani-dcsass-results-v1.md`.
+
+The user confirmed UCF will take roughly three more hours and named
+`C:/Users/manan/Downloads` as its location. Use the explicit path directly, even
+though the message described it as a D-drive Downloads folder. Do not require a
+second repository copy. Continue the provided-data MVP while that asset is pending.
+
+Media inspection found no external FFmpeg executable. Gradio's `include_audio=False`
+preprocessor attempted mandatory re-encoding before the callback, changing frames
+and failing when FFmpeg was absent. A red regression reproduced it; preserving the
+original upload fixes it without installing binaries. Models consume RGB frames.
+Also hash-check installed example videos before both cached and live processing.
+The cache builder's unit tests verify genuine-call serialization and offline reuse;
+actual cache generation remains pending the latest full gate.
+
+All five demo model hashes are now pinned after both validation selections. Added
+a checkpoint-verification CLI that loads the exact local model interfaces without
+scoring test data. Next: verify loading, bounded actual cascade, cache seven clips,
+measure timings/coverage and test the running demo's live/cached modes.
+
+## Trained cascade and offline demonstration verified
+
+All five installed deployment hashes and both completed selection receipts passed
+actual model loading (`runs/dcsass/demo-asset-verification.json`). Genuine GPU
+cascade inference completed on every original example. Six caches were generated
+and the identical Robbery preflight cache was reused; original receipt:
+`runs/dcsass/integration-demo-v1.json`. The initial seven cases retain a Normal
+false alert, missed Assault/Vandalism anomalies, wrong behavior labels and an
+anomaly/Normal disagreement. No test-derived parameter adjustments were made.
+
+Added a disclosed supplemental Normal bypass example, `Abuse036_x264_10`, chosen
+from saved held-out scores below the already frozen 0.5 threshold. All original
+failures remain installed. Actual raw-video inference confirmed no anomaly at
+0.4963226914; receipt `runs/dcsass/normal-bypass-receipt.json`. Eight examples now
+have genuine caches and completed status. This post-hoc presentation choice is
+not checkpoint selection, threshold selection or a representative benchmark.
+
+There are 15 analyzed windows in the curated set, 14 with actors and one without.
+The actual empty window retains a generic anomaly alert and null behavior outputs.
+Case accounting is four true anomaly alerts, one false alert, two misses and one
+correct Normal bypass; do not generalize these selected-case counts to population
+accuracy. Localization metrics are unavailable without temporal GT.
+
+Restarted the agent-owned loopback Gradio server after configuration/media fixes.
+`scripts/validate_demo_api.py` passed five real requests: cached bypass, cached
+Robbery, cached disagreement, live Robbery and an uploaded raw video. Timelines,
+galleries, interval tables and JSON downloads render through the actual server API.
+Preview and empty-input handling pass. Receipt: `runs/dcsass/demo-api-validation.json`.
+The original video bytes are preserved; FFmpeg is not a mandatory upload dependency.
+
+Actual fixed-input GPU repeat produced exactly equal segment scores, boxes,
+detector confidences, behavior probabilities and final alert. Warm Robbery
+inference: 1.0986263 s on NVIDIA GeForce RTX 4070 Laptop GPU. A real validation
+no-actor middle window (`Abuse014_x264_0`) abstained and skipped I3D/Transformer.
+The helper initially used the wrong split name `validation` instead of `val`;
+corrected that verification-only script and reran. All five real model interfaces
+also ran on CPU: 27.4000825 s and the expected Robbery review alert, with numerical
+CPU/GPU equality not claimed. Details: `runs/dcsass/real-runtime-verification.json`.
+
+The browser tab is visible in inventory, but Chrome attachment still times out
+at focus setup. Final visual/playback inspection remains pending; API verification
+is not presented as visual proof. The runbook includes a manual classroom check.
+Updated README, asset inventory, execution gates, runbook, talk track and separate
+Sultani/integration evidence with completed results and retained limitations.
+
+Independent read-only review found no defects, verified all model/video/cache
+identities and original-source test membership, loaded eight caches without model
+construction, and passed 17 targeted CPU tests. The final whole suite passed
+**510 tests / 325 warnings / 162.54 seconds**. Ruff and formatting are clean for
+187 files; diff check passes. These software tests are not benchmark results.
+
+The explicit Downloads root was checked read-only. `archive.zip` is the already
+installed DCSASS archive (33,304 members), not UCF-Crime. The remaining
+`Unconfirmed 235055.crdownload` is incomplete (193,867,723 bytes at inspection).
+No extracted UCF tree is available. Do not train on partial data or redownload it.
+The UCF frame-benchmark phase remains blocked on this mandatory external asset;
+the provided-data surveillance demo is usable locally. Next: validate the final
+UCF acquisition once complete, preserve shared held-out DCSASS sources, freeze
+its compatible protocol before extraction/training, and complete frame evaluation.

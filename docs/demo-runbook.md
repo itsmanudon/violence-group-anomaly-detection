@@ -2,10 +2,10 @@
 
 ## Readiness status
 
-The interface and cascade software are implemented. Full real DCSASS Sultani
-feature extraction is still running; its trained checkpoint, final example cache
-and measured cascade timings are pending. UCF-Crime remains a separate pending
-benchmark. Do not present missing assets or synthetic fixtures as trained results.
+The interface, real trained DCSASS models and eight genuine cascade example caches
+are installed. Sultani held-out bag ROC-AUC is 0.6583; the six-class behavior model
+has 51.02% conditional accuracy, 0.2140 macro F1 and 69.22% coverage. These results
+show substantial weaknesses. UCF-Crime remains a separate pending frame benchmark.
 
 ## Environment and launch
 
@@ -14,6 +14,7 @@ torch 2.13.0+cu126 and torchvision 0.28.0+cu126. Preserve these matched packages
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\python.exe scripts/verify_demo_assets.py
 .\.venv\Scripts\python.exe -m surveillance.demo
 ```
 
@@ -73,11 +74,23 @@ check video playback and confirm the cache/live mode label. Keep a known limitat
 example visible for discussion. Model selection and thresholds are frozen before
 choosing presentation clips. Do not adjust settings to improve the displayed clips.
 
-Seven real held-out clips are installed in `data/examples/` and recorded in
+Verify the running interface with `python scripts/validate_demo_api.py`. The warm
+GPU two-second example takes about 1.10 seconds, while the full CPU fallback was
+27.4 seconds. Cache mode shows recorded inference time, not current playback time.
+See [measured integration evidence](integration-demo-v1.md) for timing scope and
+the retained failures. Final browser playback/visual inspection remains a manual
+pre-presentation check because browser automation could not attach.
+
+Eight real held-out clips are installed in `data/examples/` and recorded in
 `configs/demo_examples.json`: one per dataset label and a separate high-confidence
 behavior mistake. They were selected transparently, include several failures, and
-decode successfully. Their full cascade caches await the trained Sultani checkpoint.
-Every entry records source, dataset label, baseline prediction and selection policy.
+decode successfully. All have measured cascade caches. A supplemental
+**Normal: no-alert example** was selected after evaluation to illustrate bypass;
+its post-hoc selection is disclosed and all original failures remain. Show that
+example, **Robbery example**, then **Limitation: high-confidence mistake** for
+anomaly/Normal disagreement. **Normal example** is a retained false alert;
+**Assault example** and **Vandalism example** are retained missed anomalies.
+Every entry records source, dataset label and selection policy.
 Never substitute synthetic test videos as research examples.
 
 ## Troubleshooting
@@ -86,6 +99,8 @@ Never substitute synthetic test videos as research examples.
   returns a useful error. Install the completed local checkpoint and receipt.
 - **Unreadable/truncated video:** use a complete file with consistent frame metadata
   and a supported codec. Decode-count mismatch is rejected to protect timestamps.
+  Uploads preserve original video bytes; no audio analysis or mandatory FFmpeg
+  re-encoding is performed. Browser playback still depends on codec support.
 - **Zero actors:** this is an abstention, not a Normal classification. Review the
   anomaly timeline and the detector's coverage limitation.
 - **CUDA unavailable:** automatic selection falls back to CPU. Processing may be

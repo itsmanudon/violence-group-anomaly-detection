@@ -4,7 +4,8 @@ The initial 2026-10-06 inspection found Collective data/models but no installed
 DCSASS, UCF-Crime, C3D bags/weights or real Sultani checkpoint. The user subsequently
 supplied DCSASS and modern C3D weights. DCSASS is fully audited, frozen and evaluated
 for behavior; C3D conversion is validated. UCF-Crime remains unavailable locally,
-and the separate real DCSASS Sultani run is still extracting features. This document
+and the separate real DCSASS Sultani run has completed training and evaluation.
+The five pinned deployment assets and genuine example caches are installed. This document
 retains acquisition instructions for a fresh installation.
 
 Current installed dataset root:
@@ -75,6 +76,10 @@ archive availability has not been verified by downloading it.
 
 Expected installation:
 
+The user is downloading UCF-Crime to `C:\Users\manan\Downloads`, with an estimated
+three-hour wait. Use its final extracted external root directly once the download
+is complete; do not copy the large dataset again or read an incomplete archive.
+
 ```text
 data/raw/ucf_crime/<category>/<original_video>.mp4
 data/splits/ucf_train.txt
@@ -115,6 +120,10 @@ documented common research split and label results accordingly.
 | COCO_V1 Faster R-CNN | `checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth` |
 | Converted supplied C3D FC6 | `checkpoints/c3d_fc6_openmmlab_v1.pt` |
 | Validation-selected DCSASS behavior control | `runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt` |
+| Validation-selected DCSASS Sultani scorer | `runs/dcsass/sultani_generic_v1/seed_0/best.pt` |
+
+Run `python scripts/verify_demo_assets.py` to verify hashes and load all five
+interfaces. See [the real Sultani evidence](sultani-dcsass-results-v1.md).
 
 Do not download replacements or change the matched torch/torchvision/CUDA setup.
 Once mandatory inputs are available, resume from

@@ -19,8 +19,10 @@ The supplied [Sports-1M C3D weights pass strict conversion and FC6 validation](d
 seed-0 Actor-Transformer has **51.02% conditional accuracy / 0.2140 macro F1** with
 **69.22% test actor coverage**. These are weak results, particularly for Abuse,
 Assault and Fighting; this is not reliable violence recognition. UCF-Crime is still
-downloading. A separate real DCSASS binary-label Sultani baseline is extracting
-features; its bag evaluation and final live demo assets remain pending. See the
+downloading. The separate real DCSASS binary-label Sultani baseline is complete:
+**0.6583 held-out bag ROC-AUC**, with a frozen **0.5** alert threshold. This is
+not a UCF-Crime frame benchmark. All five model assets and eight genuine cascade
+example caches are installed; uploaded videos support live inference. See the
 [execution journal](docs/end-to-end-execution-log.md) and
 [asset requirements](docs/end-to-end-required-assets.md).
 
@@ -54,10 +56,13 @@ assets and optional demo dependencies:
 .\.venv\Scripts\python.exe -m surveillance.demo
 ```
 
-Final trained Sultani pins and example caches are still pending at this checkpoint.
-Missing assets return useful errors; no preflight model is substituted. Use the
+Deployment pins require completed, validation-selected model receipts. Verify them
+with `python scripts/verify_demo_assets.py`. Missing assets return useful errors;
+no preflight model is substituted. Use the
 [demo runbook](docs/demo-runbook.md), [professor talk track](docs/professor-demo-talk-track.md)
-and [execution gates](docs/end-to-end-implementation-plan.md) to follow readiness.
+and [measured integration evidence](docs/integration-demo-v1.md) to follow readiness.
+The warm GPU cascade took 1.10 seconds on a two-second example; CPU fallback
+completed the same full path in 27.4 seconds. These are short-clip diagnostics.
 Keep the validated CUDA packages; see installation and subsystem commands below.
 
 | Collective seed-0 representation | Group accuracy | Group macro F1 |
@@ -77,6 +82,13 @@ are disjoint; no actor labels are invented. Only covered clips optimize the acto
 model, and uncovered test clips abstain. The selected random-initialization control
 won validation macro F1 over Collective transfer; it was not selected on test.
 Both experiments and the frozen source/coverage populations remain documented.
+
+To train or inspect the surveillance adaptation, use
+`configs/experiments/dcsass_human_rgb_detected_v1.yaml` and the commands in
+[the DCSASS results](docs/dcsass-surveillance-results-v1.md). The generic anomaly
+configuration and preparation/training/evaluation commands are in
+[the real Sultani report](docs/sultani-dcsass-results-v1.md). Preserve frozen runs;
+register new output directories when reproducing them.
 
 Known limitations include Collective validation imbalance, mostly seed-0 evidence,
 converted I3D weights, detector misses/extras, DCSASS clip/source context bias,
@@ -115,8 +127,10 @@ overall. See the [fixed 2:1 fusion evidence and comparison](docs/collective-late
 The real same-checkpoint RGB detected-box result is **74.32% group accuracy**
 (macro F1 **0.7383**) and **75.64% actor accuracy** (macro F1 **0.7756**, matched
 actors only). See the [detected-box execution and coverage report](docs/collective-rgb-detected-execution.md).
-Real Sultani anomaly evaluation remains pending. Synthetic
-tests establish software behavior, not surveillance detection accuracy.
+The [real DCSASS Sultani evaluation](docs/sultani-dcsass-results-v1.md) reports
+0.6583 bag ROC-AUC and a 35.35% normal-clip false-positive rate at threshold 0.5.
+UCF-Crime frame evaluation remains pending. Synthetic tests establish software
+behavior, not surveillance detection accuracy.
 
 ## First real pose baseline (Milestone 2C-R1)
 

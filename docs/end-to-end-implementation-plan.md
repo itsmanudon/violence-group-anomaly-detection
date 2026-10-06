@@ -44,8 +44,10 @@ poor held-out minority-class performance is documented; keep the validation-sele
 model and proceed to an honest demonstration without further test-informed tuning.
 
 While UCF downloads, the separately identified DCSASS generic Sultani population
-is source-safe and has passed its real five-step preflight. Full C3D extraction
-is in progress. It supports bag evaluation, not frame-ground-truth reproduction.
+is source-safe and has completed full C3D extraction, real preflight, twenty epochs,
+validation-only selection and one held-out evaluation. It supports bag evaluation,
+not frame-ground-truth reproduction. The cascade and local Gradio application are
+implemented; genuine GPU inference and eight example caches are complete.
 
 ## Subsequent gates
 
@@ -53,12 +55,12 @@ When the UCF copy is stable, validate official source assignments/annotations,
 extract real C3D bags, preflight and train/evaluate Sultani. Establish threshold
 policy on validation only and preserve C3D frame-unit boundaries for inference.
 
-Then implement `SurveillancePipeline` as a small cascade over suspicious windows,
+The implemented `SurveillancePipeline` is a small cascade over suspicious windows,
 with both model outputs visible, no-anomaly bypass and anomaly-preserving no-actor
 fallback. Test interval boundaries, serialization, short videos and deterministic
 evaluation before real integrated inference and latency measurement.
 
-Build the offline local Gradio interface over that API. Include upload and local
+Validate the offline local Gradio interface over that API. It includes upload and local
 example modes, timeline/interval markers, actor overlays, probabilities and errors.
 Support cached example results alongside genuine uploaded-video processing. UI
 labels describe behavior and require human review. Include a limitation example.

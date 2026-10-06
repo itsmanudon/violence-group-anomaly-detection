@@ -23,10 +23,13 @@ class DemoService:
         entry = self.examples.get(example)
         if entry:
             path = self.root / entry["video"]
+            video_hash = sha256(path)
+            if entry.get("video_sha256") != video_hash:
+                raise ValueError("Frozen example video changed or its identity is missing")
             cached = entry.get("result_cache")
             if use_cache and cached and (self.root / cached).is_file():
                 payload = json.loads((self.root / cached).read_text())
-                if payload["video_sha256"] != sha256(path):
+                if payload["video_sha256"] != video_hash:
                     raise ValueError("Cached example video changed; recompute its result")
                 result = dict(payload["result"])
                 if result.get("schema_version") != 1:

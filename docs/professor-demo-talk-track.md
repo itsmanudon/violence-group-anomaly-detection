@@ -16,19 +16,21 @@
 6. **Surveillance adaptation:** DCSASS has 6,491 valid human-centric clips from
    203 separated original sources. Classes are Normal, Abuse, Assault, Fighting,
    Robbery and Vandalism. No actor action labels were invented.
-7. **Normal example:** show playback, anomaly timeline and the no-anomaly bypass
-   if the actual selected result takes that path. Identify cached versus live mode.
-8. **Anomaly example:** explain score, timestamp interval, detected actors and
+7. **Normal example:** select **Normal: no-alert example**, show playback, timeline
+   and actor-analysis bypass. Disclose its supplemental post-hoc selection and
+   identify cached versus live mode. The original Normal false alert remains available.
+8. **Anomaly example:** select **Robbery example**; explain score, interval, actors and
    six-class probabilities. An alert requests review; probabilities are uncalibrated.
 9. **Limitations:** actor coverage is about 69% on test. Minority labels are weak;
-   Fighting validation has only two covered clips. Show an actual disagreement,
-   false alarm or no-actor failure without concealing it.
+   Fighting validation has only two covered clips. Behavior accuracy is 51.02%,
+   macro F1 is 0.2140. Show **Limitation: high-confidence mistake**, where anomaly
+   scoring alerts but behavior predicts Normal, or the retained false alert.
 10. **Sultani protocol:** the provisional DCSASS run has clip/bag labels, not frame
-    ground truth. UCF-Crime benchmark validation is pending download. Modern C3D
+    ground truth. Held-out bag ROC-AUC is 0.6583; normal-clip false positives are
+    35.35% at the frozen 0.5 threshold. UCF-Crime frame validation is pending download. Modern C3D
     channel-mean preprocessing differs from the original Caffe volume mean.
 11. **Future research:** stronger independent surveillance validation, multi-seed
     evaluation, detector-domain adaptation and privacy-preserving deployment.
 
-Before presenting, substitute the final selected-control and Sultani measured
-results from their frozen receipts. This talk track does not imply those pending
-experiments or a successful violence clip have already been demonstrated.
+The demonstration illustrates the implemented research cascade and its failures;
+it does not establish reliable violence detection or an exact paper reproduction.

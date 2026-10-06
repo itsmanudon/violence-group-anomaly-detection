@@ -41,7 +41,16 @@ def test_cached_example_preserves_abstention_and_rejects_changed_provenance(tmp_
     artifact.write_text(json.dumps({"video_sha256": sha256(video), "result": result}))
     examples = tmp_path / "examples.json"
     examples.write_text(
-        json.dumps([{"name": "limitation", "video": str(video), "result_cache": str(artifact)}])
+        json.dumps(
+            [
+                {
+                    "name": "limitation",
+                    "video": str(video),
+                    "result_cache": str(artifact),
+                    "video_sha256": sha256(video),
+                }
+            ]
+        )
     )
     service = DemoService(config, tmp_path)
     loaded = service.analyze(None, "limitation", use_cache=True)
@@ -66,3 +75,22 @@ def test_no_video_returns_actionable_error_before_loading_models(tmp_path):
     service = DemoService({"examples": "missing.json"}, tmp_path)
     with pytest.raises(ValueError, match="Upload"):
         service.analyze(None, "Upload a video", use_cache=False)
+
+
+def test_changed_bundled_video_is_rejected_before_live_decode_or_model_loading(
+    tmp_path, monkeypatch
+):
+    video = tmp_path / "example.mp4"
+    video.write_bytes(b"original example fixture")
+    examples = tmp_path / "examples.json"
+    examples.write_text(
+        json.dumps([{"name": "Normal", "video": str(video), "video_sha256": sha256(video)}])
+    )
+    service = DemoService({"examples": str(examples)}, tmp_path)
+    video.write_bytes(b"different example fixture")
+    monkeypatch.setattr(
+        "surveillance.demo_service.probe_video",
+        lambda *args: pytest.fail("Frozen example identity must be checked before live decoding"),
+    )
+    with pytest.raises(ValueError, match="example video"):
+        service.analyze(None, "Normal", use_cache=False)

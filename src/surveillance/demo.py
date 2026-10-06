@@ -129,7 +129,7 @@ def create_demo(config: dict, root: Path = ROOT):
         with gr.Row():
             with gr.Column(scale=3):
                 upload = gr.Video(
-                    sources=["upload"], label="Surveillance video", height=340, include_audio=False
+                    sources=["upload"], label="Surveillance video", height=340, include_audio=True
                 )
             with gr.Column(scale=2):
                 alert = gr.Markdown(

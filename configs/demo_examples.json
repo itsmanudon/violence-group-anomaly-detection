@@ -13,7 +13,7 @@
     "baseline_confidence": 0.9992252588272095,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Abuse example",
@@ -29,7 +29,7 @@
     "baseline_confidence": 0.9991075396537781,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Assault example",
@@ -45,7 +45,7 @@
     "baseline_confidence": 0.5942010283470154,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Fighting example",
@@ -61,7 +61,7 @@
     "baseline_confidence": 0.983802318572998,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Robbery example",
@@ -77,7 +77,7 @@
     "baseline_confidence": 0.9961852431297302,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Vandalism example",
@@ -93,7 +93,7 @@
     "baseline_confidence": 0.9933620691299438,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
   },
   {
     "name": "Limitation: high-confidence mistake",
@@ -109,6 +109,20 @@
     "baseline_confidence": 0.9997838139533997,
     "baseline_checkpoint_sha256": "7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69",
     "selection_policy": "First covered test clip by clip ID per label, at least 2s; separate post-hoc high-confidence error for discussion; no test tuning",
-    "cascade_result_status": "not yet measured; cache pending trained Sultani"
+    "cascade_result_status": "genuine frozen cascade inference completed"
+  },
+  {
+    "name": "Normal: no-alert example",
+    "video": "data/examples/normal_bypass.mp4",
+    "result_cache": "outputs/demo/examples/normal_bypass.json",
+    "video_sha256": "8e12476728712fc598069dba68ba7a99ed2330180c61e69cf67442c25949572f",
+    "clip_id": "Abuse036_x264_10",
+    "source_video_id": "abuse036",
+    "split": "test",
+    "expected_behavior": "Normal",
+    "demo_role": "supplemental_correct_normal_bypass",
+    "selection_policy": "Post-hoc presentation case: first test Normal clip by ID with saved Sultani bag score below the already frozen threshold; all original failures retained",
+    "sultani_checkpoint_sha256": "cb51fdd02c3ba2e258c648a59673d9aa701e7f5132470338832096a3ac159872",
+    "cascade_result_status": "genuine frozen cascade inference completed"
   }
 ]
