@@ -19,6 +19,8 @@ def main():
     client = Client(args.url, verbose=False)
     checks = []
     preview = client.predict("Normal: no-alert example", api_name="/preview_example")
+    if isinstance(preview, tuple):
+        preview = preview[0]
     assert Path(preview).is_file()
     for source, cached, video, expected in [
         ("Normal: no-alert example", True, None, "no_anomaly"),

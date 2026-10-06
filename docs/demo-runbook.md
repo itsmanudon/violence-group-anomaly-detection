@@ -78,8 +78,12 @@ Verify the running interface with `python scripts/validate_demo_api.py`. The war
 GPU two-second example takes about 1.10 seconds, while the full CPU fallback was
 27.4 seconds. Cache mode shows recorded inference time, not current playback time.
 See [measured integration evidence](integration-demo-v1.md) for timing scope and
-the retained failures. Final browser playback/visual inspection remains a manual
-pre-presentation check because browser automation could not attach.
+the retained failures. Browser control subsequently recovered: Normal playback,
+cached Robbery, disagreement, reference overlays, timeline and table readability
+are visually verified. Switching source clears prior evidence; uploading or
+clearing a video selects upload mode. Perform a manual upload/playback check before
+class; automated file selection is blocked by the Chrome extension's file-access
+permission, while the real live-upload server API test passes.
 
 Eight real held-out clips are installed in `data/examples/` and recorded in
 `configs/demo_examples.json`: one per dataset label and a separate high-confidence

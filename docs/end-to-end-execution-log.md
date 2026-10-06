@@ -712,3 +712,68 @@ This is expected to take multiple hours; keep the external drive connected.
 No UCF model or held-out score has been selected/evaluated yet. Next: inspect full
 completion receipt, train seed 0, freeze validation choice and run registered frame
 evaluation using its prospective exact C3D projection.
+
+## Browser demo validation while UCF extraction runs
+
+Chrome control recovered on a fresh local tab. The cached Normal example played
+to its four-second end (readyState 4, ended true, no video error). Cached Robbery
+and anomaly/Normal disagreement rendered correctly with timeline, actor galleries
+and interval evidence. Visual inspection exposed low table-header contrast and
+stale previous predictions when choosing another source. Regression reproduced
+missing evidence-clear event; added source/upload/clear handling, preserving newly
+uploaded bytes, and explicit uncalibrated-probability wording. Contrast now uses
+RGB(228,237,242) background with RGB(33,60,78) text. Eight targeted tests passed.
+
+Restarted only the agent-owned demo server through its known exec session; UCF
+extraction continued independently. Browser inspection confirmed old evidence
+clears, upload mode is selected on video clear, and disagreement remains visible.
+Saved actual screenshot: `outputs/demo/visual-disagreement.jpg`. The automated
+file chooser rejects selection because Chrome's ChatGPT extension lacks file-URL
+access. Did not expand that permission; dismissed the intercepted chooser. This
+is an automation restriction, not an application upload failure; five real cached,
+live and upload API requests pass after the fixes. The runbook retains a manual
+presentation check.
+
+Full post-UI gate passed **523 tests / 325 warnings / 223.80 seconds**. No model,
+cache values, scientific splits or thresholds changed. Full UCF extraction is
+healthy and progressing; no held-out model evaluation has occurred.
+
+## Prospective full cascade evaluation and asynchronous demo safeguards
+
+Registered the full 991-clip / 31-source human test population prospectively in
+`docs/cascade-evaluation-protocol-v1.md`. The new evaluator checks both model
+selection receipts, human manifest, protected UCF source membership, raw clip
+bytes and model identities. Canonical immutable registration rejects alternate
+output paths, completed reruns and threshold/window/model drift; resume scores
+only pending clips. Reports separate weak clip alerts, conditional six-class
+behavior, coverage and stage latency. No interval or actor ground-truth claim.
+Execution waits for the validation-selected real UCF checkpoint.
+
+Independent review caught asynchronous UI callbacks that could restore old
+evidence after the user changed source. Added per-session monotonically increasing
+input revisions, checked before and after preview/inference (including errors).
+Stale callbacks return skips; source previews use user input events so backend
+upload updates do not erase the new upload. Threaded regression reproduces a
+delayed inference followed by a new source and confirms no stale output. Five
+real cached/live/upload requests passed against the restarted server, receipt
+`runs/ucf-crime/demo-api-revision-guards.json`. Full quality gate/review running.
+UCF extraction has reached 780/1853 retained videos without reported failures.
+
+Follow-up review reproduced an additional source change during gallery rendering;
+the callback now checks its revision again after constructing the full response.
+The new threaded regression failed before this fix and passed after it. Also
+added promised clip-alert accuracy using the all-clip confusion denominator.
+Independent review found no remaining actionable issues. Final gate: **538 tests,
+325 warnings, 180.65 seconds**, Ruff clean, 200 files formatted, diff check passed.
+The restarted server passed five cached/live/upload API requests again, receipt
+`runs/ucf-crime/demo-api-render-guard.json`. Actual browser checks confirmed Normal
+bypass, Robbery output, clearing on input change and retained model disagreement;
+screenshot `outputs/demo/visual-render-guard.jpg`.
+
+Read-only cascade population verification: 991 clips / 31 sources; class counts
+Normal 557, Abuse 65, Assault 32, Fighting 10, Robbery 275, Vandalism 52.
+Fourteen sources are official UCF test sources and seventeen were explicitly
+excluded from UCF optimization. No held-out inference occurred. Full extraction
+now 886/1853, healthy. Next: wait for full extraction receipt, inspect all cache
+identities/counts, run frozen seed-0 UCF training, freeze validation selection and
+execute its registered frame test before versioned cascade evaluation.

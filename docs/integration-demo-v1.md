@@ -78,8 +78,14 @@ The running loopback Gradio API passed cached bypass, cached Robbery, cached
 disagreement, genuine live Robbery and genuine uploaded-video requests. It
 rendered timelines, reference galleries, interval tables and downloadable result
 JSON; source preview and empty-input handling also passed. Uploads preserve
-original bytes and do not require FFmpeg transcoding. Chrome automation could
-not attach for final visual inspection; final playback/visual review is pending.
+original bytes and do not require FFmpeg transcoding. Chrome control later
+recovered and the Normal video played to its end. Cached Robbery and anomaly/Normal
+disagreement were visually inspected with timelines, overlays and interval evidence.
+Fixed the dark table-header contrast and cleared stale evidence when sources
+change; model probabilities are visibly marked uncalibrated. Screenshot:
+`outputs/demo/visual-disagreement.jpg`. Automated file selection requires a Chrome
+extension permission that was left unchanged; manual upload inspection remains
+a presentation check, while the genuine live-upload API path has passed.
 
 ## Local evidence and commands
 

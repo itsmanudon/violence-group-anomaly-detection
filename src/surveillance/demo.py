@@ -19,6 +19,7 @@ from surveillance.demo_rendering import (  # noqa: E402
     timeline_figure,
 )
 from surveillance.demo_service import DemoService  # noqa: E402
+from surveillance.demo_state import SessionRevisions  # noqa: E402
 from surveillance.inference.loading import asset_status  # noqa: E402
 from surveillance.training.sultani_trainer import select_device  # noqa: E402
 
@@ -39,15 +40,26 @@ body { background: #F0F4F7 !important; }
 .research-note { font-size: .85rem; opacity: .8; }
 button.primary { background: #287C8E !important; border-color: #287C8E !important; }
 button:focus-visible { outline: 3px solid #B77B27 !important; outline-offset: 3px; }
+.interval-evidence th { background: #E4EDF2 !important; color: #213C4E !important; }
 @media (max-width: 700px) { .research-title h1 { font-size: 1.6rem; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 """
+
+
+ADVANCE_REVISION_JS = """(...args) => {
+ const revision = (window.__surveillanceInputRevision || 0) + 1;
+ window.__surveillanceInputRevision = revision;
+ return [...args.slice(0, -1), revision];
+}"""
+READ_REVISION_JS = """(...args) =>
+ [...args.slice(0, -1), window.__surveillanceInputRevision || 0]"""
 
 
 def create_demo(config: dict, root: Path = ROOT):
     import gradio as gr
 
     service = DemoService(config, root)
+    revisions = SessionRevisions()
     statuses = asset_status(config, root)
     missing = [
         key.replace("_checkpoint", "").replace("_", " ")
@@ -66,10 +78,17 @@ def create_demo(config: dict, root: Path = ROOT):
     outputs = Path(root) / config["outputs"]
     outputs.mkdir(parents=True, exist_ok=True)
 
-    def analyze(video, selected, cached):
+    def analyze(video, selected, cached, revision=0, request: gr.Request = None):
+        session = request.session_hash if request else None
+        if not revisions.observe(session, revision):
+            return (gr.skip(),) * 10
         try:
             result = service.analyze(video, selected, cached)
+            if not revisions.current(session, revision):
+                return (gr.skip(),) * 10
             probabilities, caption = behavior_probabilities(result)
+            if probabilities:
+                caption += " · Model probabilities are uncalibrated."
             alert = result["final_alert"]
             title = {
                 "no_anomaly": "No anomaly detected",
@@ -84,7 +103,7 @@ def create_demo(config: dict, root: Path = ROOT):
             )
             artifact = outputs / (uuid.uuid4().hex + ".json")
             artifact.write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
-            return (
+            response = (
                 result["video_path"],
                 f"### {title}\n{alert['reason']}",
                 timeline_figure(result),
@@ -97,7 +116,12 @@ def create_demo(config: dict, root: Path = ROOT):
                 str(artifact),
                 result,
             )
+            if not revisions.current(session, revision):
+                return (gr.skip(),) * 10
+            return response
         except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
+            if not revisions.current(session, revision):
+                return (gr.skip(),) * 10
             return (
                 video,
                 f"### Processing unavailable\n{error}",
@@ -112,6 +136,7 @@ def create_demo(config: dict, root: Path = ROOT):
             )
 
     with gr.Blocks(title="Surveillance behavior research", analytics_enabled=False) as app:
+        revision_input = gr.Number(value=0, precision=0, visible=False)
         gr.Markdown("# Surveillance behavior research", elem_classes="research-title")
         gr.Markdown(
             "Locate unusual activity. Inspect observable behavior.",
@@ -154,6 +179,7 @@ def create_demo(config: dict, root: Path = ROOT):
             datatype=["str", "number", "str", "number", "str"],
             interactive=False,
             label="Interval evidence",
+            elem_classes="interval-evidence",
         )
         with gr.Accordion("Inspect model outputs", open=False):
             result_json = gr.JSON(label="Separate anomaly and behavior outputs")
@@ -162,11 +188,75 @@ def create_demo(config: dict, root: Path = ROOT):
         def preview_source(name):
             entry = service.examples.get(name)
             if not entry:
-                return None
+                return gr.skip()
             path = Path(root) / entry["video"]
             return str(path) if path.is_file() else None
 
-        source.change(preview_source, inputs=source, outputs=upload, api_name="preview_example")
+        def clear_evidence():
+            return (
+                "### Ready to inspect\nAnalyze this video to produce new evidence.",
+                None,
+                [],
+                {},
+                "Behavior probabilities appear after analysis.",
+                [],
+                "",
+                None,
+                None,
+            )
+
+        evidence_outputs = [
+            alert,
+            timeline,
+            gallery,
+            probabilities,
+            caption,
+            table,
+            summary,
+            artifact,
+            result_json,
+        ]
+
+        def preview_and_clear(name, revision=0, request: gr.Request = None):
+            session = request.session_hash if request else None
+            if not revisions.observe(session, revision):
+                return (gr.skip(),) * 10
+            path = preview_source(name)
+            if not revisions.current(session, revision):
+                return (gr.skip(),) * 10
+            return path, *clear_evidence()
+
+        source.input(
+            preview_and_clear,
+            inputs=[source, revision_input],
+            outputs=[upload, *evidence_outputs],
+            queue=False,
+            js=ADVANCE_REVISION_JS,
+            api_name="preview_example",
+        )
+
+        def select_uploaded_source(revision=0, request: gr.Request = None):
+            session = request.session_hash if request else None
+            if not revisions.observe(session, revision):
+                return (gr.skip(),) * 10
+            return "Upload a video", *clear_evidence()
+
+        upload.upload(
+            select_uploaded_source,
+            inputs=revision_input,
+            outputs=[source, *evidence_outputs],
+            queue=False,
+            js=ADVANCE_REVISION_JS,
+            api_name=False,
+        )
+        upload.clear(
+            select_uploaded_source,
+            inputs=revision_input,
+            outputs=[source, *evidence_outputs],
+            queue=False,
+            js=ADVANCE_REVISION_JS,
+            api_name=False,
+        )
         gr.Markdown(
             "Research prototype; predictions may be wrong and require human review.\n\n"
             "Behavior classification does not identify a person's character or identity.",
@@ -174,7 +264,7 @@ def create_demo(config: dict, root: Path = ROOT):
         )
         button.click(
             analyze,
-            inputs=[upload, source, cached],
+            inputs=[upload, source, cached, revision_input],
             outputs=[
                 upload,
                 alert,
@@ -188,6 +278,7 @@ def create_demo(config: dict, root: Path = ROOT):
                 result_json,
             ],
             concurrency_limit=1,
+            js=READ_REVISION_JS,
             api_name="analyze_video",
         )
     app.research_theme = gr.themes.Base(
@@ -211,6 +302,8 @@ def create_demo(config: dict, root: Path = ROOT):
         input_placeholder_color_dark="#213C4E",
         button_secondary_text_color_dark="#213C4E",
         table_text_color_dark="#213C4E",
+        table_even_background_fill_dark="#FFFFFF",
+        table_odd_background_fill_dark="#F0F4F7",
     )
     return app
 
