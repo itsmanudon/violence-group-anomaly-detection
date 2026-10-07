@@ -107,30 +107,6 @@ p {
   border-left: 1px solid #3a4858;
   padding-left: 15px;
 }
-.top-meta {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  font-size: 10px;
-  letter-spacing: 0.2px;
-}
-.local-status {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.local-status i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #67c7b2;
-}
-.profile-tag {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: #a5b4c3;
-}
 .workspace-bar {
   height: 83px;
   display: flex;

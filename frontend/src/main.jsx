@@ -428,15 +428,6 @@ function App() {
             Surveillance<span>Research console</span>
           </strong>
         </a>
-        <div className="top-meta">
-          <span className="local-status">
-            <i />
-            Local Workspace
-          </span>
-          <span className="profile-tag">
-            Professor Profile <Icon name="shield" size={14} />
-          </span>
-        </div>
       </header>
       <div className="workspace-bar">
         <div>
