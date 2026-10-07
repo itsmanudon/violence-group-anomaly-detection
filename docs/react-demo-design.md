@@ -24,7 +24,7 @@ jobs, allowlisted media and result downloads. No UI threshold or training contro
 | Keyboard/accessibility | Semantic headings/controls, focus styling, status/error announcements, table and segment seek alternatives; full keyboard/assistive-technology task pending |
 | Offline resources | Page scripts/styles are localhost-only; full network-disconnected inference rehearsal pending |
 | Theme | System fonts and light CSS tokens; user's Dark Reader theme inspected without changing extension settings |
-| Scientific content | Frozen benchmark values, uncalibrated probabilities and visible human-review disclaimer preserved |
+| Scientific content | Frozen benchmark values and uncalibrated probabilities preserved; the on-screen human-review disclaimer was removed per presentation preference |
 
 Cached inference timing is labeled as the original run; separate cache serving
 latency is shown. Actors skipped by the anomaly gate are “not examined,” not zero

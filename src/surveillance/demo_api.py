@@ -92,9 +92,6 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
             "examples": examples,
             "profile_sha256": profile_hash(config),
             "device_policy": "CPU safe mode on macOS; MPS components unvalidated",
-            "research_warning": (
-                "Research prototype. Predictions may be incorrect. Human review is required."
-            ),
         }
 
     @app.post("/api/upload")

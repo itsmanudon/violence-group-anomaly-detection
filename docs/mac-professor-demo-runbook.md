@@ -1,6 +1,5 @@
 # Mac professor presentation
 
-Research prototype. Predictions may be incorrect. Human review is required.
 The measured Windows/RTX research results remain unchanged. Deployment and
 qualitative rehearsal are not training or new benchmark evaluation.
 

@@ -441,13 +441,6 @@ function App() {
           </button>
         </div>
       </div>
-      <div className="disclaimer-strip">
-        <Icon name="shield" size={14} />
-        <span>
-          <strong>Research prototype.</strong> Predictions may be incorrect.
-          Human review is required.
-        </span>
-      </div>
       <main className="workspace">
         <aside className="library">
           <div className="library-title">
@@ -904,13 +897,6 @@ function App() {
         </aside>
       </main>
       <footer>
-        <div className="research-disclaimer">
-          <Icon name="shield" size={17} />
-          <span>
-            <strong>Research prototype.</strong> Predictions may be incorrect.
-            Human review is required.
-          </span>
-        </div>
         <details className="benchmark-note">
           <summary>Measured research limitations</summary>
           <p>

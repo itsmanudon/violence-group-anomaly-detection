@@ -897,21 +897,6 @@ footer {
   font-size: 10px;
   flex-wrap: wrap;
 }
-.research-disclaimer {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-  line-height: 1.6;
-  color: #657789;
-}
-.research-disclaimer svg {
-  color: #718290;
-  min-width: 17px;
-}
-.research-disclaimer strong {
-  font-weight: 600;
-  color: #465769;
-}
 .footer-paper {
   color: #7a8997;
   font-size: 9px;
@@ -1167,9 +1152,6 @@ footer {
     padding: 13px 16px;
     gap: 10px;
   }
-  .research-disclaimer {
-    font-size: 9px;
-  }
   .benchmark-note p {
     width: min(350px, calc(100vw - 32px));
   }
@@ -1180,26 +1162,5 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .spinner {
     animation: none;
-  }
-}
-
-.disclaimer-strip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 28px;
-  background: #faf5e9;
-  border-bottom: 1px solid #e9ddc4;
-  color: #82602e;
-  font-size: 10px;
-  line-height: 1.5;
-}
-.disclaimer-strip strong {
-  font-weight: 600;
-}
-@media (max-width: 700px) {
-  .disclaimer-strip {
-    padding: 8px 16px;
-    font-size: 9px;
   }
 }
