@@ -146,8 +146,10 @@ from pathlib import Path
 from surveillance.datasets.common import read_manifest, write_manifest
 
 manifest = Path("data/manifests/ucf_crime.jsonl")
-rows = [replace(r, feature_path=f"../features/c3d/{r.dataset}/{r.video_id}.npy")
-        for r in read_manifest(manifest)]
+rows = [
+    replace(r, feature_path=f"../features/c3d/{r.dataset}/{r.video_id}.npy")
+    for r in read_manifest(manifest)
+]
 write_manifest(rows, Path("data/manifests/ucf_features.jsonl"))
 ```
 

@@ -1,0 +1,163 @@
+assets:
+- logical_name: Sultani scorer
+  config_key: sultani_checkpoint
+  path: runs/ucf-crime/sultani_shared_safe_v1/seed_0/best.pt
+  purpose: validation-selected UCF anomaly scorer
+  sha256: 7e5b548ea6260614209a727a947e6270a1a1af2185d29accf1778f91b4af7c66
+  required: true
+  source: Copy exact frozen Windows research demo bundle; no replacement/retraining
+  receipt: runs/ucf-crime/sultani_shared_safe_v1/seed_0/selection.json
+- logical_name: C3D FC6
+  config_key: c3d_checkpoint
+  path: checkpoints/c3d_fc6_openmmlab_v1.pt
+  purpose: frozen raw-video anomaly features
+  sha256: beac4ff065de3663bf5c6bab36aedca4fe56ec59b231c66bf5374c23eda14831
+  required: true
+  source: Copy exact frozen Windows research demo bundle; no replacement/retraining
+  receipt: Preserve export/provenance JSON sidecar where available
+- logical_name: Actor-Transformer behavior
+  config_key: behavior_checkpoint
+  path: runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt
+  purpose: six-class DCSASS observable group behavior
+  sha256: 7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69
+  required: true
+  source: Copy exact frozen Windows research demo bundle; no replacement/retraining
+  receipt: runs/dcsass/human_rgb_detected_v1/random_init_seed_0/selection.json
+- logical_name: Faster R-CNN
+  config_key: detector_checkpoint
+  path: checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth
+  purpose: COCO_V1 automatic people detection
+  sha256: 258fb6c638b15964ddcdd1ae0748c5eef1be9e732750120cc857feed3faac384
+  required: true
+  source: Copy exact frozen Windows research demo bundle; no replacement/retraining
+  receipt: Preserve export/provenance JSON sidecar where available
+- logical_name: I3D Mixed_4f
+  config_key: i3d_checkpoint
+  path: checkpoints/i3d_mixed4f_collective_rgb_v1.pt
+  purpose: frozen RGB actor features and RoIAlign
+  sha256: fe7fc30ca6f26430232e2e0f6bdffd8514478a071db065e452bff46f60f4e0c4
+  required: true
+  source: Copy exact frozen Windows research demo bundle; no replacement/retraining
+  receipt: Preserve export/provenance JSON sidecar where available
+- logical_name: example index
+  path: configs/demo_examples_ucf_v1.json
+  purpose: byte-pinned nine qualitative examples
+  required: true
+  source: Already committed
+- logical_name: Normal example
+  path: data/examples/normal.mp4
+  purpose: verified or known-limitation playback
+  sha256: 7e20fbc9272c461173823440ce4716b64f3bb1c1a002ab3d23a4c26dc6bb9f26
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Normal example cache
+  path: outputs/demo/ucf_v1/examples/normal.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Abuse example
+  path: data/examples/abuse.mp4
+  purpose: verified or known-limitation playback
+  sha256: 73d2fa2f2d3211db3e3bbc2e42e7f05d168d46d864a1dfbdc13b4eaaa37f2f8d
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Abuse example cache
+  path: outputs/demo/ucf_v1/examples/abuse.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Assault example
+  path: data/examples/assault.mp4
+  purpose: verified or known-limitation playback
+  sha256: a0655379267e994e104fa76cb60a3b24fcefe3e5f7409c949d3d5b8cbf955836
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Assault example cache
+  path: outputs/demo/ucf_v1/examples/assault.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Fighting example
+  path: data/examples/fighting.mp4
+  purpose: verified or known-limitation playback
+  sha256: 1fc34ba37dfa9946a88f05eb0e1694b8bdba345487f940cfc407b31f4556dc98
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Fighting example cache
+  path: outputs/demo/ucf_v1/examples/fighting.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Robbery example
+  path: data/examples/robbery.mp4
+  purpose: verified or known-limitation playback
+  sha256: 0c6a0bd0f836a4caa42d5fb32e810a7e2b91274c9e2b6a6d7b964340b711f4e9
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Robbery example cache
+  path: outputs/demo/ucf_v1/examples/robbery.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Vandalism example
+  path: data/examples/vandalism.mp4
+  purpose: verified or known-limitation playback
+  sha256: 6d99446c0ef78271958e8e6f36dd4b157fcd57dfe90841cd72aad8f4fd61af9b
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Vandalism example cache
+  path: outputs/demo/ucf_v1/examples/vandalism.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: 'Limitation: high-confidence mistake'
+  path: data/examples/limitation.mp4
+  purpose: verified or known-limitation playback
+  sha256: a9ce71c3e8544301c516842227a82a82f789fbfb35bf2925f1d40b45148c3354
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: 'Limitation: high-confidence mistake cache'
+  path: outputs/demo/ucf_v1/examples/limitation.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: Normal activity (previous bypass example)
+  path: data/examples/normal_bypass.mp4
+  purpose: verified or known-limitation playback
+  sha256: 8e12476728712fc598069dba68ba7a99ed2330180c61e69cf67442c25949572f
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: Normal activity (previous bypass example) cache
+  path: outputs/demo/ucf_v1/examples/normal_bypass.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService
+- logical_name: 'Robbery: correct cascade example (curated)'
+  path: data/examples/robbery_cascade_success_ucf_v1.mp4
+  purpose: verified or known-limitation playback
+  sha256: bfeb28625f4eb54328fbae703fb3fcfb4649ff4d52810f678be5facf772acb3a
+  required: false
+  source: Copy data/examples from frozen bundle; required for cached presentation
+- logical_name: 'Robbery: correct cascade example (curated) cache'
+  path: outputs/demo/ucf_v1/examples/robbery_cascade_success.json
+  purpose: genuine offline cached output
+  sha256: null
+  required: false
+  source: Copy outputs/demo/ucf_v1/examples; provenance and video hash checked by
+    DemoService

@@ -23,7 +23,7 @@ rgb = I3DActorExtractor(Path("i3d_mixed4f.pt"), frozen=True)
 # frames: float RGB [B,10,3,H,W] in [0,1]
 # boxes: float normalized xyxy [B,N,4]; valid: boolean [B,N]
 pose_features = pose(frames[:, 5], boxes, valid)  # [B,N,98304]
-rgb_features = rgb(frames, boxes, valid)         # [B,N,20800]
+rgb_features = rgb(frames, boxes, valid)  # [B,N,20800]
 ```
 
 Both are `nn.Module`s with `feature_dim`, `.backbone`, `.metadata`, `.to(device)`,
@@ -80,9 +80,13 @@ import torch
 # feature_model must be the reviewed HRNet/I3D wrapper with pretrained weights.
 # metadata must contain the exact contract above and real provenance details.
 scripted = torch.jit.script(feature_model)
-torch.jit.save(scripted, "features.pt", _extra_files={
-    "actor_backbone.json": json.dumps(metadata),
-})
+torch.jit.save(
+    scripted,
+    "features.pt",
+    _extra_files={
+        "actor_backbone.json": json.dumps(metadata),
+    },
+)
 ```
 
 Compare the exported wrapper numerically against the original model on known

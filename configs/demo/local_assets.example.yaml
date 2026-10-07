@@ -1,0 +1,6 @@
+# Copy to local_assets.yaml (ignored). Paths only; keep all original hashes/policy.
+sultani_checkpoint: runs/ucf-crime/sultani_shared_safe_v1/seed_0/best.pt
+c3d_checkpoint: checkpoints/c3d_fc6_openmmlab_v1.pt
+behavior_checkpoint: runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt
+detector_checkpoint: checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth
+i3d_checkpoint: checkpoints/i3d_mixed4f_collective_rgb_v1.pt

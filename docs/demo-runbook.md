@@ -1,3 +1,5 @@
+> The default presentation frontend is now React. Use the [Mac professor runbook](mac-professor-demo-runbook.md) for build, preflight and launch. The Gradio procedure below remains an explicit fallback and preserves the original Gradio API validation workflow.
+
 # Local professor demo runbook
 
 ## Readiness status
@@ -24,7 +26,7 @@ torch 2.13.0+cu126 and torchvision 0.28.0+cu126. Preserve these matched packages
 ```powershell
 .\.venv\Scripts\Activate.ps1
 .\.venv\Scripts\python.exe scripts/verify_demo_assets.py
-.\.venv\Scripts\python.exe -m surveillance.demo
+.\.venv\Scripts\python.exe -m surveillance.demo --ui gradio
 ```
 
 Open `http://127.0.0.1:7860`. One process serves the interface and inference.
@@ -113,7 +115,7 @@ Never substitute synthetic test videos as research examples.
 
 The default config is `configs/surveillance_demo.yaml`, identical to the versioned
 UCF deployment. To inspect the preserved older DCSASS anomaly deployment, launch
-with `--config configs/surveillance_demo_dcsass_v1.yaml`; its original caches and
+with `--ui gradio --config configs/surveillance_demo_dcsass_v1.yaml`; its original caches and
 measurements remain separate. Prerecorded uploads and examples are supported;
 webcam capture is not part of this tested MVP.
 
@@ -135,7 +137,7 @@ for that platform. The validated presentation hardware is this Windows GPU syste
 - **Zero actors:** this is an abstention, not a Normal classification. Review the
   anomaly timeline and the detector's coverage limitation.
 - **CUDA unavailable:** automatic selection falls back to CPU. Processing may be
-  slow. Explicit CPU launch is `python -m surveillance.demo --device cpu`.
+  slow. Explicit CPU launch is `python -m surveillance.demo --ui gradio --device cpu`.
 - **Port occupied:** launch with `--port 7861` and open the matching local address.
 - **Cache provenance error:** restore its pinned models/policy/video or recompute
   using the frozen trained deployment. Do not edit result values by hand.

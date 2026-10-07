@@ -1,4 +1,4 @@
-"""One-command local Gradio surveillance research console."""
+"""One-command local research console: React frontend or explicit Gradio fallback."""
 
 import argparse
 import json
@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
 os.environ.setdefault("GRADIO_TEMP_DIR", str(ROOT / "outputs/demo/gradio-temp"))
 
+from surveillance.demo_profile import load_professor_profile  # noqa: E402
 from surveillance.demo_rendering import (  # noqa: E402
     behavior_probabilities,
     interval_rows,
@@ -97,10 +98,22 @@ def create_demo(config: dict, root: Path = ROOT):
             }[alert["state"]]
             seconds = result["timings"]["total_seconds"]
             mode = (
-                "Cached example"
+                (
+                    "Known limitation example · cached inference"
+                    if selected.startswith("Limitation:")
+                    else "Verified demo example · cached inference"
+                )
                 if result["execution_mode"] == "cached_example"
-                else "On-demand inference"
+                else "Live model inference"
             )
+            if result["execution_mode"] == "cached_example":
+                system = (
+                    f"Original inference {seconds:.2f}s · "
+                    f"Cache served {result['request_seconds']:.3f}s"
+                )
+            else:
+                devices = result.get("component_devices", {})
+                system = f"Inference {seconds:.2f}s · Devices: {devices}"
             artifact = outputs / (uuid.uuid4().hex + ".json")
             artifact.write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
             response = (
@@ -112,7 +125,7 @@ def create_demo(config: dict, root: Path = ROOT):
                 caption,
                 interval_rows(result),
                 f"**{mode}** · Anomaly score **{result['anomaly']['overall_score']:.3f}** · "
-                f"Inference **{seconds:.2f}s**",
+                + system,
                 str(artifact),
                 result,
             )
@@ -139,7 +152,8 @@ def create_demo(config: dict, root: Path = ROOT):
         revision_input = gr.Number(value=0, precision=0, visible=False)
         gr.Markdown("# Surveillance behavior research", elem_classes="research-title")
         gr.Markdown(
-            "Locate unusual activity. Inspect observable behavior.",
+            "Locate unusual activity. Inspect observable behavior.\n\n"
+            "**Research prototype. Predictions may be incorrect. Human review is required.**",
             elem_classes="research-subtitle",
         )
         gr.Markdown(status_text, elem_classes="research-note")
@@ -147,7 +161,7 @@ def create_demo(config: dict, root: Path = ROOT):
             source = gr.Dropdown(
                 ["Upload a video", *service.examples],
                 value="Upload a video",
-                label="Video source",
+                label="Verified examples / live upload / known limitation",
                 scale=3,
             )
             cached = gr.Checkbox(value=True, label="Use precomputed result for examples", scale=2)
@@ -311,12 +325,36 @@ def create_demo(config: dict, root: Path = ROOT):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=ROOT / "configs/surveillance_demo.yaml")
+    parser.add_argument("--profile", choices=["professor"])
+    parser.add_argument("--ui", choices=["react", "gradio"], default="react")
+    parser.add_argument("--local-assets", type=Path)
     parser.add_argument("--port", type=int, default=7860)
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"])
     args = parser.parse_args()
-    config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    config = (
+        load_professor_profile(ROOT, args.local_assets)
+        if args.profile == "professor" or args.ui == "react"
+        else yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    )
+    if (
+        args.profile or args.ui == "react"
+    ) and args.config != ROOT / "configs/surveillance_demo.yaml":
+        parser.error("--profile professor cannot be combined with --config")
     if args.device:
         config["device"] = args.device
+    if args.ui == "react":
+        import uvicorn
+
+        from surveillance.demo_api import create_api
+
+        if not (ROOT / "frontend/dist/index.html").is_file():
+            parser.error(
+                "React UI is not built. Run: npm ci --prefix frontend; "
+                "npm run build --prefix frontend"
+            )
+        app = create_api(config, ROOT)
+        uvicorn.run(app, host="127.0.0.1", port=args.port)
+        return
     app = create_demo(config)
     app.queue(default_concurrency_limit=1)
     app.launch(
@@ -326,7 +364,12 @@ def main() -> None:
         theme=app.research_theme,
         css=CSS,
         footer_links=[],
-        allowed_paths=[str(ROOT / "data/raw"), str(ROOT / "data/examples"), str(ROOT / "outputs")],
+        allowed_paths=[
+            str(ROOT / "data/examples"),
+            str(ROOT / "outputs"),
+            str(ROOT / config["outputs"]),
+            *[str(ROOT / entry["video"]) for entry in DemoService(config, ROOT).examples.values()],
+        ],
     )
 
 

@@ -1,5 +1,6 @@
 """Local-only loading for the two-paper cascade; missing assets fail explicitly."""
 
+import logging
 import os
 from pathlib import Path
 
@@ -57,10 +58,19 @@ def load_surveillance_pipeline(config: dict, root: Path) -> SurveillancePipeline
         root / config["i3d_checkpoint"],
         str(device),
     )
-    return SurveillancePipeline(
+    pipeline = SurveillancePipeline(
         anomaly,
         behavior,
         threshold=config["anomaly_threshold"],
         max_windows=config["max_behavior_windows"],
         provenance=provenance,
     )
+    pipeline.component_devices = {
+        "sultani": str(device),
+        "c3d": str(extractor.device),
+        "faster_rcnn": str(behavior.detector.device),
+        "i3d": str(behavior.device),
+        "actor_transformer": str(behavior.device),
+    }
+    logging.getLogger(__name__).info("Demo component devices: %s", pipeline.component_devices)
+    return pipeline

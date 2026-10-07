@@ -53,3 +53,10 @@ configs/**/*.local.yaml
 ._*
 Thumbs.db
 Desktop.ini
+
+# Local professor-demo assets and external qualitative footage.
+configs/demo/local_assets.yaml
+demo_external/*
+!demo_external/manifest.example.yaml
+frontend/node_modules/
+frontend/dist/

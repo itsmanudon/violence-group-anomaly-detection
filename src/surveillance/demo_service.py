@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 
 from surveillance.datasets.dcsass_audit import sha256
+from surveillance.demo_profile import profile_hash
 from surveillance.inference.loading import load_surveillance_pipeline
 from surveillance.inference.provenance import pipeline_identity
 from surveillance.video.decode import probe_video
@@ -38,7 +39,12 @@ class DemoService:
                     raise ValueError(
                         "Cached example model or policy provenance differs from this demo"
                     )
-                result.update(execution_mode="cached_example", video_path=str(path))
+                result.update(
+                    execution_mode="cached_example",
+                    video_path=str(path),
+                    profile_sha256=profile_hash(self.config),
+                    request_seconds=time.perf_counter() - started,
+                )
                 return result
         else:
             if not video:
@@ -54,4 +60,7 @@ class DemoService:
         result["timings"]["model_loading_seconds"] = loading
         result["timings"]["request_total_seconds"] = time.perf_counter() - started
         result["execution_mode"] = "on_demand"
+        result["video_sha256"] = sha256(path)
+        result["profile_sha256"] = profile_hash(self.config)
+        result["component_devices"] = getattr(self.pipeline, "component_devices", {})
         return result

@@ -1,4 +1,4 @@
-"""Exercise the installed local demo over its public Gradio API."""
+"""Exercise the legacy API; start with python -m surveillance.demo --ui gradio."""
 
 import argparse
 import json

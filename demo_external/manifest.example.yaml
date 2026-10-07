@@ -1,0 +1,18 @@
+# Copy to manifest.yaml, add 5–8 licensed/private-permission clips, and fill every field
+# BEFORE first inference. Never revise expected labels after viewing predictions.
+clips:
+  - id: unseen_01
+    file: clip01.mp4
+    source:
+      description: REPLACE with source and permission evidence
+      license: REPLACE with license or documented permission
+      url: REPLACE with source URL or local permission reference
+    expected:
+      behavior: Normal
+      anomaly_expected: false
+    challenge: [crowd, camera_motion]
+    provenance:
+      used_for_training: false
+      used_for_validation: false
+      used_for_test: false
+      used_for_tuning: false

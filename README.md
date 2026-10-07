@@ -57,12 +57,12 @@ anomaly result skips actor inference. An anomaly with no actors preserves a
 generic alert. An anomaly with a Normal behavior prediction shows disagreement.
 Scores are uncalibrated and do not establish intent or guilt.
 
-The local Gradio interface supports uploaded videos and explicitly cached installed
+The local Gradio fallback supports uploaded videos and explicitly cached installed
 examples. Launch from the repository root after installing the completed model
 assets and optional demo dependencies:
 
 ```powershell
-.\.venv\Scripts\python.exe -m surveillance.demo
+.\.venv\Scripts\python.exe -m surveillance.demo --ui gradio
 ```
 
 Deployment pins require completed, validation-selected model receipts. Verify them
@@ -120,6 +120,28 @@ the retained author test list also contains one exact-content duplicate pair.
 Future work should prioritize independent
 surveillance validation, multi-seed evidence and detected-box adaptation before
 deployment or edge/privacy-preserving extensions.
+
+## Mac professor console
+
+The React presentation console separates verified cached examples, genuine live
+uploads and known limitations. It runs from the same local Python process after
+an offline frontend build. Follow the [Mac runbook](docs/mac-professor-demo-runbook.md)
+and [exact asset inventory](docs/mac-demo-assets.md). No full research dataset is
+needed. Copy the five frozen assets and their receipts; never replace model pins.
+
+```bash
+source .venv/bin/activate
+python -m pip install -e '.[dev,demo]'
+npm ci --prefix frontend
+npm run build --prefix frontend
+python scripts/demo_preflight.py
+python -m surveillance.demo --profile professor --device cpu
+```
+
+Open `http://127.0.0.1:7860`. Node is needed for building, not presentation-day
+launch. The previous Gradio UI remains available with `--ui gradio`.
+See the [Mac validation audit](docs/mac-demo-completion-audit.md) for current
+verified readiness and outstanding asset-dependent checks.
 
 ## Papers and current status
 
