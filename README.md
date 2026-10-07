@@ -318,6 +318,11 @@ flowchart TD
 
 ## Installation
 
+For macOS setup, external-asset transfer and cache rebuilding, follow
+[the Mac replication handoff](docs/macos-replication.md). A clone includes all
+source/config/tests/docs, but excludes datasets, checkpoints and generated runs.
+The default demo uses CPU on macOS; MPS inference is not validated.
+
 Python **3.11+**. Run from the repository root. CPU is supported; install a
 compatible CUDA PyTorch build separately if required. Installation downloads Python
 dependencies, never datasets or pretrained weights. Actor feature extraction uses

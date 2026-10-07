@@ -9,6 +9,13 @@ historical DCSASS Sultani run also completed training and evaluation.
 The five pinned deployment assets and genuine example caches are installed. This document
 retains acquisition instructions for a fresh installation.
 
+All datasets, pretrained/trained checkpoints, third-party source snapshots and
+generated caches/run receipts in this document are external to Git. See
+[the platform-neutral replication handoff](macos-replication.md) for the exact
+five-model demo bundle, required selection receipts, macOS CPU setup, configurable
+dataset roots and commands that rebuild derived artifacts. Collective/HRNet are
+needed for their benchmark workflows, not for the selected RGB demo.
+
 Current installed dataset root:
 `data/raw/dcsass/DCSASS Dataset/DCSASS Dataset/`. Use the frozen
 `data/manifests/dcsass_human_centric_v1_final.jsonl`, not a newly randomized clip

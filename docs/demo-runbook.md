@@ -13,6 +13,11 @@ See [UCF evidence](sultani-ucf-results-v1.md) and
 
 ## Environment and launch
 
+For another machine, including macOS, use [the replication handoff](macos-replication.md).
+Datasets, pretrained/trained checkpoints, selection receipts and result caches
+are intentionally external to Git. That guide distinguishes the minimal live
+inference asset bundle from the larger research dataset/cache installation.
+
 Open PowerShell in the repository root. The validated environment is Python 3.13.5,
 torch 2.13.0+cu126 and torchvision 0.28.0+cu126. Preserve these matched packages.
 

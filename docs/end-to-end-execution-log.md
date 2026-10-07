@@ -961,3 +961,51 @@ interpretation, not a measured causal domain-shift effect. No implementation or
 scientific-integrity blockers remain. Final default asset verifier passed on
 CUDA (`runs/ucf-crime/final-default-asset-verification.log`). Local milestone
 checkpoint only; no push, merge, architecture replacement or data deletion.
+
+## Final repository hygiene and merge/publication gate
+
+The user subsequently authorized an explicit local `--no-ff` merge to main,
+then authorized normal remote publication only after all local, remote-ancestry
+and dry-run gates pass. No force push, rebase, remote change or automatic remote
+divergence resolution is allowed. Initial inspection: clean feature branch
+`0e3e82919e4dafedad671c91ae236362dd645e25`; local main
+`a7f5d99dfa1c58d9b41a7288fc821263ee61986e` is an ancestor, sixteen commits behind.
+
+Audited the tracked inventory individually by category/size and searched source,
+scripts, configurations and tests for Windows drive paths, usernames and fixed
+CUDA indices. Executable defaults use pathlib/configurable paths. The existing
+drive-letter test is Windows-guarded. Historical scientific execution paths
+remain intact; no architecture or benchmark settings changed.
+
+Extended repository ignore rules for local environments/credentials/editor/OS
+files, archives, external example frames, additional feature/checkpoint formats
+and explicitly named local YAML overrides. Two regression tests check repository
+rules independently of global Git excludes and verify source/protocol/templates
+remain trackable. Null-delimited Git subprocess input avoids Windows CRLF
+filename translation. Heavy-file protection failed before the rule additions,
+then passed; no local files were deleted or untracked blindly.
+
+Added `docs/macos-replication.md`: fresh Python 3.11+ environment (3.13 suggested),
+dev/demo install, asset-free checks, CPU demo/MPS limitations, exact five-model
+bundle and both validation-selection receipts, optional cached examples,
+configurable external dataset roots and cache rebuild commands. Linked README,
+runbook and asset instructions. Added byte-count/SHA256 metadata for the two
+external author text inputs to the existing pinned source-provenance JSON;
+the split files themselves remain external. No macOS hardware verification is
+claimed, and Windows CUDA packages remain unchanged.
+
+Final publication will require a clean main with a verified two-parent merge,
+full tests/lint/format/diff and safe demo smoke, followed by fetch, remote-main
+ancestry verification, dry-run and normal pushes. The actual commit/remote
+hashes and verification results are reported in the final handoff rather than
+modifying frozen experiment reports.
+
+Pre-merge full validation completed: 544 tests passed, 325 upstream warnings,
+185.21 seconds. Ruff passed; 203 Python files formatted; diff check clean.
+The default demo help path passed, as did constructing the interface from a
+tracked-source Git archive with no model/example assets installed. This smoke
+loaded no model tensors and ran no inference. Tracked content signature scan
+found no credential matches; all reachable historical blobs are below 1 MiB
+(largest pre-finalization blob 63,114 bytes). Audit/validation logs remain ignored
+under `runs/finalization/`. Legacy ignored pytest-directory permission warnings
+did not affect tracked-file audits; no permission or original-data changes made.

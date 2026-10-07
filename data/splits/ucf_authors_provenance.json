@@ -1,4 +1,14 @@
 {
   "repository": "https://github.com/WaqasSultani/AnomalyDetectionCVPR2018",
-  "revision": "8aa957cdaa7eac821e07115fe63920c3b07da59d"
+  "revision": "8aa957cdaa7eac821e07115fe63920c3b07da59d",
+  "external_files": {
+    "Anomaly_Train.txt": {
+      "sha256": "ea91e03de7581bfa6b139e663ebb7511ab1651c33427f85741d3f497a2027744",
+      "bytes": 70394
+    },
+    "Temporal_Anomaly_Annotation.txt": {
+      "sha256": "3b9542413f2ed9e94f73bf0488c151b3d7d595a8d2ad30f524e9243a2ae2a17c",
+      "bytes": 15574
+    }
+  }
 }

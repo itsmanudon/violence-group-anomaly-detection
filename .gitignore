@@ -1,6 +1,11 @@
 .venv/
+venv/
 .uv-cache/
+.mypy_cache/
+.tox/
+.nox/
 __pycache__/
+*.py[cod]
 *.egg-info/
 .pytest_cache/
 .ruff_cache/
@@ -8,16 +13,43 @@ build/
 dist/
 data/raw/
 data/features/
+data/examples/
 data/manifests/*.jsonl
 data/splits/*.txt
 checkpoints/
 runs/
 outputs/
 configs/experiments/collective_pose_local.yaml
+configs/**/*.local.yaml
 *.pt
 *.pth
+*.ckpt
+*.safetensors
 *.npy
+*.npz
 *.mp4
 *.avi
 *.mov
 *.mkv
+
+# Downloaded dataset/source archives are external assets.
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# Machine-local credentials/settings; keep intentional example templates.
+.env
+.env.*
+!.env.example
+.aws/
+.vscode/
+.idea/
+
+# macOS / Windows metadata.
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
