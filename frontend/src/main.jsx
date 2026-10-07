@@ -431,21 +431,21 @@ function App() {
         <div className="top-meta">
           <span className="local-status">
             <i />
-            LOCAL WORKSPACE
+            Local Workspace
           </span>
           <span className="profile-tag">
-            PROFESSOR PROFILE <Icon name="shield" size={14} />
+            Professor Profile <Icon name="shield" size={14} />
           </span>
         </div>
       </header>
       <div className="workspace-bar">
         <div>
-          <span className="eyebrow">TWO-PAPER CASCADE</span>
+          <span className="eyebrow">Two-Paper Cascade</span>
           <h1>Video behavior analysis</h1>
         </div>
         <div className="workspace-info">
           <span>Frozen models · fixed thresholds</span>
-          <span className="mono">CPU safe mode</span>
+          <span className="numeric">Processor safe mode</span>
           <button
             className="icon-button"
             onClick={refresh}
@@ -488,7 +488,7 @@ function App() {
           </nav>
           <div className="library-section">
             <span className="eyebrow">
-              {mode === "live" ? "YOUR LOCAL VIDEO" : "SELECT A CASE"}
+              {mode === "live" ? "Your Local Video" : "Select A Case"}
             </span>
             <span className="count">
               {mode === "live" ? "" : examples.length}
@@ -509,7 +509,9 @@ function App() {
               >
                 Choose a video
               </button>
-              <p className="small">MP4, MOV, AVI, MKV, WebM · up to 500 MB</p>
+              <p className="small">
+                .mp4, .mov, .avi, .mkv, .webm · up to 500 megabytes
+              </p>
             </div>
           ) : (
             <div className="case-list">
@@ -572,10 +574,10 @@ function App() {
               </h2>
               <span className="source-label">
                 {mode === "live"
-                  ? "LIVE INFERENCE"
+                  ? "Live Inference"
                   : mode === "limitation"
-                    ? "KNOWN LIMITATION"
-                    : "VERIFIED EXAMPLE"}
+                    ? "Known Limitation"
+                    : "Verified Example"}
               </span>
             </div>
             <div
@@ -596,7 +598,7 @@ function App() {
                   onTimeUpdate={() => setCurrent(video.current.currentTime)}
                   onError={() =>
                     setError(
-                      "The browser could not play this video. Use an H.264 MP4 for presentation playback. Inference may support other codecs.",
+                      "The browser could not play this video. Use an H.264 mp4 for presentation playback. Inference may support other codecs.",
                     )
                   }
                 />
@@ -629,11 +631,13 @@ function App() {
                   )}
                 </div>
               )}
-              <span className="video-corner">RESEARCH / HUMAN REVIEW</span>
+              <span className="video-corner">Research / Human Review</span>
             </div>
             <div className="video-controls">
               <div className="video-detail">
-                <span className="mono">{source ? clock(current) : "—:—"}</span>
+                <span className="numeric">
+                  {source ? clock(current) : "—:—"}
+                </span>
                 <span>
                   {mode === "live"
                     ? "Actual frozen-model processing"
@@ -658,9 +662,9 @@ function App() {
             <div className="process-banner" role="status">
               <span className="spinner" />
               <strong>{phase}</strong>
-              <span className="mono">{elapsed.toFixed(1)}s elapsed</span>
+              <span className="numeric">{elapsed.toFixed(1)}s elapsed</span>
               <small>
-                CPU inference can take time. No simulated progress or
+                Local inference can take time. No simulated progress or
                 predictions.
               </small>
             </div>
@@ -697,15 +701,15 @@ function App() {
                     <tr key={i}>
                       <td>
                         <button
-                          className="seek-button mono"
+                          className="seek-button numeric"
                           onClick={() => seek(w.interval[0])}
                         >
                           {clock(w.interval[0])}–{clock(w.interval[1])}
                         </button>
                       </td>
-                      <td className="mono">{w.actor_count}</td>
+                      <td className="numeric">{w.actor_count}</td>
                       <td>{w.predicted_behavior || "Unavailable"}</td>
-                      <td className="mono">{number(w.anomaly_score)}</td>
+                      <td className="numeric">{number(w.anomaly_score)}</td>
                       <td>
                         <span
                           className={w.model_disagreement ? "warning-text" : ""}
@@ -763,7 +767,7 @@ function App() {
               }
             >
               <span className="eyebrow">
-                {result ? "MODEL OUTPUT" : "NO PREDICTION YET"}
+                {result ? "Model Output" : "No Prediction Yet"}
               </span>
               <h3>{alertTitle}</h3>
               <p>
@@ -780,21 +784,21 @@ function App() {
             </div>
             <div className="metric-row">
               <span>Sultani score</span>
-              <strong className="mono">
+              <strong className="numeric">
                 {number(result?.anomaly.overall_score)}
               </strong>
             </div>
             <div className="metric-row">
               <span>Routing threshold</span>
-              <strong className="mono">
-                0.500 <span className="fixed">FIXED</span>
+              <strong className="numeric">
+                0.500 <span className="fixed">Fixed</span>
               </strong>
             </div>
           </section>
           <section className="panel probability-panel">
             <div className="panel-heading">
               <h2>Detected behavior</h2>
-              <span className="muted">RGB actors</span>
+              <span className="muted">Color actor features</span>
             </div>
             <div className="prediction-label">
               <span>Predicted class</span>
@@ -811,7 +815,7 @@ function App() {
                 >
                   <div>
                     <span>{name}</span>
-                    <span className="mono">
+                    <span className="numeric">
                       {probabilities
                         ? `${(probabilities[i] * 100).toFixed(1)}%`
                         : "—"}
@@ -852,7 +856,7 @@ function App() {
               </div>
               <div>
                 <dt>Inference</dt>
-                <dd className="mono">
+                <dd className="numeric">
                   {result ? `${number(result.timings.total_seconds, 2)}s` : "—"}
                 </dd>
               </div>
@@ -862,7 +866,7 @@ function App() {
                     ? "Cache request"
                     : "Total request"}
                 </dt>
-                <dd className="mono">
+                <dd className="numeric">
                   {result
                     ? `${number(result.request_seconds ?? result.timings.request_total_seconds, 3)}s`
                     : "—"}
@@ -873,7 +877,7 @@ function App() {
                 <dd>
                   {result?.execution_mode === "cached_example"
                     ? "Original run"
-                    : "CPU policy"}
+                    : "Processor policy"}
                 </dd>
               </div>
             </dl>
@@ -889,7 +893,7 @@ function App() {
                 {Object.entries(result.component_devices).map(([k, v]) => (
                   <div key={k}>
                     <span>{k.replaceAll("_", " ")}</span>
-                    <span className="mono">{v}</span>
+                    <span className="numeric">{v}</span>
                   </div>
                 ))}
               </details>
@@ -908,7 +912,7 @@ function App() {
             {response && (
               <a className="download" href={response.download_url} download>
                 <Icon name="download" size={15} />
-                Download result JSON
+                Download result file
               </a>
             )}
           </section>
@@ -925,13 +929,14 @@ function App() {
         <details className="benchmark-note">
           <summary>Measured research limitations</summary>
           <p>
-            Windows/RTX results, unchanged: Collective RGB / GT 77.55% accuracy,
-            F1 0.7947; detected boxes 74.32%, F1 0.7383. DCSASS accuracy 51.02%,
-            macro F1 0.2140, balanced accuracy 22.87%. Binary anomaly accuracy
-            58.31%, F1 0.6093, AUC 0.6307. Sultani UCF frame AUC 0.7441.
-            Held-out cascade F1 0.4733, AUC 0.5118. No correct Abuse, Assault or
-            Fighting predictions in the measured DCSASS run. This is not
-            reliable production violence detection.
+            Windows research results, unchanged: Collective color features /
+            ground truth boxes 77.55% accuracy, F1 0.7947; detected boxes
+            74.32%, F1 0.7383. Dcsass accuracy 51.02%, macro F1 0.2140, balanced
+            accuracy 22.87%. Binary anomaly accuracy 58.31%, F1 0.6093, area
+            under curve 0.6307. Sultani Ucf frame area under curve 0.7441.
+            Held-out cascade F1 0.4733, area under curve 0.5118. No correct
+            Abuse, Assault or Fighting predictions in the measured Dcsass run.
+            This is not reliable production violence detection.
           </p>
         </details>
         <span className="footer-paper">

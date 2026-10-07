@@ -3,6 +3,7 @@
   color: #253444;
   background: #f2f5f7;
   font-synthesis: none;
+  font-variant-numeric: lining-nums tabular-nums;
   --ink: #243447;
   --muted: #637385;
   --border: #dbe3e9;
@@ -46,8 +47,8 @@ h3,
 p {
   margin: 0;
 }
-.mono {
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+.numeric {
+  font-family: inherit;
   font-variant-numeric: tabular-nums;
 }
 .muted,
@@ -61,7 +62,7 @@ p {
 .eyebrow {
   font-size: 10px;
   font-weight: 650;
-  letter-spacing: 1.3px;
+  letter-spacing: 0.3px;
   color: var(--muted);
 }
 .topbar {
@@ -111,7 +112,7 @@ p {
   align-items: center;
   gap: 24px;
   font-size: 10px;
-  letter-spacing: 1px;
+  letter-spacing: 0.2px;
 }
 .local-status {
   display: flex;
@@ -141,7 +142,7 @@ p {
 }
 .workspace-bar .eyebrow {
   font-size: 9px;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.4px;
 }
 h1 {
   font-size: 21px;
@@ -156,7 +157,7 @@ h1 {
   font-size: 11px;
   color: var(--muted);
 }
-.workspace-info .mono {
+.workspace-info .numeric {
   font-size: 10px;
   padding: 6px 9px;
   border: 1px solid var(--border);
@@ -217,7 +218,7 @@ h1 {
   box-shadow: 0 1px 2px #182d3910;
 }
 .mode-index {
-  font-family: monospace;
+  font-family: inherit;
   font-size: 10px;
   color: #7a8a9a;
   border: 1px solid #d7e1e8;
@@ -251,7 +252,7 @@ h1 {
 }
 .library-section .eyebrow {
   font-size: 9px;
-  letter-spacing: 1px;
+  letter-spacing: 0.2px;
 }
 .count {
   font-size: 10px;
@@ -282,7 +283,7 @@ h1 {
 }
 .case-number {
   font-size: 9px;
-  font-family: monospace;
+  font-family: inherit;
   color: #7b8d9f;
   padding-top: 2px;
 }
@@ -372,7 +373,7 @@ h1 {
 }
 .source-label {
   font-size: 8px;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.2px;
   font-weight: 600;
   color: var(--muted);
   white-space: nowrap;
@@ -431,9 +432,9 @@ h1 {
   position: absolute;
   top: 14px;
   left: 16px;
-  font-family: monospace;
+  font-family: inherit;
   font-size: 8px;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.4px;
   color: #8ca1af;
   pointer-events: none;
 }
@@ -461,7 +462,7 @@ h1 {
   color: var(--muted);
   font-size: 10px;
 }
-.video-detail .mono {
+.video-detail .numeric {
   color: #2d4858;
   font-size: 12px;
 }
@@ -523,7 +524,7 @@ h1 {
 .timeline text {
   font-size: 10px;
   fill: #708295;
-  font-family: monospace;
+  font-family: inherit;
 }
 .gridline {
   stroke: #e8edf1;
@@ -595,7 +596,7 @@ h1 {
 }
 .chart-readout {
   margin-left: auto;
-  font-family: monospace;
+  font-family: inherit;
   font-size: 8px;
 }
 .score-data {
@@ -690,7 +691,7 @@ tr:last-child td {
 }
 .review-content .eyebrow {
   font-size: 8px;
-  letter-spacing: 1.2px;
+  letter-spacing: 0.3px;
 }
 .review-content h3 {
   font-size: 18px;
@@ -866,7 +867,7 @@ dd {
   font-size: 9px;
   color: #58737b;
 }
-.process-banner .mono {
+.process-banner .numeric {
   margin-left: auto;
   font-size: 10px;
 }
@@ -1079,7 +1080,7 @@ footer {
   h1 {
     font-size: 18px;
   }
-  .workspace-info .mono {
+  .workspace-info .numeric {
     font-size: 8px;
   }
   .workspace-info {
