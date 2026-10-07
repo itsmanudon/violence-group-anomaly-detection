@@ -99,14 +99,6 @@ p {
   gap: 15px;
   align-items: center;
 }
-.brand strong span {
-  color: #93a5b6;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  border-left: 1px solid #3a4858;
-  padding-left: 15px;
-}
 .workspace-bar {
   height: 83px;
   display: flex;
@@ -1039,13 +1031,6 @@ footer {
   }
   .brand strong {
     font-size: 14px;
-  }
-  .brand strong span,
-  .profile-tag {
-    display: none;
-  }
-  .top-meta {
-    font-size: 8px;
   }
   .workspace-bar {
     padding: 14px 16px;

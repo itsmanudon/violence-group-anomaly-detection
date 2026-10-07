@@ -416,17 +416,11 @@ function App() {
   return (
     <>
       <header className="topbar">
-        <a
-          className="brand"
-          href="/"
-          aria-label="Surveillance research console"
-        >
+        <a className="brand" href="/" aria-label="Surveillance">
           <span className="brand-symbol">
             <Icon name="camera" size={21} />
           </span>
-          <strong>
-            Surveillance<span>Research console</span>
-          </strong>
+          <strong>Surveillance</strong>
         </a>
       </header>
       <div className="workspace-bar">
