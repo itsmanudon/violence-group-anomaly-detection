@@ -6,14 +6,14 @@ import pytest
 import torch
 
 from surveillance.datasets.dcsass import prepare_dcsass
-from surveillance.datasets.preparation import source_identity
+from surveillance.datasets.preparation import discover_videos, source_identity
 from surveillance.datasets.ucf_crime import (
     apply_frame_annotations,
     apply_official_splits,
     prepare_ucf_crime,
 )
 from surveillance.features.c3d import C3DFC6, C3DExtractor
-from surveillance.video.decode import iter_clips, probe_video
+from surveillance.video.decode import VideoMetadata, iter_clips, probe_video
 from surveillance.video.transforms import c3d_transform
 
 
@@ -40,6 +40,21 @@ def test_decode_padding_and_transform(tmp_path):
     assert c3d_transform(clips[0]).shape == (3, 16, 112, 112)
     with pytest.raises(FileNotFoundError):
         probe_video(tmp_path / "missing.avi")
+
+
+@pytest.mark.parametrize("reported_frames", [18, 20])
+def test_decode_rejects_inaccurate_frame_count_instead_of_false_exact_timestamps(
+    tmp_path, monkeypatch, reported_frames
+):
+    from surveillance.video import decode
+
+    path = tmp_path / "wrong-count.avi"
+    make_video(path, frames=19)
+    monkeypatch.setattr(
+        decode, "probe_video", lambda _: VideoMetadata(10.0, reported_frames, reported_frames / 10)
+    )
+    with pytest.raises(ValueError, match="frame count"):
+        list(iter_clips(path))
 
 
 def test_dcsass_uses_clip_labels_and_source_identity(tmp_path):
@@ -88,3 +103,10 @@ def test_c3d_fc6_shape_without_weights_or_allocation():
     with torch.device("meta"):
         model = C3DFC6()
         assert model(torch.empty(2, 3, 16, 112, 112)).shape == (2, 4096)
+
+
+def test_discovery_ignores_source_directories_named_mp4(tmp_path):
+    clip = tmp_path / "Fighting002_x264.mp4" / "Fighting002_x264_0.mp4"
+    clip.parent.mkdir()
+    clip.write_bytes(b"fixture")
+    assert discover_videos(tmp_path) == [clip]

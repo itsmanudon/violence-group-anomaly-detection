@@ -78,6 +78,13 @@ def test_evaluation_does_not_invent_frame_annotations(tmp_path):
         checkpoint,
     )
     assert evaluate(checkpoint, manifest)["count"] == 2
+    evidence = evaluate(checkpoint, manifest, include_predictions=True)
+    assert [r["video_id"] for r in evidence["predictions"]] == ["a", "b"]
+    assert evidence["predictions"][0]["bag_label"] == 1
+    assert len(evidence["predictions"][0]["segment_scores"]) == 32
+    assert evidence["predictions"][0]["overall_score"] == max(
+        evidence["predictions"][0]["segment_scores"]
+    )
     with pytest.raises(ValueError, match="temporal annotations unavailable"):
         evaluate(checkpoint, manifest, mode="frame")
     write_manifest([replace(rows[0], temporal_annotations=[[0.5, 1.5]]), rows[1]], manifest)

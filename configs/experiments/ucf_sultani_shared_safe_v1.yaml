@@ -1,0 +1,18 @@
+# Modern C3D compatible baseline; shared DCSASS held-out sources stay protected.
+seed: 0
+device: auto
+num_segments: 32
+feature_dim: 4096
+model:
+  hidden_dims: [512, 32]
+  dropout: 0.6
+training:
+  optimizer: adagrad
+  learning_rate: 0.001
+  epochs: 20
+  batch_size: 30
+  weight_l2: 0.001
+loss:
+  ranking_margin: 1.0
+  sparsity_weight: 0.00008
+  smoothness_weight: 0.00008

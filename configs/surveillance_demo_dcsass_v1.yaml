@@ -1,0 +1,24 @@
+# Fixed configuration; thresholds must not be retuned on presentation examples.
+sultani_checkpoint: runs/dcsass/sultani_generic_v1/seed_0/best.pt
+c3d_checkpoint: checkpoints/c3d_fc6_openmmlab_v1.pt
+c3d_mean: [104, 117, 128]
+c3d_channel_order: rgb
+c3d_batch_size: 4
+behavior_checkpoint: runs/dcsass/human_rgb_detected_v1/random_init_seed_0/best.pt
+detector_checkpoint: checkpoints/external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth
+i3d_checkpoint: checkpoints/i3d_mixed4f_collective_rgb_v1.pt
+device: auto
+anomaly_threshold: 0.5
+max_behavior_windows: 3
+examples: configs/demo_examples.json
+outputs: outputs/demo
+training_population:
+  anomaly: DCSASS generic binary clip bags v1 (not UCF frame benchmark)
+  behavior: DCSASS human-centric v1; validation-selected random Actor-Transformer
+model_sha256:
+  # Completed epoch-2 selection, verified by validation bag ROC-AUC.
+  sultani_checkpoint: cb51fdd02c3ba2e258c648a59673d9aa701e7f5132470338832096a3ac159872
+  c3d_checkpoint: beac4ff065de3663bf5c6bab36aedca4fe56ec59b231c66bf5374c23eda14831
+  behavior_checkpoint: 7870e512787e74cd76263df28e40c8bc39ecb8a3d0a5b2b8b6a7e72a218a8c69
+  detector_checkpoint: 258fb6c638b15964ddcdd1ae0748c5eef1be9e732750120cc857feed3faac384
+  i3d_checkpoint: fe7fc30ca6f26430232e2e0f6bdffd8514478a071db065e452bff46f60f4e0c4

@@ -1,5 +1,6 @@
 """Reusable scorer inference from features or locally configured C3D."""
 
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import torch
 from surveillance.features.c3d import FeatureExtractor
 from surveillance.models.sultani.model import SultaniScorer
 from surveillance.video.decode import probe_video
+from surveillance.video.segmentation import c3d_segment_frame_ranges
 
 
 @dataclass
@@ -48,6 +50,7 @@ class AnomalyPipeline:
         duration_sec: float,
         threshold: float = 0.5,
         metadata: dict | None = None,
+        timestamps: list[tuple[float, float]] | None = None,
     ) -> AnomalyResult:
         """Score one feature bag and merge consecutive thresholded intervals."""
         if not np.isfinite(duration_sec) or duration_sec <= 0 or not 0 <= threshold <= 1:
@@ -58,20 +61,35 @@ class AnomalyPipeline:
         if tensor.shape != (self.num_segments, self.model.feature_dim):
             raise ValueError(f"Expected [{self.num_segments},{self.model.feature_dim}] features")
         scores = self.model(tensor).cpu().tolist()
-        edges = np.linspace(0, duration_sec, self.num_segments + 1).tolist()
-        timestamps = list(zip(edges[:-1], edges[1:]))
+        timestamp_policy = "uniform-duration segments (approximate for padded C3D clips)"
+        if timestamps is None:
+            edges = np.linspace(0, duration_sec, self.num_segments + 1).tolist()
+            timestamps = list(zip(edges[:-1], edges[1:]))
+        else:
+            values = np.asarray(timestamps, dtype=float)
+            if (
+                values.shape != (self.num_segments, 2)
+                or not np.isfinite(values).all()
+                or (values[:, 0] < 0).any()
+                or (values[:, 0] >= values[:, 1]).any()
+                or (values[:, 1] > duration_sec + 1e-8).any()
+                or (np.diff(values[:, 0]) < 0).any()
+            ):
+                raise ValueError("Invalid explicit segment timestamps")
+            timestamps = [tuple(pair) for pair in values.tolist()]
+            timestamp_policy = "explicit extractor temporal-unit boundaries"
         intervals: list[tuple[float, float]] = []
         for score, (start, end) in zip(scores, timestamps):
             if score >= threshold:
-                if intervals and intervals[-1][1] == start:
-                    intervals[-1] = (intervals[-1][0], end)
+                if intervals and start <= intervals[-1][1]:
+                    intervals[-1] = (intervals[-1][0], max(intervals[-1][1], end))
                 else:
                     intervals.append((start, end))
         info = dict(metadata or {})
         info.update(
             duration_sec=duration_sec,
             threshold=threshold,
-            timestamp_policy="uniform-duration segments (approximate for padded C3D clips)",
+            timestamp_policy=timestamp_policy,
         )
         return AnomalyResult(max(scores), scores, timestamps, intervals, info)
 
@@ -84,9 +102,29 @@ class AnomalyPipeline:
             )
         metadata = probe_video(path)
         features = self.extractor.extract_video(path, self.num_segments)
-        return self.predict_features(
+        unit_frames = getattr(self.extractor, "temporal_unit_frames", None)
+        frame_ranges = (
+            c3d_segment_frame_ranges(metadata.num_frames, self.num_segments, unit_frames)
+            if unit_frames is not None
+            else None
+        )
+        started = time.perf_counter()
+        result = self.predict_features(
             features,
             metadata.duration_sec,
             threshold,
-            dict(video_path=str(path), fps=metadata.fps, num_frames=metadata.num_frames),
+            dict(
+                video_path=str(path),
+                fps=metadata.fps,
+                num_frames=metadata.num_frames,
+                segment_frame_ranges=frame_ranges,
+            ),
+            timestamps=[(a / metadata.fps, b / metadata.fps) for a, b in frame_ranges]
+            if frame_ranges is not None
+            else None,
         )
+        result.metadata["timings"] = {
+            **getattr(self.extractor, "last_timings", {}),
+            "sultani_seconds": time.perf_counter() - started,
+        }
+        return result

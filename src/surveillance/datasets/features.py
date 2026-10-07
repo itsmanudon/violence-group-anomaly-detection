@@ -1,5 +1,6 @@
 """Precomputed feature bags shared by training and evaluation."""
 
+import hashlib
 from pathlib import Path
 
 import numpy as np
@@ -41,4 +42,12 @@ def record_features(record: Record, manifest: Path, segments: int, dimension: in
         raise ValueError(
             f"{record.video_id}: feature_path missing; extract or attach features first"
         )
-    return load_features(resolve_path(record.feature_path, manifest), segments, dimension)
+    path = resolve_path(record.feature_path, manifest)
+    if record.feature_sha256 is not None:
+        with path.open("rb") as stream:
+            digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        if digest != record.feature_sha256:
+            raise ValueError(
+                f"{record.video_id}: feature identity changed after cache registration"
+            )
+    return load_features(path, segments, dimension)

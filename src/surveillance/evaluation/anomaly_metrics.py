@@ -18,10 +18,21 @@ def project_scores(scores: Sequence[float], num_frames: int, mode: str = "repeat
     segment at each frame center. Interpolation uses segment/frame centers.
     This is a uniform-duration approximation for precomputed bags; extraction
     includes a padded last 16-frame clip, so exact clip/frame boundaries may differ.
+    c3d_units follows the approved nonoverlapping 16-frame extraction partitions;
+    repeated short-video ranges use their mean score.
     """
     scores = np.asarray(scores, dtype=float)
     if scores.ndim != 1 or not len(scores) or num_frames < 1 or not np.isfinite(scores).all():
         raise ValueError("Expected finite 1D scores and positive frame count")
+    if mode == "c3d_units":
+        from surveillance.video.segmentation import c3d_segment_frame_ranges
+
+        ranges = c3d_segment_frame_ranges(num_frames, len(scores))
+        projected = np.zeros(num_frames, dtype=float)
+        for bounds in set(ranges):
+            indices = [i for i, pair in enumerate(ranges) if pair == bounds]
+            projected[bounds[0] : bounds[1]] = scores[indices].mean()
+        return projected
     if mode == "interpolate":
         return np.interp(
             (np.arange(num_frames) + 0.5) / num_frames,
@@ -29,7 +40,7 @@ def project_scores(scores: Sequence[float], num_frames: int, mode: str = "repeat
             scores,
         )
     if mode != "repeat":
-        raise ValueError("mode must be repeat or interpolate")
+        raise ValueError("mode must be repeat, interpolate or c3d_units")
     if num_frames < len(scores):
         return scores[
             np.minimum(

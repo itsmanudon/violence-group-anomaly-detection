@@ -39,7 +39,7 @@ def iter_clips(path: Path, clip_length: int = 16) -> Iterator[np.ndarray]:
     """Yield nonoverlapping BGR uint8 clips; pad final clip with its last frame."""
     if clip_length < 1:
         raise ValueError("clip_length must be positive")
-    probe_video(path)
+    metadata = probe_video(path)
     capture = cv2.VideoCapture(str(path))
     frames = []
     decoded = 0
@@ -55,6 +55,11 @@ def iter_clips(path: Path, clip_length: int = 16) -> Iterator[np.ndarray]:
                 frames = []
         if not decoded:
             raise ValueError(f"Video contains no decodable frames: {path}")
+        if decoded != metadata.num_frames:
+            raise ValueError(
+                f"Decoded frame count {decoded} differs from reported {metadata.num_frames}: "
+                f"{path}. Exact timeline mapping requires a complete, consistent video."
+            )
         if frames:
             frames.extend([frames[-1]] * (clip_length - len(frames)))
             yield np.stack(frames)

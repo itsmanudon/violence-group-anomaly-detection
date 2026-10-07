@@ -28,12 +28,19 @@ class Record:
     num_frames: int | None = None
     temporal_annotations: list[list[float]] | None = None
     feature_path: str | None = None
+    feature_sha256: str | None = None
 
     def __post_init__(self) -> None:
         if not all((self.dataset, self.video_id, self.source_video_id, self.path)):
             raise ValueError("dataset, video_id, source_video_id and path must be nonempty")
         if self.split not in {"train", "val", "test"} or self.label not in {0, 1}:
             raise ValueError("split must be train/val/test and label must be 0/1")
+        if self.feature_sha256 is not None and (
+            not isinstance(self.feature_sha256, str)
+            or len(self.feature_sha256) != 64
+            or any(c not in "0123456789abcdef" for c in self.feature_sha256)
+        ):
+            raise ValueError("feature_sha256 must be a lowercase SHA256 identity")
         for value in (self.duration_sec, self.fps, self.num_frames):
             if value is not None and (value <= 0 or not float("-inf") < value < float("inf")):
                 raise ValueError("Video metadata must be positive and finite")

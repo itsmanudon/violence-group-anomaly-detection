@@ -1,6 +1,6 @@
 # Local datasets and manifests
 
-No script downloads data. Acquire DCSASS and UCF-Crime from authorized sources and
+No script downloads data. Acquire DCSASS, UCF-Crime, and Collective Activity from authorized sources and
 unpack locally. Videos/features/checkpoints/manifests/split lists are ignored by
 Git. Preserve dataset versions, licenses, and split provenance in experiment notes.
 
@@ -178,3 +178,233 @@ Missing/incompatible weights fail before extraction. Tests/scorer development do
 not require them. Extraction streams 16-frame clips, pads the final one, stores
 embeddings, partitions temporal units, averages, L2-normalizes, and preserves source
 IDs/splits in the output manifest.
+
+## Collective Activity (Milestone 2A)
+
+The actor task has its own `ActorRecord` JSONL schema; do not pass these records
+to the Milestone 1 binary anomaly scripts. Acquire and unpack the original
+Collective Activity dataset locally; no downloader is provided. Expected layout:
+
+```text
+data/raw/collective/
+  seq01/
+    annotations.txt
+    frame0001.jpg
+    frame0002.jpg
+    ...
+  seq02/
+    annotations.txt
+    frame0001.jpg
+    ...
+  ...
+  seq44/
+    annotations.txt
+    frame0001.jpg
+    ...
+data/features/collective/
+  pose/                    [actors,98304] float .npy arrays and provenance .json
+  rgb/                     [actors,20800] float .npy arrays and provenance .json
+```
+
+Each annotation row starts with six whitespace-separated integer columns:
+`frame x y width height action`; extra trailing metadata is ignored. For example
+`1 20 30 40 80 2` identifies a crossing actor in frame 1 with xywh box
+`[20,30,40,80]`. This is the actual annotation layout verified against a
+[released Collective loader](https://github.com/wjchaoGit/Group-Activity-Recognition/blob/master/collective.py),
+not an inferred folder-label scheme. Frames are numbered from 1 and must be
+consecutive. Annotation centers are 1,11,21,...; each manifest clip contains
+center-5 through center+4, clamped at sequence boundaries. Raw action 1 is NA and
+excluded; 2..6 map to crossing/waiting/queueing/walking/talking IDs 0..4.
+
+The group label is the majority valid actor action (ties use the lowest class ID).
+An all-NA scene, malformed label, nonpositive/out-of-bounds box, missing image,
+or unexpected annotation layout fails with a diagnostic. Source image dimensions
+determine normalization; boxes become `[x/W,y/H,(x+w)/W,(y+h)/H]`. No actor identity,
+tracking or box interpolation is invented. Details and protocol citations are in
+[docs/collective-format.md](../docs/collective-format.md).
+
+```powershell
+python scripts/prepare_collective.py --root data/raw/collective --output data/manifests/collective.jsonl
+# Optional development holdout from training sources only:
+python scripts/prepare_collective.py --root data/raw/collective --output data/manifests/collective.jsonl --val-sequences 1 2 3
+```
+
+Default test source IDs are **5,6,7,8,9,10,11,15,16,25,28,29**; the other IDs
+in 1..44 are training. This 32/12 split is verified from the related authors'
+[configuration](https://github.com/wjchaoGit/Group-Activity-Recognition/blob/master/config.py).
+The Actor-Transformers paper does not enumerate IDs, so exact identity with its
+split is not asserted. `--train-sequences` and `--test-sequences` accept explicit
+integer lists. `--allow-subset` is for development fixtures and relaxes 32/12 counts;
+it does not create benchmark evidence. Validation subtracts sources from training.
+All clips from a source stay together. Manifest validation also rejects reused
+physical frame/feature paths across splits and duplicate source/center records.
+
+Required actor fields: `dataset`, `video_id`, `source_video_id`, `clip_id`, `split`,
+ten `frame_paths`, ten ordered `frame_indices`, normalized `actor_boxes` `[N,4]`,
+`actor_labels` `[N]`, and scalar `group_label`. Optional `pose_feature_path` and
+`rgb_feature_path` default to null. Example single JSONL record (wrapped here):
+
+```json
+{
+  "dataset": "collective", "video_id": "seq01", "source_video_id": "seq01",
+  "clip_id": "seq01:6", "split": "train",
+  "frame_paths": ["../raw/collective/seq01/frame0001.jpg", "../raw/collective/seq01/frame0002.jpg", "../raw/collective/seq01/frame0003.jpg", "../raw/collective/seq01/frame0004.jpg", "../raw/collective/seq01/frame0005.jpg", "../raw/collective/seq01/frame0006.jpg", "../raw/collective/seq01/frame0007.jpg", "../raw/collective/seq01/frame0008.jpg", "../raw/collective/seq01/frame0009.jpg", "../raw/collective/seq01/frame0010.jpg"],
+  "frame_indices": [1,2,3,4,5,6,7,8,9,10],
+  "actor_boxes": [[0.1,0.2,0.3,0.8],[0.5,0.1,0.7,0.9]],
+  "actor_labels": [0,0], "group_label": 0,
+  "pose_feature_path": "../features/collective/pose/example.npy",
+  "rgb_feature_path": null
+}
+```
+
+The example illustrates the generic schema; the preparation script emits centers
+1,11,21,... and absolute image paths. Serialize each full object on one line.
+Paths in hand-authored manifests resolve relative to their JSONL file. Extraction
+rebases existing paths when writing a new manifest, retaining absolute references
+when Windows drive letters differ. Precomputed-only training does not require the
+image paths to exist, but source/split checks still apply.
+
+Import finite float `.npy` arrays `[N,D]` in exactly the same actor order as the
+boxes/labels, or run the extractors after preparing vetted local exports:
+
+```powershell
+python scripts/extract_pose_features.py --manifest data/manifests/collective.jsonl --output-manifest data/manifests/collective_pose.jsonl --feature-dir data/features/collective --checkpoint checkpoints/hrnet_w32_features.pt
+python scripts/extract_i3d_features.py --manifest data/manifests/collective_pose.jsonl --output-manifest data/manifests/collective_both.jsonl --feature-dir data/features/collective --checkpoint checkpoints/i3d_mixed4f.pt
+```
+
+See [local backbone exports](../docs/actor-backbones.md) for HRNet COCO weight
+provenance, I3D Mixed_4f export metadata and preprocessing requirements. Arbitrary
+state dictionaries are not accepted by these feature-only archive adapters.
+Each extraction creates a sidecar recording checkpoint SHA256, metadata, actor
+boxes, image size and feature shape. Preserve those sidecars when importing or
+sharing arrays. No actual pretrained HRNet/I3D checkpoint is included or downloaded.
+
+## Person detections and feature caches (Milestone 2B)
+
+Keep the original actor manifest as the GT annotation authority. Person detections
+are a separate **version 1 JSONL** artifact, one record per scene, including empty
+results. No script downloads detector weights or data. For example (one JSONL line):
+
+```json
+{"version":1,"coordinate_system":"absolute_xyxy","dataset":"collective","video_id":"seq01","source_video_id":"seq01","clip_id":"seq01:11","frame_index":11,"image_height":480,"image_width":720,"detections":[{"box":[20,30,60,110],"score":0.92,"class_id":1}],"metadata":{"person_class_id":1},"pose_feature_path":null,"rgb_feature_path":null,"feature_metadata":{}}
+```
+
+`frame_index` must equal the GT record's `frame_indices[5]`; dataset/clip/video/source
+identities must agree. `image_width/height` describe the **native reference image**.
+Boxes are finite absolute xyxy edge coordinates, bounded by those dimensions,
+with positive area. Confidence is in `[0,1]`. Only the declared person class is
+accepted (metadata `person_class_id`, default 1). `detections: []` is a valid
+no-person result. Missing scene records are errors, not equivalent to zero boxes.
+
+Writer order is deterministic by `(dataset,clip_id)`. Actors are left-to-right
+by center x, then center y, coordinates, descending confidence and class. Uncached
+records can be reordered on read; cached unsorted records fail rather than corrupt
+feature row alignment. Duplicate clip/source-center records and incorrect
+coordinate declarations fail. Metadata stores checkpoint SHA256, filter settings,
+before/after counts and per-stage rejection/truncation counts when produced locally.
+The parser does not rerun filters on an already finalized detection artifact.
+
+```powershell
+python scripts/detect_people.py --manifest data/manifests/collective.jsonl --config configs/person_detector.yaml --output data/manifests/collective_detections.jsonl
+python scripts/extract_pose_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detections.jsonl --output-manifest data/manifests/collective_detected_pose.jsonl --feature-dir data/features/collective --checkpoint checkpoints/hrnet_w32_features.pt
+python scripts/extract_i3d_features.py --manifest data/manifests/collective.jsonl --box-source detections --detections data/manifests/collective_detected_pose.jsonl --output-manifest data/manifests/collective_detected_both.jsonl --feature-dir data/features/collective --checkpoint checkpoints/i3d_mixed4f.pt
+```
+
+Set the local Faster R-CNN checkpoint in the detector YAML. Checkpoint paths in
+YAML resolve beside that YAML; feature paths resolve beside their detection JSONL.
+The dataset layout is unchanged. Detection cache files belong under
+`data/manifests/`; arrays/provenance belong under `data/features/` (both ignored).
+
+The extraction outputs preserve detection records and add `pose_feature_path`
+and/or `rgb_feature_path` plus a `feature_metadata` mapping keyed by modality.
+Each mapping contains `detection_fingerprint`, `source_fingerprint`,
+`feature_sha256`, checkpoint SHA256, backbone metadata, extraction `image_size`,
+shape and box source. Loaded arrays must be finite float `[N,D]` in detection order.
+Ordered box/source/content fingerprints are mandatory when importing cached arrays;
+use `detection_fingerprint(result)` and `source_fingerprint(gt_row,gt_manifest)` to
+compute them. SHA256 hashes identify the saved `.npy` bytes. A source fingerprint
+identifies ordered resolved paths and frame indices, not actual source image bytes.
+Preserve image data and provenance separately. Empty scenes remain records and
+bypass feature/model calls at inference.
+
+Ground-truth and detected feature files are never interchangeable, even after
+matching. Matching transfers only class supervision for **evaluation**, never GT
+crop features. Unmatched action labels stay unknown; group labels remain the
+original scene annotations. See [person-detection.md](../docs/person-detection.md)
+for matching, metric denominators, empty-scene policy and local checkpoint contract.
+
+## Collective real benchmark validation (Milestone 2C)
+
+The strict benchmark path expects all `seq01` through `seq44`, each containing
+`annotations.txt` and consecutive `frame0001.jpg`, `frame0002.jpg`, ... files.
+It reuses the exact annotation parser described above. No guessed annotation
+format, download, silent label replacement or silent box clipping is introduced.
+Install data in `data/raw/collective/` under its applicable license.
+
+```powershell
+python scripts/validate_collective.py --root data/raw/collective --report runs/collective/dataset_validation.json --val-sequences 1 2 3
+python scripts/run_collective_experiment.py --stage prepare
+```
+
+The protocol preserves the released 32/12 IDs, explicitly holds out training
+sequences 1,2,3 for validation, and verifies original train/test source assignment,
+duplicate scenes, referenced frames, labels, dimensions, finite in-bounds boxes,
+group-majority supervision, temporal windows and physical-path leakage.
+Validation reports include counts/class distributions by split, actor-count
+warnings and structural failures. A supplied `--manifest` is compared to the
+parsed raw annotations. Failures save reports and exit nonzero. The benchmark
+requires all 44 sources; `--allow-subset` is only for non-benchmark fixtures.
+
+See [collective-protocol.md](../docs/collective-protocol.md) for the precise split,
+preprocessing, local exports, staged commands and metric populations. Current
+feature extraction writes schema-v2 provenance sidecars and detected JSONL metadata.
+Benchmark validation rejects older caches, changed boxes/order, different checkpoint
+fingerprints, altered image size/preprocessing, wrong feature dimensions and changed
+feature bytes. Re-extract old caches or import complete verified provenance; do not
+invent metadata for unknown features. The legacy standalone trainer remains usable
+for model development on synthetic/precomputed arrays.
+
+Detector confidence is selected only from broad validation candidates with explicit
+local pretrained-weight and backend-cap provenance. Final detections reference
+the selected filters' receipt hash. Test sources cannot be relabeled as validation
+for tuning. All extraction, selection, freeze and run artifacts belong under the
+gitignored data/run directories; do not redistribute dataset imagery in reports.
+
+## First real pose baseline (Milestone 2C-R1)
+
+Acquire the original `dataset.ver1` manually from the
+[authors' Collective dataset page](https://cvgl.stanford.edu/projects/collective/collectiveActivity.html)
+and install all 44 sequences under the layout above. Use the original five-class
+release, not the augmented dancing/jogging variant. The official annotation rows are
+`frame x y width height class_id pose_id`; the existing parser uses the first
+six fields and ignores the trailing pose ID. No actor identities or tracking
+labels are inferred. Validate the unchanged test IDs and training-only holdout
+1,2,3 through the frozen protocol tooling, not a new random split.
+
+Supply a vetted local official HRNet checkout and
+`checkpoints/pose_hrnet_w32_256x192.pth` (official COCO keypoint weights). Follow
+[hrnet-export.md](../docs/hrnet-export.md) to create
+`checkpoints/hrnet_w32_features.pt`. The protocol records the converted archive's
+SHA256; its metadata also records the original checkpoint and source hashes.
+The [pose-only real workflow](../docs/milestone-2c-real-pose.md) gives commands for
+data preparation/validation, ten-scene inspection, optional ignored GT-box overlays,
+five-step preflight, full pose cache extraction, freeze, seed-0 training and seed
+aggregation. These caches are `[actors,98304]` in annotation order, not synthetic
+arrays. Existing provenance checks reject changed images/annotations, actor order,
+checkpoint identity, preprocessing or feature content.
+
+No real Collective tree or official HRNet assets were bundled during tooling
+implementation. Subsequently supplied local assets validated successfully, and
+the first pose/GT seed-0 run is recorded in the linked real workflow. Dataset
+images, overlays, exports, caches and run outputs must remain ignored. No
+detector or RGB asset is needed for this phase. Seeds 1/2 await review.
+## Visible Collective boundary boxes
+
+Strict annotation bounds remain the default. For the real release's partially
+visible actors, an experiment may explicitly set
+`dataset.annotation_box_policy: clip_to_image` in a newly versioned protocol.
+Validation logs every raw-to-visible box correction; it preserves actor order and
+labels and rejects fully outside/nonpositive/duplicate visible boxes. Original
+annotations are never rewritten. The validation CLI exposes the same choice via
+`--box-policy clip_to_image`. See
+[the real pose execution policy](../docs/milestone-2c-real-pose.md#visible-boundary-actors-in-the-installed-release).
