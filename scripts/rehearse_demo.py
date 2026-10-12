@@ -85,7 +85,18 @@ def main():
                 result=result,
                 anomaly_matches=(alert["state"] != "no_anomaly")
                 == entry["expected"]["anomaly_expected"],
-                behavior_matches=alert.get("behavior") == entry["expected"]["behavior"],
+                behavior_matches=(
+                    alert["behavior"] == entry["expected"]["behavior"]
+                    if alert.get("behavior") is not None
+                    else None
+                ),
+                behavior_status=(
+                    "available"
+                    if alert.get("behavior") is not None
+                    else "no_actors"
+                    if result.get("behavior", {}).get("windows")
+                    else "not_examined"
+                ),
             )
         except (OSError, ValueError, RuntimeError) as error:
             record["error"] = str(error)

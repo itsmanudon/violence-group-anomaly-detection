@@ -34,3 +34,31 @@ python -m surveillance.demo --profile professor
 ```
 
 No full dataset, HRNet, upstream I3D checkout, training feature cache or Collective transfer initialization is needed for this selected frozen demo.
+
+## Exact Legion transfer tree
+
+Copy this small subset of the completed Legion repository onto the SSD, preserving
+relative directories. Place it under a named folder such as `professor_demo_bundle/`
+and supply that folder path. Trained-model `selection.json` receipts are mandatory.
+
+```text
+checkpoints/
+  c3d_fc6_openmmlab_v1.pt
+  i3d_mixed4f_collective_rgb_v1.pt
+  external/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth
+runs/
+  ucf-crime/sultani_shared_safe_v1/seed_0/
+    best.pt
+    selection.json
+  dcsass/human_rgb_detected_v1/random_init_seed_0/
+    best.pt
+    selection.json
+data/examples/                         # nine indexed demonstration videos
+outputs/demo/ucf_v1/examples/           # their nine genuine JSON result caches
+```
+
+Include existing export JSON sidecars alongside the C3D/I3D archives where available.
+The full UCF folder already mounted on the Mac contains footage/annotations and
+has no model checkpoints. Copying more full datasets will not supply these learned
+assets. Independent qualitative rehearsal clips can be supplied separately with
+source/permission evidence and expectations recorded before their first inference.

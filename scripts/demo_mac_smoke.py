@@ -5,7 +5,6 @@ import json
 import time
 from pathlib import Path
 
-import numpy as np
 import torch
 from _common import run_cli
 
@@ -40,9 +39,7 @@ def main():
         "c3d": lambda: pipeline.anomaly.extractor.model(
             torch.zeros(1, 3, 16, 112, 112, device=device)
         ),
-        "faster_rcnn": lambda: (
-            pipeline.behavior.detector.detect(np.zeros((480, 720, 3), dtype=np.uint8)).scores
-        ),
+        "faster_rcnn": lambda: pipeline.behavior.detector.detect(torch.zeros(3, 480, 720)).scores,
         "i3d": lambda: pipeline.behavior.extractor(
             frames.to(device), boxes.to(device), valid.to(device)
         ),

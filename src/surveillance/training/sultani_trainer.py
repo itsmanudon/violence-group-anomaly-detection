@@ -36,6 +36,9 @@ def select_device(requested: str = "auto") -> torch.device:
     if requested.startswith("cuda") and not torch.cuda.is_available():
         LOGGER.warning("CUDA unavailable; using CPU")
         return torch.device("cpu")
+    if requested.startswith("mps") and not torch.backends.mps.is_available():
+        LOGGER.warning("MPS unavailable; using CPU")
+        return torch.device("cpu")
     return torch.device(requested)
 
 

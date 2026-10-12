@@ -1,6 +1,7 @@
 """Offline demo service: genuine uploaded inference or explicit example-result caches."""
 
 import json
+import logging
 import time
 from pathlib import Path
 
@@ -18,6 +19,7 @@ class DemoService:
         entries = json.loads(path.read_text()) if path.is_file() else []
         self.examples = {entry["name"]: entry for entry in entries}
         self.pipeline = None
+        self.device_fallback = None
 
     def analyze(self, video: str | None, example: str, use_cache: bool = True) -> dict:
         started = time.perf_counter()
@@ -52,11 +54,27 @@ class DemoService:
             path = Path(video[0] if isinstance(video, tuple) else video)
         probe_video(path)
         loading = 0.0
-        if self.pipeline is None:
+        try:
+            if self.pipeline is None:
+                before = time.perf_counter()
+                self.pipeline = load_surveillance_pipeline(self.config, self.root)
+                loading = time.perf_counter() - before
+            result = self.pipeline.predict_video(path)
+        except (RuntimeError, NotImplementedError) as error:
+            devices = getattr(self.pipeline, "component_devices", {})
+            mps_requested = self.config.get("device") == "mps" or "mps" in devices.values()
+            if not mps_requested or "mps" not in str(error).lower():
+                raise
+            self.device_fallback = {"from": "mps", "to": "cpu", "reason": str(error)}
+            logging.getLogger(__name__).warning(
+                "MPS operator failed; retrying frozen inference on CPU: %s", error
+            )
             before = time.perf_counter()
-            self.pipeline = load_surveillance_pipeline(self.config, self.root)
-            loading = time.perf_counter() - before
-        result = self.pipeline.predict_video(path)
+            self.pipeline = load_surveillance_pipeline({**self.config, "device": "cpu"}, self.root)
+            loading += time.perf_counter() - before
+            result = self.pipeline.predict_video(path)
+        if self.device_fallback:
+            result["device_fallback"] = self.device_fallback
         result["timings"]["model_loading_seconds"] = loading
         result["timings"]["request_total_seconds"] = time.perf_counter() - started
         result["execution_mode"] = "on_demand"

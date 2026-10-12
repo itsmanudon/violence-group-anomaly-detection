@@ -18,6 +18,7 @@ from surveillance.demo_profile import profile_hash
 from surveillance.demo_rendering import reference_gallery
 from surveillance.demo_service import DemoService
 from surveillance.inference.loading import asset_status
+from surveillance.training.sultani_trainer import select_device
 
 
 class AnalyzeRequest(BaseModel):
@@ -91,7 +92,12 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
             "assets": assets,
             "examples": examples,
             "profile_sha256": profile_hash(config),
-            "device_policy": "CPU safe mode on macOS; MPS components unvalidated",
+            "device": str(service.pipeline.behavior.device)
+            if service.pipeline is not None
+            else str(select_device(config.get("device", "auto"))),
+            "device_policy": (
+                "auto selects CPU on macOS; explicit MPS supported with logged CPU fallback"
+            ),
         }
 
     @app.post("/api/upload")

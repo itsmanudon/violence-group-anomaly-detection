@@ -430,7 +430,13 @@ function App() {
         </div>
         <div className="workspace-info">
           <span>Frozen models · fixed thresholds</span>
-          <span className="numeric">Processor safe mode</span>
+          <span className="numeric">
+            {status?.device === "mps"
+              ? "Apple graphics"
+              : status?.device === "cuda"
+                ? "Graphics processor"
+                : "Processor safe mode"}
+          </span>
           <button
             className="icon-button"
             onClick={refresh}

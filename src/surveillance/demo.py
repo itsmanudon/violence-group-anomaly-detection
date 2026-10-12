@@ -329,7 +329,7 @@ def main() -> None:
     parser.add_argument("--ui", choices=["react", "gradio"], default="react")
     parser.add_argument("--local-assets", type=Path)
     parser.add_argument("--port", type=int, default=7860)
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"])
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"])
     args = parser.parse_args()
     config = (
         load_professor_profile(ROOT, args.local_assets)

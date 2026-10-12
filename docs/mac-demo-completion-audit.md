@@ -56,6 +56,22 @@ A first post-change suite exposed two loader validation-order regressions. The
 established order was restored and the subsequent full suite passed. Both failed
 and passing logs remain under ignored `runs/demo_mac/`.
 
+## Mounted UCF dataset access
+
+The supplied Seagate_2TB UCF folder is readable. A filename inventory found
+1,950 MP4 files: 950 anomaly videos, 800 training Normal videos, 150 testing
+Normal videos and 50 event-recognition Normal videos. This is an access inventory,
+not a full decode audit or repeat benchmark evaluation.
+
+`Anomaly_Train.txt` and the supplied temporal annotation file match the exact
+SHA256/byte-count pins in `data/splits/ucf_authors_provenance.json`. Sixteen frames
+each from `Normal_Videos_003_x264.mp4` and `Robbery020_x264.mp4` decoded successfully
+at 320×240 and 30 FPS. Receipt: `runs/demo_mac/dataset-access.json`.
+No model scoring, training or threshold changes were performed. These research
+videos are not external unseen rehearsal clips. No model checkpoints or selection
+receipts were found in the supplied dataset directory, so inference remains blocked
+until the frozen Legion demo bundle is transferred.
+
 ## Required local assets
 
 See [complete inventory](mac-demo-assets.md) and

@@ -94,3 +94,42 @@ def test_changed_bundled_video_is_rejected_before_live_decode_or_model_loading(
     )
     with pytest.raises(ValueError, match="example video"):
         service.analyze(None, "Normal", use_cache=False)
+
+
+def test_mps_operator_failure_retries_identical_frozen_policy_on_cpu(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    video = tmp_path / "uploaded.mp4"
+    video.write_bytes(b"unit-only fixture")
+    config = {**demo_config(tmp_path / "missing.json"), "device": "mps"}
+    loads = []
+
+    def load(settings, root):
+        loads.append(settings)
+        if settings["device"] == "mps":
+
+            def predict(path):
+                raise RuntimeError("operator not implemented for MPS")
+
+            return SimpleNamespace(predict_video=predict, component_devices={"c3d": "mps"})
+        return SimpleNamespace(
+            predict_video=lambda path: {"timings": {}}, component_devices={"c3d": "cpu"}
+        )
+
+    monkeypatch.setattr("surveillance.demo_service.probe_video", lambda path: None)
+    monkeypatch.setattr("surveillance.demo_service.load_surveillance_pipeline", load)
+    result = DemoService(config, tmp_path).analyze(str(video), "Upload a video", False)
+    assert [c["device"] for c in loads] == ["mps", "cpu"]
+    assert pipeline_identity(loads[0]) == pipeline_identity(loads[1])
+    assert result["component_devices"] == {"c3d": "cpu"}
+    assert result["device_fallback"]["reason"] == "operator not implemented for MPS"
+    assert result["execution_mode"] == "on_demand"
+
+
+def test_unavailable_mps_selects_cpu(monkeypatch):
+    import torch
+
+    from surveillance.training.sultani_trainer import select_device
+
+    monkeypatch.setattr(torch.backends.mps, "is_available", lambda: False)
+    assert str(select_device("mps")) == "cpu"
