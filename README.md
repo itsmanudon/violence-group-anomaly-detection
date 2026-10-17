@@ -6,6 +6,24 @@ proposes suspicious intervals, detects people, extracts frozen RGB actor feature
 and predicts observable behavior for human review. Separate model outputs,
 disagreement and no-actor abstention remain visible.
 
+## Municipal evaluation platform (local pilot)
+
+Launch the six-screen evaluation console with `python -m surveillance.municipal`
+and open `http://127.0.0.1:7861`. It extends the existing Gradio React console with
+a SQLite clip catalog, durable batch queue, blinded reviews, protected reference
+versions, population-specific metrics and CSV/JSON/printable exports. It starts
+empty, requires no new dataset and does not download models or footage. The frozen
+research pipeline and original professor console remain available.
+
+Install the local `.[municipal,dev]` extras before going offline; run
+`python -m surveillance.municipal --preflight` to verify installed frozen assets.
+See the [pilot runbook](docs/municipal-demo-runbook.md),
+[architecture and API contract](docs/municipal-platform-architecture.md),
+[dataset adapter contract](docs/dataset-import-contract.md) and
+[acceptance report](docs/municipal-platform-acceptance.md).
+
+## Research baseline
+
 "Goons" is informal project framing. The system detects **observable behavior**;
 it does not infer that a person intrinsically "is a goon," assign character labels,
 or infer criminal intent.
