@@ -60,3 +60,10 @@ demo_external/*
 !demo_external/manifest.example.yaml
 frontend/node_modules/
 frontend/dist/
+
+# Municipal runtime media and catalogs.
+*.webm
+*.m4v
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm

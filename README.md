@@ -121,6 +121,28 @@ Future work should prioritize independent
 surveillance validation, multi-seed evidence and detected-box adaptation before
 deployment or edge/privacy-preserving extensions.
 
+## Municipal evaluation platform (Phase 1)
+
+The existing console now includes a local SQLite video library, durable batch
+queue, blinded human review, protected reference versions and population-specific
+evaluation/export. The professor console remains available as a page. Models,
+thresholds and historical protocols/results are frozen and unchanged.
+
+```bash
+.venv/bin/python -m surveillance.municipal preflight
+.venv/bin/python -m surveillance.municipal serve
+```
+
+Windows: `.venv\Scripts\python.exe -m surveillance.municipal --device cuda serve`.
+Open `http://127.0.0.1:7860`; build `frontend/dist` once before offline launch.
+Default data is ignored `outputs/municipal`; no clips are automatically installed.
+Read the [pilot runbook](docs/municipal-demo-runbook.md),
+[dataset contract](docs/dataset-import-contract.md),
+[architecture/API/schema](docs/municipal-platform-architecture.md), and
+[acceptance evidence](docs/municipal-platform-acceptance.md).
+A curated clip library is not an unbiased benchmark. This remains an uncertain
+human-review research prototype, not reliable crime detection.
+
 ## Mac professor console
 
 The React presentation console separates verified cached examples, genuine live

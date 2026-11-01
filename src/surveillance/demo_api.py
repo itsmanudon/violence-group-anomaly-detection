@@ -18,6 +18,9 @@ from surveillance.demo_profile import profile_hash
 from surveillance.demo_rendering import reference_gallery
 from surveillance.demo_service import DemoService
 from surveillance.inference.loading import asset_status
+from surveillance.municipal.api import municipal_router
+from surveillance.municipal.catalog import Catalog
+from surveillance.municipal.queue import JobQueue
 from surveillance.training.sultani_trainer import select_device
 
 
@@ -34,10 +37,23 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
     output.mkdir(parents=True, exist_ok=True)
     pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="frozen-inference")
 
+    lock = threading.Lock()
+    model_lock = threading.Lock()
+    catalog = Catalog(
+        config.get("municipal_directory", root / config["outputs"] / "municipal"),
+        config.get("municipal_import_root"),
+        config.get("municipal_max_upload_bytes", 500 * 1024 * 1024),
+    )
+    queue = JobQueue(catalog, service, model_lock, config.get("municipal_concurrency", 1))
+
     @asynccontextmanager
     async def lifespan(app):
-        yield
-        pool.shutdown(wait=False, cancel_futures=True)
+        queue.start()
+        try:
+            yield
+        finally:
+            queue.close()
+            pool.shutdown(wait=True, cancel_futures=True)
 
     app = FastAPI(
         title="Frozen surveillance research demo", docs_url=None, redoc_url=None, lifespan=lifespan
@@ -45,9 +61,10 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
     )
-    jobs, media = {}, {}
-    lock = threading.Lock()
+    jobs, media, upload_clips = {}, {}, {}
     app.state.service = service
+    app.state.catalog = catalog
+    app.state.queue = queue
 
     @app.middleware("http")
     async def same_origin(request: Request, call_next):
@@ -57,13 +74,21 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
             "http://127.0.0.1:5173",
             "http://localhost:5173",
         }
-        if request.method == "POST" and origin and origin not in allowed:
+        if (
+            request.method in {"POST", "PUT", "PATCH", "DELETE"}
+            and origin
+            and origin not in allowed
+        ):
             from fastapi.responses import JSONResponse
 
             return JSONResponse(
                 {"detail": "Use the local demo page to submit videos"}, status_code=403
             )
-        return await call_next(request)
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        return response
 
     def register(path):
         token = uuid.uuid4().hex
@@ -106,32 +131,42 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
         if suffix not in {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v"}:
             raise HTTPException(400, "Choose an MP4, MOV, AVI, MKV, WebM or M4V video")
         token = uuid.uuid4().hex
-        path = output / (token + suffix)
+        path = catalog.uploads / (token + suffix)
         size = 0
         try:
             with path.open("wb") as handle:
                 while chunk := await file.read(1024 * 1024):
                     size += len(chunk)
-                    if size > 500 * 1024 * 1024:
+                    if size > catalog.max_bytes:
                         raise HTTPException(413, "Use a short clip smaller than 500 MB")
                     handle.write(chunk)
             if not size:
                 raise HTTPException(400, "The uploaded video is empty")
+            try:
+                from starlette.concurrency import run_in_threadpool
+
+                clip_id = await run_in_threadpool(catalog.add_upload, path)
+            except ValueError:
+                raise HTTPException(
+                    400, "Video cannot be completely decoded; check format"
+                ) from None
         except Exception:
             path.unlink(missing_ok=True)
             raise
         finally:
             await file.close()
-        media[token] = path
+        media[token] = catalog.video_path(catalog.clip(clip_id))
+        upload_clips[token] = clip_id
         return {"upload_id": token, "video_url": "/api/media/" + token}
 
     def infer(job_id, payload):
         try:
             jobs[job_id] = {"status": "running"}
-            if payload.example:
-                result = service.analyze(None, payload.example, payload.use_cache)
-            else:
-                result = service.analyze(str(media[payload.upload_id]), "Upload a video", False)
+            with model_lock:
+                if payload.example:
+                    result = service.analyze(None, payload.example, payload.use_cache)
+                else:
+                    result = service.analyze(str(media[payload.upload_id]), "Upload a video", False)
             overlays = []
             for index, (rgb, caption) in enumerate(reference_gallery(result)):
                 image = output / f"{job_id}-actors-{index}.png"
@@ -150,6 +185,8 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
         except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
             jobs[job_id] = {"status": "failed", "error": str(error)}
         finally:
+            with catalog.legacy_guard:
+                catalog.legacy_active.discard(upload_clips.get(payload.upload_id))
             lock.release()
 
     @app.post("/api/analyze", status_code=202)
@@ -162,6 +199,13 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
             raise HTTPException(404, "Upload not found; select the video again")
         if not lock.acquire(blocking=False):
             raise HTTPException(409, "An inference is already running; wait for it to finish")
+        with catalog.legacy_guard:
+            clip_id = upload_clips.get(payload.upload_id)
+            if clip_id:
+                if catalog.clip(clip_id)["status"] != "available":
+                    lock.release()
+                    raise HTTPException(404, "Upload deleted")
+                catalog.legacy_active.add(clip_id)
         job_id = uuid.uuid4().hex
         jobs[job_id] = {"status": "queued"}
         pool.submit(infer, job_id, payload)
@@ -179,6 +223,8 @@ def create_api(config: dict, root: Path, *, frontend: Path | None = None) -> Fas
         if path is None or not path.is_file():
             raise HTTPException(404, "Local media unavailable")
         return FileResponse(path, filename=path.name if path.suffix == ".json" else None)
+
+    app.include_router(municipal_router(catalog, queue))
 
     frontend = frontend or root / "frontend/dist"
     if frontend.is_dir():

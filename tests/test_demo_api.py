@@ -53,7 +53,7 @@ def test_api_rejects_paths_and_external_origins(app):
         )
 
 
-def test_upload_ignores_client_cache_request_and_reports_failure(app, monkeypatch):
+def test_upload_ignores_client_cache_request_and_reports_failure(app, monkeypatch, tmp_path):
     calls = []
 
     def analyze(video, example, use_cache):
@@ -61,8 +61,16 @@ def test_upload_ignores_client_cache_request_and_reports_failure(app, monkeypatc
         raise ValueError("frozen checkpoint unavailable")
 
     monkeypatch.setattr(app.state.service, "analyze", analyze)
+    import cv2
+    import numpy as np
+
+    video = tmp_path / "fixture.avi"
+    writer = cv2.VideoWriter(str(video), cv2.VideoWriter_fourcc(*"MJPG"), 10, (32, 24))
+    writer.write(np.zeros((24, 32, 3), dtype=np.uint8))
+    writer.release()
+    video_bytes = video.read_bytes()
     with TestClient(app) as client:
-        upload = client.post("/api/upload", files={"file": ("clip.mp4", b"unit-fixture")}).json()
+        upload = client.post("/api/upload", files={"file": ("clip.avi", video_bytes)}).json()
         response = client.post(
             "/api/analyze", json={"upload_id": upload["upload_id"], "use_cache": True}
         )
@@ -70,7 +78,7 @@ def test_upload_ignores_client_cache_request_and_reports_failure(app, monkeypatc
         job = wait_job(client, response.json()["job_id"])
         assert job == {"status": "failed", "error": "frozen checkpoint unavailable"}
         assert calls[0][1:] == ("Upload a video", False)
-        assert client.get(upload["video_url"]).content == b"unit-fixture"
+        assert client.get(upload["video_url"]).content == video_bytes
 
 
 def test_upload_requires_video_extension_and_nonempty_bytes(app):

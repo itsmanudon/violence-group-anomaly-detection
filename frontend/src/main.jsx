@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import Municipal from "./Municipal.jsx";
 
 const classes = [
   "Normal",
@@ -935,4 +936,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(<Municipal Legacy={App} Timeline={Timeline} />);
