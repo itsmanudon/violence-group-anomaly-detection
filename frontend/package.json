@@ -9,6 +9,8 @@
     "test": "node --test src/*.test.js"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "5.2.8",
+    "@fontsource/public-sans": "5.2.7",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
