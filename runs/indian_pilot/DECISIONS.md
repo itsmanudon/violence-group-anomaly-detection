@@ -148,3 +148,21 @@ decision, why, alternatives rejected.
 - **Rejected:** forcing Snatch non-violence into val and test. With 2 groups (5 + 2 clips)
   that would leave train with no Snatch non-violence at all, and yield a 2-clip test
   subset that cannot carry a metric.
+
+## D13 — 2026-11-03 — Split v1 frozen (test locked from here)
+
+- **Result:** freeze hash `ae9a0fab918eb20992b3202093a0982af16f7e3bc28a57c9e28ff2598818b32f`;
+  `split_v1.csv` SHA256 `cc58be5200003baebf538a930d44be7d735ddba36551e68a11e09e662f87a2c0`.
+  First and only freeze attempt with the D12 rules; no seed or rule was changed after viewing.
+
+  | split | clips | groups | violence | unknown-geo NV | documented-Indian NV |
+  |---|---|---|---|---|---|
+  | train | 353 | 77 | 27 | 80 | 246 |
+  | val | 79 | 24 | 6 | 18 | 55 |
+  | test | 72 | 17 | 6 | 15 | 51 |
+
+- `verify_split` passes: 504 records, 0 groups crossing splits, all 504 media hashes bound.
+- **Consequence for reporting:** 6 violence clips per evaluation split. Any recall or F1
+  moves in steps of ~17 points per clip; CIs will be very wide.
+- **Line endings:** CSVs are written with LF so committed bytes equal the hashed bytes
+  (git normalises CRLF here, which would otherwise break `verify_split`).
