@@ -1,5 +1,13 @@
 # Surveillance behavior anomaly research
 
+Indian-domain improvement preparation: start with the
+[repository audit](docs/indian-domain/repository-audit.md),
+[milestone plan](docs/indian-domain/implementation-plan.md),
+[annotation contract](docs/indian-domain/data-contract.md) and
+[research runbook](docs/indian-domain/research-runbook.md).
+Real Indian-data ingestion and experiments await verified annotations, media and
+source provenance; the existing six-class cascade remains the deployed baseline.
+
 A surveillance-video research prototype based on Sultani's weakly supervised
 anomaly localization and Gavrilyuk's Actor-Transformer group reasoning. The cascade
 proposes suspicious intervals, detects people, extracts frozen RGB actor features

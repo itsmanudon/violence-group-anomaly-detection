@@ -12,6 +12,7 @@ __pycache__/
 build/
 dist/
 data/raw/
+data/indian-domain/
 data/features/
 data/examples/
 data/manifests/*.jsonl
