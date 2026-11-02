@@ -444,6 +444,76 @@ def freeze_pilot_split(
     return receipt
 
 
+def merge_frozen_splits(
+    records: list[dict], output: Path, *, artifacts: list[Path], scope: str, excluded: dict
+) -> dict:
+    """Combine already-frozen splits without reassigning anything.
+
+    records: {dataset, video_id, source_video_id, path, split, label, sha256, fps,
+    num_frames}. Source IDs are prefixed by dataset so sources from different datasets
+    can never merge, and no source may span splits. The receipt has the identity fields
+    verify_split checks, so downstream training verifies it unchanged.
+    """
+    if Path(output).exists():
+        raise FileExistsError(f"Refuse to overwrite frozen split: {output}")
+    rows = [
+        Record(
+            dataset=r["dataset"],
+            video_id=r["video_id"],
+            source_video_id=f"{r['dataset']}:{r['source_video_id']}",
+            path=str(r["path"]),
+            split=r["split"],
+            label=r["label"],
+            duration_sec=r["num_frames"] / r["fps"],
+            fps=r["fps"],
+            num_frames=r["num_frames"],
+        )
+        for r in sorted(records, key=lambda r: (r["dataset"], r["video_id"]))
+    ]
+    if len({r.video_id for r in rows}) != len(rows):
+        raise ValueError("Clip IDs must be unique across the merged datasets")
+    check_leakage(rows)
+    hashes = {r["video_id"]: r["sha256"] for r in records}
+    for row in rows:
+        if sha256(Path(row.path)) != hashes[row.video_id]:
+            raise ValueError(f"Video differs from its frozen hash: {row.video_id}")
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=False)
+    write_manifest(rows, output / "manifest.jsonl")
+    members = defaultdict(list)
+    for row in rows:
+        members[row.source_video_id].append(row.video_id)
+    payload = {
+        "schema_version": 1,
+        "dataset": "+".join(sorted({r.dataset for r in rows})),
+        "scope": scope,
+        "split_unit": "source group copied from each frozen split",
+        "groups": sorted(sorted(v) for v in members.values()),
+        "assignments": {r.video_id: r.split for r in rows},
+        "excluded_clips": excluded,
+        "clip_counts": dict(Counter(r.split for r in rows)),
+        "class_counts": {
+            split: {
+                str(label): sum(r.split == split and r.label == label for r in rows)
+                for label in (0, 1)
+            }
+            for split in SPLITS
+        },
+        "dataset_counts": {
+            f"{d}|{s}": sum(r.dataset == d and r.split == s for r in rows)
+            for d in sorted({r.dataset for r in rows})
+            for s in SPLITS
+        },
+        "test_clip_ids": sorted(r.video_id for r in rows if r.split == "test"),
+        "video_sha256": hashes,
+        "manifest_sha256": sha256(output / "manifest.jsonl"),
+        "artifacts": {str(Path(path).resolve()): sha256(path) for path in artifacts},
+    }
+    receipt = {**payload, "freeze_hash": content_hash(payload)}
+    write_new_json(output / "split-receipt.json", receipt)
+    return receipt
+
+
 def verify_split(directory: Path, *, verify_media: bool = True) -> tuple[list[Record], dict]:
     """Reject altered membership/inputs/media before every downstream training run."""
     directory = Path(directory)

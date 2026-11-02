@@ -221,3 +221,41 @@ def test_demo_pilot_head_is_hash_pinned_and_scores_the_given_bag(tmp_path):
     path.write_text(json.dumps({**spec, "threshold": 1.5}))
     with pytest.raises(ValueError, match="threshold"):
         load_pilot_spec(path)
+
+
+def test_merged_splits_keep_assignments_and_never_merge_sources_across_datasets(tmp_path):
+    from surveillance.datasets.indian_split import merge_frozen_splits
+
+    records = []
+    for dataset, split in (("a", "train"), ("b", "test")):
+        for i in range(2):
+            path = tmp_path / f"{dataset}{i}.mp4"
+            path.write_bytes(f"{dataset}{i}".encode())
+            records.append(
+                {
+                    "dataset": dataset,
+                    "video_id": f"{dataset}{i}",
+                    "source_video_id": "shared-name",
+                    "path": path,
+                    "split": split,
+                    "label": i,
+                    "sha256": sha256(path),
+                    "fps": 25.0,
+                    "num_frames": 50,
+                }
+            )
+    receipt = merge_frozen_splits(
+        records, tmp_path / "merged", artifacts=[], scope="test", excluded={}
+    )
+    rows, _ = verify_split(tmp_path / "merged")
+    assert {r.video_id: r.split for r in rows} == {
+        "a0": "train",
+        "a1": "train",
+        "b0": "test",
+        "b1": "test",
+    }
+    assert {r.source_video_id for r in rows} == {"a:shared-name", "b:shared-name"}
+    assert receipt["dataset_counts"]["b|test"] == 2
+    records[0]["split"] = "val"
+    with pytest.raises(ValueError, match="leakage"):
+        merge_frozen_splits(records, tmp_path / "bad", artifacts=[], scope="test", excluded={})
