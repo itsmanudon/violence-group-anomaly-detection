@@ -178,3 +178,46 @@ def test_test_features_require_a_committed_protocol(tmp_path):
     finally:
         draft.unlink()
     assert committed_protocol(root / "docs/handover/HANDOVER.md")["commit"]
+
+
+def test_demo_pilot_head_is_hash_pinned_and_scores_the_given_bag(tmp_path):
+    import json
+
+    import torch
+
+    from surveillance.inference.indian_pilot import IndianPilotHead, load_pilot_spec
+    from surveillance.models.indian_binary import FrozenBagBinaryHead
+
+    torch.manual_seed(0)
+    head = FrozenBagBinaryHead(4)
+    checkpoint = tmp_path / "best.pt"
+    torch.save(
+        {
+            "checkpoint_type": "indian_frozen_bag_binary_v1",
+            "classes": ["non_violence", "violence"],
+            "feature_dim": 4,
+            "model_state": head.state_dict(),
+        },
+        checkpoint,
+    )
+    spec = {
+        "checkpoint": "best.pt",
+        "checkpoint_sha256": sha256(checkpoint),
+        "threshold": 0.4,
+        "split_freeze_hash": "f" * 64,
+        "threshold_rule": "max validation F1 with recall >= 0.8",
+    }
+    path = tmp_path / "spec.json"
+    path.write_text(json.dumps(spec))
+    assert load_pilot_spec(path) == spec
+    bag = np.arange(8, dtype=np.float32).reshape(2, 4) / 8
+    result = IndianPilotHead(spec, tmp_path).score(bag)
+    expected = float(head(torch.from_numpy(bag)[None]).softmax(-1)[0, 1])
+    assert result["violence_score"] == pytest.approx(expected)
+    assert result["flagged"] == (expected >= 0.4)
+    assert "human review" in result["scope"]
+    with pytest.raises(ValueError, match="SHA256"):
+        IndianPilotHead({**spec, "checkpoint_sha256": "0" * 64}, tmp_path)
+    path.write_text(json.dumps({**spec, "threshold": 1.5}))
+    with pytest.raises(ValueError, match="threshold"):
+        load_pilot_spec(path)

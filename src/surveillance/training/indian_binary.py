@@ -4,6 +4,7 @@ import json
 import math
 import subprocess
 import time
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -335,10 +336,16 @@ def train_binary(
     patience=0,
     precision="fp32",
     accumulation_steps=1,
+    train_groups=None,
+    relabel: dict[str, int] | None = None,
+    target_name="violence",
 ):
     """Train only on training labels; select on validation PR-AUC (then F1).
 
-    Only this new run's last.pt/best.pt/history are mutable. Existing output dirs
+    train_groups restricts training to those source groups (learning curves);
+    validation is never subset. relabel substitutes a 0/1 target for every
+    train/val clip (e.g. a collection-shortcut probe); both are bound in the
+    config hash. Only this new run's last.pt/best.pt/history are mutable. Existing output dirs
     require an explicit same-run last.pt resume. Test features are never loaded.
     """
     if (
@@ -417,6 +424,17 @@ def train_binary(
     loading_seconds = time.perf_counter() - loading_started
     training = sorted((r for r in rows if r.split == "train"), key=lambda r: r.video_id)
     validation = sorted((r for r in rows if r.split == "val"), key=lambda r: r.video_id)
+    if relabel is not None:
+        needed = {r.video_id for r in training + validation}
+        if set(relabel) != needed or set(relabel.values()) - {0, 1}:
+            raise ValueError("Relabel must give a 0/1 target for exactly every train/val clip")
+        training = [replace(r, label=relabel[r.video_id]) for r in training]
+        validation = [replace(r, label=relabel[r.video_id]) for r in validation]
+    if train_groups is not None:
+        known = {r.source_video_id for r in training}
+        if not train_groups or set(train_groups) - known:
+            raise ValueError("Training subset must name existing training groups")
+        training = [r for r in training if r.source_video_id in set(train_groups)]
     targets = [r.label for r in training]
     balanced_weights = binary_class_weights(targets)
     loss_weights = balanced_weights if class_weighting == "balanced" else [1.0, 1.0]
@@ -438,6 +456,10 @@ def train_binary(
         "accumulation_steps": accumulation_steps,
         "training_class_counts": np.bincount(targets, minlength=2).tolist(),
         "loss_weights": loss_weights,
+        "target_name": target_name,
+        "relabel_hash": content_hash(relabel) if relabel is not None else None,
+        "train_groups": sorted(train_groups) if train_groups is not None else None,
+        "training_clip_count": len(training),
     }
     config_hash = content_hash(settings)
     seed_everything(seed)

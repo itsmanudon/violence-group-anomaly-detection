@@ -20,6 +20,11 @@ class DemoService:
         self.examples = {entry["name"]: entry for entry in entries}
         self.pipeline = None
         self.device_fallback = None
+        self.pilot = None
+        if config.get("indian_pilot"):
+            from surveillance.inference.indian_pilot import IndianPilotHead
+
+            self.pilot = IndianPilotHead(config["indian_pilot"], self.root)
 
     def analyze(self, video: str | None, example: str, use_cache: bool = True) -> dict:
         started = time.perf_counter()
@@ -75,6 +80,8 @@ class DemoService:
             result = self.pipeline.predict_video(path)
         if self.device_fallback:
             result["device_fallback"] = self.device_fallback
+        if self.pilot is not None:
+            result["indian_pilot"] = self.pilot.score(self.pipeline.anomaly.last_features)
         result["timings"]["model_loading_seconds"] = loading
         result["timings"]["request_total_seconds"] = time.perf_counter() - started
         result["execution_mode"] = "on_demand"

@@ -288,3 +288,27 @@ def test_calibration_freezes_only_exact_validation_predictions(tmp_path):
     torch.save(saved, run / "best.pt")  # Tamper only with this synthetic test's private checkpoint.
     with pytest.raises(ValueError, match="validation membership"):
         calibrate_binary_checkpoint(split, run / "best.pt", tmp_path / "bad-calibration")
+
+
+def test_training_subset_and_relabel_are_bound_in_the_config(tmp_path):
+    split_dir, cache = training_fixture(tmp_path)
+    rows, _ = verify_split(split_dir)
+    groups = sorted({r.source_video_id for r in rows if r.split == "train"})
+    train_binary(split_dir, cache, tmp_path / "full", steps=2)
+    train_binary(
+        split_dir, cache, tmp_path / "half", steps=2, train_groups=groups[: len(groups) // 2 + 1]
+    )
+    full = json.loads((tmp_path / "full/registration.json").read_text())["settings"]
+    half = json.loads((tmp_path / "half/registration.json").read_text())["settings"]
+    assert half["training_clip_count"] < full["training_clip_count"]
+    assert half["train_groups"] and full["train_groups"] is None
+    with pytest.raises(ValueError, match="existing training groups"):
+        train_binary(split_dir, cache, tmp_path / "bad", steps=1, train_groups=["no-such-group"])
+    flipped = {r.video_id: 1 - r.label for r in rows if r.split != "test"}
+    train_binary(
+        split_dir, cache, tmp_path / "probe", steps=2, relabel=flipped, target_name="probe"
+    )
+    _, saved = load_binary_checkpoint(tmp_path / "probe/best.pt")
+    assert all(p["label"] == flipped[p["clip_id"]] for p in saved["validation_predictions"])
+    with pytest.raises(ValueError, match="Relabel"):
+        train_binary(split_dir, cache, tmp_path / "bad2", steps=1, relabel={"x": 1})

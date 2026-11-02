@@ -215,7 +215,7 @@ def reconstruct_groups(
             raise ValueError(f"Review merge needs evidence and known clips: {merge.get('name')}")
         for other in merge["clips"][1:]:
             link(merge["clips"][0], other, f"review:{merge['name']}")
-    rows =[{**c, "source_video_id": c["clip_id"], "incident_id": c["clip_id"]} for c in candidates]
+    rows = [{**c, "source_video_id": c["clip_id"], "incident_id": c["clip_id"]} for c in candidates]
     groups = source_groups(rows, [list(pair) for pair in links])
     reasons = {c["clip_id"]: set() for c in candidates}
     for (a, b), why in links.items():

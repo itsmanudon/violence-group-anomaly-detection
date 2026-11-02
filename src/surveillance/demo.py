@@ -330,6 +330,9 @@ def main() -> None:
     parser.add_argument("--local-assets", type=Path)
     parser.add_argument("--port", type=int, default=7860)
     parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"])
+    parser.add_argument(
+        "--indian-pilot", type=Path, help="optional Indian pilot head spec (JSON); add-on score"
+    )
     args = parser.parse_args()
     config = (
         load_professor_profile(ROOT, args.local_assets)
@@ -342,6 +345,10 @@ def main() -> None:
         parser.error("--profile professor cannot be combined with --config")
     if args.device:
         config["device"] = args.device
+    if args.indian_pilot:
+        from surveillance.inference.indian_pilot import load_pilot_spec
+
+        config["indian_pilot"] = load_pilot_spec(args.indian_pilot)
     if args.ui == "react":
         import uvicorn
 

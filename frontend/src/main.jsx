@@ -779,6 +779,24 @@ function App() {
                 0.500 <span className="fixed">Fixed</span>
               </strong>
             </div>
+            {result?.indian_pilot && (
+              <>
+                <div className="metric-row" title={result.indian_pilot.scope}>
+                  <span>Indian pilot score</span>
+                  <strong className="numeric">
+                    {number(result.indian_pilot.violence_score)}{" "}
+                    <span className="fixed">
+                      {result.indian_pilot.flagged ? "Review" : "Below"}{" "}
+                      {number(result.indian_pilot.threshold)}
+                    </span>
+                  </strong>
+                </div>
+                <p className="muted">
+                  Pilot head on a small team-annotated Indian set. Shown for
+                  human review only; it does not change the alert above.
+                </p>
+              </>
+            )}
           </section>
           <section className="panel probability-panel">
             <div className="panel-heading">

@@ -22,6 +22,10 @@ def settings(args):
     config["municipal_import_root"] = str(args.import_root.resolve()) if args.import_root else None
     config["municipal_concurrency"] = args.concurrency
     config["municipal_max_upload_bytes"] = args.max_upload_mb * 1024 * 1024
+    if args.indian_pilot:
+        from surveillance.inference.indian_pilot import load_pilot_spec
+
+        config["indian_pilot"] = load_pilot_spec(args.indian_pilot)
     return config
 
 
@@ -109,6 +113,9 @@ def main():
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     parser.add_argument("--concurrency", type=int, choices=range(1, 5), default=1)
     parser.add_argument("--max-upload-mb", type=int, default=500)
+    parser.add_argument(
+        "--indian-pilot", type=Path, help="optional Indian pilot head spec (JSON); add-on score"
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     serve = sub.add_parser("serve")
     serve.add_argument("--port", type=int, default=7860)

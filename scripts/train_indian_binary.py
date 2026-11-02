@@ -31,6 +31,13 @@ def main():
     calibration.add_argument("--thresholds", type=float, nargs="+", default=None)
     cache = commands.add_parser("cache")
     cache.add_argument("--checkpoint", type=Path, required=True)
+    cache.add_argument("--splits", nargs="+", default=["train", "val"])
+    cache.add_argument(
+        "--non-strict-frame-count",
+        action="store_true",
+        help="use only frames that decode when a container header overstates its count",
+    )
+    cache.add_argument("--test-protocol", type=Path, help="committed EVAL_PROTOCOL.md (test only)")
     train = commands.add_parser("train")
     train.add_argument("--cache", type=Path, required=True)
     train.add_argument("--steps", type=int, default=100)
@@ -69,6 +76,9 @@ def main():
             args.output,
             device=args.device,
             batch_size=args.batch_size,
+            splits=tuple(args.splits),
+            strict_frame_count=not args.non_strict_frame_count,
+            test_protocol=args.test_protocol,
         )
     else:
         print(

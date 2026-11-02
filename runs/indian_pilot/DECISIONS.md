@@ -166,3 +166,49 @@ decision, why, alternatives rejected.
   moves in steps of ~17 points per clip; CIs will be very wide.
 - **Line endings:** CSVs are written with LF so committed bytes equal the hashed bytes
   (git normalises CRLF here, which would otherwise break `verify_split`).
+
+## D14 — 2026-11-03 — Features
+
+- **Decided:** C3D FC6 32-segment bags only (the pipeline's representation), extracted on
+  MPS with non-strict decoding, train+val first; test only after `EVAL_PROTOCOL.md` is
+  committed (enforced in code: `cache_c3d(..., splits=("test",))` refuses without a
+  committed, unmodified protocol and records its hash and commit).
+- **Rejected for now:** I3D pooled features. The pipeline's I3D path pools inside person
+  boxes for the behavior head; a scene-pooled variant would be a new representation, not
+  the pipeline's, and doubles the experiment matrix on 6 validation positives. Revisit only
+  if time remains.
+
+## D15 — 2026-11-03 — Head, loss and schedule (fixed before any result)
+
+- **Head:** the existing `FrozenBagBinaryHead` (one linear layer over the mean-pooled bag).
+  Fewest parameters for 27 training positives; already tested.
+- **Loss:** class-balanced cross-entropy (`class_weighting="balanced"`, equivalent to
+  class-weighted BCE for two classes); uniform sampling.
+- **Schedule:** 300 steps, batch 16, Adam 1e-3, patience 60, fp32, CPU (the head is tiny).
+- **Selection:** existing rule, best validation PR-AUC then F1 per step. Threshold: existing
+  `calibrate_threshold`, max validation F1 subject to recall ≥ 0.8 (≥ 5 of 6), candidates
+  0.05–0.95 in 0.05 steps.
+- **Deployed model:** seed 7 at 100% train, fixed now. Not the best of 3 seeds on
+  validation, which would inflate a 6-positive estimate. Seeds 8 and 9 give spread only.
+- **Rejected:** hyperparameter search, MLP or max-pool variants chosen on validation. Six
+  validation positives cannot support model selection beyond the declared rule.
+- **Trainer extension:** `train_groups` (learning-curve subsets) and `relabel` (probes),
+  both bound into the config hash; tested.
+
+## D16 — 2026-11-03 — Learning curve, probes, mitigation, baselines
+
+- **Learning curve:** nested train-group subsets at 25/50/75/100%, stratified by
+  (contains violence, geography), subset seed 7, the same subsets for seeds 7/8/9.
+  Validation set never subset.
+- **Probe A (geography, all clips):** same head trained to predict unknown-geography vs
+  documented-Indian.
+- **Probe B (geography, non-violence only):** the same target trained on non-violence groups
+  only, so any signal is collection identity, not violence.
+- **Mitigation:** violence head trained only on unknown-geography groups (removes the
+  documented-Indian non-violence that could be separated by collection alone).
+- **Reported subsets:** overall; within unknown geography (the honest headline); documented-
+  Indian non-violence only (false-positive rate); Snatch only (anecdotal: 4 V / 2 NV in val).
+- **Baselines:** (1) zero-shot UCF Sultani clip score computed from the same cached C3D bags
+  (identical to the cascade's anomaly stage, covers every clip); (2) full five-stage cascade
+  alert via the real pipeline on CPU, where a clip the cascade refuses (strict decode) counts
+  as no alert, with coverage reported.

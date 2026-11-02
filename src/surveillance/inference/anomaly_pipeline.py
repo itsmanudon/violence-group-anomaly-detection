@@ -102,6 +102,7 @@ class AnomalyPipeline:
             )
         metadata = probe_video(path)
         features = self.extractor.extract_video(path, self.num_segments)
+        self.last_features = features  # lets optional add-on heads reuse this exact bag
         unit_frames = getattr(self.extractor, "temporal_unit_frames", None)
         frame_ranges = (
             c3d_segment_frame_ranges(metadata.num_frames, self.num_segments, unit_frames)
