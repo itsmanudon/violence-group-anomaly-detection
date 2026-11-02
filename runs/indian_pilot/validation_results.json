@@ -1,0 +1,2271 @@
+{
+  "scope": "validation_only",
+  "split_freeze_hash": "ae9a0fab918eb20992b3202093a0982af16f7e3bc28a57c9e28ff2598818b32f",
+  "deployed_seed": 7,
+  "validation_threshold": 0.4,
+  "threshold_rule": "maximum_f1_subject_to_recall_floor (recall >= 0.8)",
+  "runs": {
+    "mitigation_unknown_only_s7": {
+      "target": "violence",
+      "training_clips": 107,
+      "training_class_counts": [
+        80,
+        27
+      ],
+      "best_step": 92,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.47997534872534875,
+          "average_precision": 0.5141173641173641,
+          "roc_auc": 0.9269406392694064,
+          "precision": 0.10909090909090909,
+          "recall": 1.0,
+          "f1": 0.19672131147540983,
+          "positives": 6,
+          "false_positive_rate": 0.6712328767123288,
+          "confusion_matrix": [
+            [
+              24,
+              49
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              18,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.8909090909090909,
+          "confusion_matrix": [
+            [
+              6,
+              49
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 4,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "mitigation_unknown_only_s8": {
+      "target": "violence",
+      "training_clips": 107,
+      "training_class_counts": [
+        80,
+        27
+      ],
+      "best_step": 13,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.5770675109490898,
+          "average_precision": 0.5982804232804233,
+          "roc_auc": 0.9315068493150684,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "mitigation_unknown_only_s9": {
+      "target": "violence",
+      "training_clips": 107,
+      "training_class_counts": [
+        80,
+        27
+      ],
+      "best_step": 3,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.8132988721804512,
+          "average_precision": 0.8208333333333333,
+          "roc_auc": 0.9611872146118722,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_all_s7": {
+      "target": "geography",
+      "training_clips": 353,
+      "training_class_counts": [
+        246,
+        107
+      ],
+      "best_step": 8,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.981530412576608,
+          "average_precision": 0.9818126550463506,
+          "roc_auc": 0.9886363636363636,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              20,
+              4
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              20,
+              4
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_all_s8": {
+      "target": "geography",
+      "training_clips": 353,
+      "training_class_counts": [
+        246,
+        107
+      ],
+      "best_step": 5,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9715808793750249,
+          "average_precision": 0.9721954008996341,
+          "roc_auc": 0.9878787878787878,
+          "precision": 1.0,
+          "recall": 0.5416666666666666,
+          "f1": 0.7027027027027027,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              11,
+              13
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.5416666666666666,
+          "f1": 0.7027027027027027,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              11,
+              13
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_all_s9": {
+      "target": "geography",
+      "training_clips": 353,
+      "training_class_counts": [
+        246,
+        107
+      ],
+      "best_step": 2,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9926878078817731,
+          "average_precision": 0.9928160919540228,
+          "roc_auc": 0.9962121212121212,
+          "precision": 1.0,
+          "recall": 0.9583333333333334,
+          "f1": 0.9787234042553191,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              1,
+              23
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.9583333333333334,
+          "f1": 0.9787234042553191,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              23
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.8333333333333334,
+          "f1": 0.9090909090909091,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              5
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_nv_s7": {
+      "target": "geography_nonviolence_only",
+      "training_clips": 324,
+      "training_class_counts": [
+        246,
+        78
+      ],
+      "best_step": 233,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9503377707474872,
+          "average_precision": 0.9512028430255237,
+          "roc_auc": 0.9704545454545455,
+          "precision": 0.8695652173913043,
+          "recall": 0.8333333333333334,
+          "f1": 0.851063829787234,
+          "positives": 24,
+          "false_positive_rate": 0.05454545454545454,
+          "confusion_matrix": [
+            [
+              52,
+              3
+            ],
+            [
+              4,
+              20
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.8333333333333334,
+          "f1": 0.9090909090909091,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              20
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.05454545454545454,
+          "confusion_matrix": [
+            [
+              52,
+              3
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_nv_s8": {
+      "target": "geography_nonviolence_only",
+      "training_clips": 324,
+      "training_class_counts": [
+        246,
+        78
+      ],
+      "best_step": 29,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9405745312318228,
+          "average_precision": 0.9417011655814964,
+          "roc_auc": 0.9651515151515151,
+          "precision": 0.9473684210526315,
+          "recall": 0.75,
+          "f1": 0.8372093023255814,
+          "positives": 24,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    "probe_geography_nv_s9": {
+      "target": "geography_nonviolence_only",
+      "training_clips": 324,
+      "training_class_counts": [
+        246,
+        78
+      ],
+      "best_step": 21,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9417594808939291,
+          "average_precision": 0.9427241402254509,
+          "roc_auc": 0.9613636363636364,
+          "precision": 0.9473684210526315,
+          "recall": 0.75,
+          "f1": 0.8372093023255814,
+          "positives": 24,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "positives": 24,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f025_s7": {
+      "target": "violence",
+      "training_clips": 112,
+      "training_class_counts": [
+        106,
+        6
+      ],
+      "best_step": 18,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "positives": 6,
+          "false_positive_rate": 0.0547945205479452,
+          "confusion_matrix": [
+            [
+              69,
+              4
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.9742063492063492,
+          "average_precision": 0.9761904761904762,
+          "roc_auc": 0.9907407407407407,
+          "precision": 0.8571428571428571,
+          "recall": 1.0,
+          "f1": 0.9230769230769231,
+          "positives": 6,
+          "false_positive_rate": 0.05555555555555555,
+          "confusion_matrix": [
+            [
+              17,
+              1
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.05454545454545454,
+          "confusion_matrix": [
+            [
+              52,
+              3
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 0.94375,
+          "average_precision": 0.95,
+          "roc_auc": 0.875,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8888888888888888,
+          "positives": 4,
+          "false_positive_rate": 0.5,
+          "confusion_matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f025_s8": {
+      "target": "violence",
+      "training_clips": 112,
+      "training_class_counts": [
+        106,
+        6
+      ],
+      "best_step": 10,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.9742063492063492,
+          "average_precision": 0.9761904761904762,
+          "roc_auc": 0.9907407407407407,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 0.94375,
+          "average_precision": 0.95,
+          "roc_auc": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f025_s9": {
+      "target": "violence",
+      "training_clips": 112,
+      "training_class_counts": [
+        106,
+        6
+      ],
+      "best_step": 11,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.9742063492063492,
+          "average_precision": 0.9761904761904762,
+          "roc_auc": 0.9907407407407407,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 0.94375,
+          "average_precision": 0.95,
+          "roc_auc": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f050_s7": {
+      "target": "violence",
+      "training_clips": 135,
+      "training_class_counts": [
+        123,
+        12
+      ],
+      "best_step": 18,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "positives": 6,
+          "false_positive_rate": 0.1095890410958904,
+          "confusion_matrix": [
+            [
+              65,
+              8
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "positives": 6,
+          "false_positive_rate": 0.2222222222222222,
+          "confusion_matrix": [
+            [
+              14,
+              4
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.07272727272727272,
+          "confusion_matrix": [
+            [
+              51,
+              4
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8888888888888888,
+          "positives": 4,
+          "false_positive_rate": 0.5,
+          "confusion_matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f050_s8": {
+      "target": "violence",
+      "training_clips": 135,
+      "training_class_counts": [
+        123,
+        12
+      ],
+      "best_step": 14,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.1,
+          "recall": 1.0,
+          "f1": 0.18181818181818182,
+          "positives": 6,
+          "false_positive_rate": 0.7397260273972602,
+          "confusion_matrix": [
+            [
+              19,
+              54
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.2727272727272727,
+          "recall": 1.0,
+          "f1": 0.42857142857142855,
+          "positives": 6,
+          "false_positive_rate": 0.8888888888888888,
+          "confusion_matrix": [
+            [
+              2,
+              16
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.6909090909090909,
+          "confusion_matrix": [
+            [
+              17,
+              38
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f050_s9": {
+      "target": "violence",
+      "training_clips": 135,
+      "training_class_counts": [
+        123,
+        12
+      ],
+      "best_step": 47,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 6,
+          "false_positive_rate": 0.0410958904109589,
+          "confusion_matrix": [
+            [
+              70,
+              3
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.9742063492063492,
+          "average_precision": 0.9761904761904762,
+          "roc_auc": 0.9907407407407407,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "positives": 6,
+          "false_positive_rate": 0.1111111111111111,
+          "confusion_matrix": [
+            [
+              16,
+              2
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 0.94375,
+          "average_precision": 0.95,
+          "roc_auc": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f075_s7": {
+      "target": "violence",
+      "training_clips": 306,
+      "training_class_counts": [
+        289,
+        17
+      ],
+      "best_step": 10,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f075_s8": {
+      "target": "violence",
+      "training_clips": 306,
+      "training_class_counts": [
+        289,
+        17
+      ],
+      "best_step": 24,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "positives": 6,
+          "false_positive_rate": 0.0547945205479452,
+          "confusion_matrix": [
+            [
+              69,
+              4
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.9742063492063492,
+          "average_precision": 0.9761904761904762,
+          "roc_auc": 0.9907407407407407,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 6,
+          "false_positive_rate": 0.16666666666666666,
+          "confusion_matrix": [
+            [
+              15,
+              3
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 0.94375,
+          "average_precision": 0.95,
+          "roc_auc": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f075_s9": {
+      "target": "violence",
+      "training_clips": 306,
+      "training_class_counts": [
+        289,
+        17
+      ],
+      "best_step": 15,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f100_s7": {
+      "target": "violence",
+      "training_clips": 353,
+      "training_class_counts": [
+        326,
+        27
+      ],
+      "best_step": 113,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.8571428571428571,
+          "recall": 1.0,
+          "f1": 0.9230769230769231,
+          "positives": 6,
+          "false_positive_rate": 0.0136986301369863,
+          "confusion_matrix": [
+            [
+              72,
+              1
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              18,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 4,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f100_s8": {
+      "target": "violence",
+      "training_clips": 353,
+      "training_class_counts": [
+        326,
+        27
+      ],
+      "best_step": 111,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.9742063492063491,
+          "average_precision": 0.976190476190476,
+          "roc_auc": 0.9977168949771689,
+          "precision": 0.8571428571428571,
+          "recall": 1.0,
+          "f1": 0.9230769230769231,
+          "positives": 6,
+          "false_positive_rate": 0.0136986301369863,
+          "confusion_matrix": [
+            [
+              72,
+              1
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 6,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              18,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.01818181818181818,
+          "confusion_matrix": [
+            [
+              54,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "positives": 4,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    "violence_f100_s9": {
+      "target": "violence",
+      "training_clips": 353,
+      "training_class_counts": [
+        326,
+        27
+      ],
+      "best_step": 7,
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.0759493670886076,
+          "recall": 1.0,
+          "f1": 0.1411764705882353,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              73
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "positives": 6,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              18
+            ],
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "positives": 4,
+          "false_positive_rate": 1.0,
+          "confusion_matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "baselines": {
+    "zero_shot_sultani": {
+      "threshold": 0.5,
+      "note": "UCF Sultani max segment score on the same C3D bags (cascade anomaly stage)",
+      "metrics": {
+        "overall": {
+          "count": 79,
+          "pr_auc": 0.8474206349206348,
+          "average_precision": 0.8531746031746031,
+          "roc_auc": 0.9634703196347032,
+          "precision": 0.8333333333333334,
+          "recall": 0.8333333333333334,
+          "f1": 0.8333333333333334,
+          "positives": 6,
+          "false_positive_rate": 0.0136986301369863,
+          "confusion_matrix": [
+            [
+              72,
+              1
+            ],
+            [
+              1,
+              5
+            ]
+          ]
+        },
+        "unknown_geography": {
+          "count": 24,
+          "pr_auc": 0.8705433455433456,
+          "average_precision": 0.876984126984127,
+          "roc_auc": 0.9166666666666667,
+          "precision": 0.8333333333333334,
+          "recall": 0.8333333333333334,
+          "f1": 0.8333333333333334,
+          "positives": 6,
+          "false_positive_rate": 0.05555555555555555,
+          "confusion_matrix": [
+            [
+              17,
+              1
+            ],
+            [
+              1,
+              5
+            ]
+          ]
+        },
+        "documented_indian_nv_only": {
+          "count": 55,
+          "pr_auc": null,
+          "average_precision": null,
+          "roc_auc": null,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "positives": 0,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              55,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "snatch_only": {
+          "count": 6,
+          "pr_auc": 1.0,
+          "average_precision": 1.0,
+          "roc_auc": 1.0,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "positives": 4,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              3
+            ]
+          ]
+        }
+      },
+      "scores": {
+        "002378df696c97f1233db0ad": 0.06034946069121361,
+        "02c003d64f9a7be22ad1de70": 0.8125591278076172,
+        "049a5d5e0a91dde3d0caa81f": 0.08642202615737915,
+        "075613b99d9ba8798069b257": 0.007399650756269693,
+        "0a102c8b2ebf14a268c22c05": 0.005607940722256899,
+        "0d1bdd7fb615cc55ea843151": 0.007175251375883818,
+        "12e1440a3d806b856eb5265b": 0.044881660491228104,
+        "1381454716050ab36d65e3e2": 0.06375349313020706,
+        "1adb4559565585263f29c0ab": 0.5628218650817871,
+        "2275ecf2fde4499b6bfe1445": 0.03731466457247734,
+        "257611899d36138887b6d9e3": 0.03910340368747711,
+        "2590e01c1497015e6178df71": 0.04456217586994171,
+        "25e36364f4d47aeb029aee16": 0.00693975854665041,
+        "275a2fbaf01865b02be33ea6": 0.8794853091239929,
+        "27f7bbe554d1fd47bd61d2d4": 0.047363635152578354,
+        "2bcaa788b9f686573ff42432": 0.09717034548521042,
+        "2bd9ac31ef54a892f6a14aac": 0.25454553961753845,
+        "2bee4201edb0c1e395ba8b39": 0.0842617005109787,
+        "2c806310465bf731d7bd6a5c": 0.0047869025729596615,
+        "2d9d9eb300992f6bfd6295e6": 0.0619245246052742,
+        "2e9a73f29a789c5ba1d46ba2": 0.25723719596862793,
+        "2f9e98f78ae0eccdf4c5621b": 0.03892296925187111,
+        "3ad9c9ef50cac0425270769d": 0.003683611750602722,
+        "3b413e2da2f3b197f6387db4": 0.05833844840526581,
+        "3dbe6882aa42e2c8d5938378": 0.020288225263357162,
+        "3f667dc43920fe0b6eecf790": 0.19217562675476074,
+        "42bf031945a0dbce43647725": 0.44338253140449524,
+        "430fa8a2b5e268c5db861a99": 0.07481373101472855,
+        "49583fd66d6e6116a853514a": 0.2733941376209259,
+        "4b2d99a9c01c0cf62340a407": 0.13323666155338287,
+        "519e53766b699063a6717fdc": 0.010531103238463402,
+        "53e7c56795266fd046d0a59e": 0.09576057642698288,
+        "591d8f8fbed6075c06c19f55": 0.055480021983385086,
+        "591dc20376c9a9d366331e19": 0.006252226419746876,
+        "5b61e0fde7020aed00ad9a40": 0.03163865953683853,
+        "5bbaac3c9994aff38fb900d3": 0.02860642410814762,
+        "5d977b58e3c8cea800347b0b": 0.09125746041536331,
+        "6202e0653a4af6c260f245b1": 0.00661069992929697,
+        "69a897a45273495a7a346eb8": 0.004879326559603214,
+        "6c247563daa8cb5cd8a903da": 0.6451525688171387,
+        "7984b89c3650bcc142356b2a": 0.1472579538822174,
+        "7c25ad5de5609d358b93c426": 0.006889141630381346,
+        "808ee52d35781fd9a8ce0b2e": 0.8088037967681885,
+        "84e4a09bc07b0c7caf03a650": 0.005461366847157478,
+        "865595298d0568c15542178a": 0.09655281901359558,
+        "91a49af4f506aa8fd85e0276": 0.31990301609039307,
+        "92193dfe216b663412e4975c": 0.18800631165504456,
+        "99b5add4193ad71f7a0f577f": 0.005937572568655014,
+        "9ae93d985edb1dfe3541bce9": 0.008375497534871101,
+        "9bd240d7c58ecc0de681d516": 0.21362261474132538,
+        "a04aebd5ab5ab1170b39be8f": 0.2085936814546585,
+        "a1e8a0b2fdbcd7fe776a79c1": 0.004272790625691414,
+        "b3d85bde98c049d0dcdd544b": 0.030960004776716232,
+        "b9f866c784a50fc190cf6387": 0.17977771162986755,
+        "bb7c2599d95cf0d740f3c7e6": 0.1843675971031189,
+        "bbd1c7d4b400c97cd3b74b66": 0.030612654983997345,
+        "bc3989b470d1173b1dbd33a0": 0.09722436964511871,
+        "bebd1fc9a9e5356b82dc08b4": 0.026788698509335518,
+        "c08544c399c4b6f4e701e51f": 0.004571021068841219,
+        "caec855307a6199f9cd3e045": 0.11484892666339874,
+        "d0523949bd1680f4c80d4fff": 0.028653280809521675,
+        "d095bc734659e06439ce0db3": 0.18025976419448853,
+        "d4738314452e346a6dd718d3": 0.002700293669477105,
+        "d53f34ce3c5048d8ff6cf0bd": 0.027431132271885872,
+        "d9b7a6fa03228cc9b63c6b0d": 0.05329951271414757,
+        "dded270b7e1128bdfa155f54": 0.015257867984473705,
+        "e1083a76ceca3d815faa330b": 0.009540352039039135,
+        "e34efbd02a5461389ca7923c": 0.07401832193136215,
+        "e388a08252efefac13230f68": 0.0027744686231017113,
+        "e73cfe833f2195150e2b01be": 0.04531358182430267,
+        "ed7f5c0ae3f17bae0470fcfa": 0.06400109827518463,
+        "f7cbb44bdadafa4a368d114d": 0.5651899576187134,
+        "f9beb65872867563590b0861": 0.11017360538244247,
+        "fa9edf50594a76549254898b": 0.13250981271266937,
+        "fab00620f7cf442114d105e0": 0.03047986514866352,
+        "fac1d06b586a582fcb333094": 0.008614912629127502,
+        "fb44ed57ff2626ed46434203": 0.17910467088222504,
+        "fbb0e720449b17b0fec0f076": 0.008550707250833511,
+        "fc43f70a7480992a0ea46da7": 0.02831898257136345
+      }
+    }
+  },
+  "learning_curve_val": {
+    "0.25": {
+      "training_clips": 112,
+      "training_class_counts": [
+        106,
+        6
+      ],
+      "overall_pr_auc": [
+        0.9742063492063492,
+        1.1102230246251565e-16
+      ],
+      "overall_roc_auc": [
+        0.9977168949771689,
+        0.0
+      ],
+      "unknown_pr_auc": [
+        0.9742063492063492,
+        0.0
+      ],
+      "unknown_roc_auc": [
+        0.9907407407407408,
+        1.1102230246251565e-16
+      ]
+    },
+    "0.5": {
+      "training_clips": 135,
+      "training_class_counts": [
+        123,
+        12
+      ],
+      "overall_pr_auc": [
+        0.9914021164021163,
+        0.012159243591832227
+      ],
+      "overall_roc_auc": [
+        0.9992389649923896,
+        0.001076266029203308
+      ],
+      "unknown_pr_auc": [
+        0.9914021164021164,
+        0.012159243591832175
+      ],
+      "unknown_roc_auc": [
+        0.9969135802469135,
+        0.004364856673991053
+      ]
+    },
+    "0.75": {
+      "training_clips": 306,
+      "training_class_counts": [
+        289,
+        17
+      ],
+      "overall_pr_auc": [
+        0.9914021164021163,
+        0.012159243591832227
+      ],
+      "overall_roc_auc": [
+        0.9992389649923896,
+        0.001076266029203308
+      ],
+      "unknown_pr_auc": [
+        0.9914021164021164,
+        0.012159243591832175
+      ],
+      "unknown_roc_auc": [
+        0.9969135802469135,
+        0.004364856673991053
+      ]
+    },
+    "1.0": {
+      "training_clips": 353,
+      "training_class_counts": [
+        326,
+        27
+      ],
+      "overall_pr_auc": [
+        0.9828042328042327,
+        0.012159243591832227
+      ],
+      "overall_roc_auc": [
+        0.9984779299847792,
+        0.001076266029203308
+      ],
+      "unknown_pr_auc": [
+        1.0,
+        0.0
+      ],
+      "unknown_roc_auc": [
+        1.0,
+        0.0
+      ]
+    }
+  }
+}

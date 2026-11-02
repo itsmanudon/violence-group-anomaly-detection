@@ -212,3 +212,15 @@ decision, why, alternatives rejected.
   (identical to the cascade's anomaly stage, covers every clip); (2) full five-stage cascade
   alert via the real pipeline on CPU, where a clip the cascade refuses (strict decode) counts
   as no alert, with coverage reported.
+
+## D17 — 2026-11-03 — Validation results trigger hard stop 5
+
+- **Finding:** see `runs/indian_pilot/VALIDATION.md`. The deployed head reaches validation
+  ROC-AUC 0.998, but a source-only rule reaches 0.986; probes read collection identity from
+  the features at PR-AUC 0.94–0.99; training only within unknown geography flags 89–100%
+  of documented-Indian non-violence as violent. The learning curve is flat at the ceiling
+  from 6 training positives.
+- **Decided:** stop before writing `EVAL_PROTOCOL.md` or touching test, and ask for a
+  decision (handover §1, hard stop 5). The frozen test split has no non-violence from any
+  violence-bearing collection, so a test result could not tell violence from source.
+- **Not done:** no re-split, no change to labels, models or thresholds after viewing results.
