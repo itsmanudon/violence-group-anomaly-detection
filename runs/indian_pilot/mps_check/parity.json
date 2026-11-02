@@ -1,0 +1,166 @@
+{
+  "evidence_kind": "device_parity_engineering_only",
+  "torch": "2.14.1",
+  "checkpoints": {
+    "c3d": "beac4ff065de3663bf5c6bab36aedca4fe56ec59b231c66bf5374c23eda14831",
+    "i3d": "fe7fc30ca6f26430232e2e0f6bdffd8514478a071db065e452bff46f60f4e0c4"
+  },
+  "mps_fallback_warnings": [],
+  "clips": [
+    {
+      "clip": "/Volumes/Seagate_2TB/violence-datasets/datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/6_0.mp4",
+      "timing_cpu_s": {
+        "c3d": 1.2959104999972624,
+        "i3d": 2.692794832997606
+      },
+      "timing_mps_s": {
+        "c3d": 0.39938070800417336,
+        "i3d": 0.8427717090016813
+      },
+      "c3d": {
+        "shape": [
+          32,
+          4096
+        ],
+        "max_abs_diff": 3.129243850708008e-07,
+        "mean_abs_diff": 9.611502704842678e-09,
+        "max_abs_value": 0.12205968052148819,
+        "cosine_min": 0.9999999403953552
+      },
+      "i3d": {
+        "shape": [
+          4,
+          20800
+        ],
+        "max_abs_diff": 3.159046173095703e-06,
+        "mean_abs_diff": 1.400293285769294e-07,
+        "max_abs_value": 1.8331328630447388,
+        "cosine_min": 1.0
+      }
+    },
+    {
+      "clip": "/Volumes/Seagate_2TB/violence-datasets/datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/7.mp4",
+      "timing_cpu_s": {
+        "c3d": 1.0306681250003749,
+        "i3d": 2.299911708003492
+      },
+      "timing_mps_s": {
+        "c3d": 0.29589145799400285,
+        "i3d": 0.7624644160023308
+      },
+      "c3d": {
+        "shape": [
+          32,
+          4096
+        ],
+        "max_abs_diff": 2.980232238769531e-07,
+        "mean_abs_diff": 8.80116779455875e-09,
+        "max_abs_value": 0.15570203959941864,
+        "cosine_min": 0.9999999403953552
+      },
+      "i3d": {
+        "shape": [
+          4,
+          20800
+        ],
+        "max_abs_diff": 3.2335519790649414e-06,
+        "mean_abs_diff": 1.4835023876003106e-07,
+        "max_abs_value": 2.3891210556030273,
+        "cosine_min": 1.0
+      }
+    },
+    {
+      "clip": "/Volumes/Seagate_2TB/violence-datasets/archive/HCI/Screen Recording 2026-10-20 192245.mp4",
+      "timing_cpu_s": {
+        "c3d": 6.177579832998163,
+        "i3d": 3.0721067910053534
+      },
+      "timing_mps_s": {
+        "c3d": 1.9129434999995283,
+        "i3d": 1.6451018750012736
+      },
+      "c3d": {
+        "shape": [
+          32,
+          4096
+        ],
+        "max_abs_diff": 1.7508864402770996e-07,
+        "mean_abs_diff": 8.263429052135507e-09,
+        "max_abs_value": 0.17799729108810425,
+        "cosine_min": 0.9999999403953552
+      },
+      "i3d": {
+        "shape": [
+          4,
+          20800
+        ],
+        "max_abs_diff": 3.3974647521972656e-06,
+        "mean_abs_diff": 1.2577730501561746e-07,
+        "max_abs_value": 1.9912267923355103,
+        "cosine_min": 0.9999998807907104
+      }
+    },
+    {
+      "clip": "/Volumes/Seagate_2TB/violence-datasets/archive/HCI/Screen Recording 2026-10-20 191922.mp4",
+      "timing_cpu_s": {
+        "c3d": 2.978687834001903,
+        "i3d": 2.735134750000725
+      },
+      "timing_mps_s": {
+        "c3d": 0.9693035000018426,
+        "i3d": 1.4353375419959775
+      },
+      "c3d": {
+        "shape": [
+          32,
+          4096
+        ],
+        "max_abs_diff": 3.2782554626464844e-07,
+        "mean_abs_diff": 9.208863005483181e-09,
+        "max_abs_value": 0.17373144626617432,
+        "cosine_min": 0.9999999403953552
+      },
+      "i3d": {
+        "shape": [
+          4,
+          20800
+        ],
+        "max_abs_diff": 3.814697265625e-06,
+        "mean_abs_diff": 1.5442515177710447e-07,
+        "max_abs_value": 2.4436779022216797,
+        "cosine_min": 1.0
+      }
+    },
+    {
+      "clip": "/Volumes/Seagate_2TB/violence-datasets/archive/HCI/krishna-clip-3.mp4",
+      "timing_cpu_s": {
+        "c3d": 1.1616042090026895,
+        "i3d": 2.9569759590012836
+      },
+      "timing_mps_s": {
+        "c3d": 0.5322750830018776,
+        "i3d": 1.4840491249997285
+      },
+      "c3d": {
+        "shape": [
+          32,
+          4096
+        ],
+        "max_abs_diff": 2.7567148208618164e-07,
+        "mean_abs_diff": 8.216370694924535e-09,
+        "max_abs_value": 0.16712939739227295,
+        "cosine_min": 0.9999999403953552
+      },
+      "i3d": {
+        "shape": [
+          4,
+          20800
+        ],
+        "max_abs_diff": 5.900859832763672e-06,
+        "mean_abs_diff": 2.0719767235277686e-07,
+        "max_abs_value": 2.2343602180480957,
+        "cosine_min": 1.0
+      }
+    }
+  ]
+}

@@ -57,6 +57,17 @@ def test_decode_rejects_inaccurate_frame_count_instead_of_false_exact_timestamps
         list(iter_clips(path))
 
 
+def test_nonstrict_decode_uses_only_frames_that_decode(tmp_path, monkeypatch):
+    from surveillance.video import decode
+
+    path = tmp_path / "overstated.avi"
+    make_video(path, frames=19)
+    monkeypatch.setattr(decode, "probe_video", lambda _: VideoMetadata(10.0, 30, 3.0))
+    clips = list(iter_clips(path, strict=False))
+    assert len(clips) == 2
+    np.testing.assert_array_equal(clips[1][-1], clips[1][2])
+
+
 def test_dcsass_uses_clip_labels_and_source_identity(tmp_path):
     root = tmp_path / "raw"
     make_video(root / "Fighting" / "Fighting001_x264_0.avi")

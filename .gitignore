@@ -18,7 +18,14 @@ data/examples/
 data/manifests/*.jsonl
 data/splits/*.txt
 checkpoints/
-runs/
+runs/*
+# Indian pilot: protocol, decisions, reports and small metric JSON only.
+!runs/indian_pilot/
+runs/indian_pilot/features/
+runs/indian_pilot/**/*.csv
+runs/indian_pilot/**/*.mp4
+runs/indian_pilot/**/*.png
+runs/indian_pilot/**/*.jpg
 outputs/
 configs/experiments/collective_pose_local.yaml
 configs/**/*.local.yaml

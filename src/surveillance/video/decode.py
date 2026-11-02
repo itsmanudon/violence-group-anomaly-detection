@@ -35,8 +35,12 @@ def probe_video(path: Path) -> VideoMetadata:
         capture.release()
 
 
-def iter_clips(path: Path, clip_length: int = 16) -> Iterator[np.ndarray]:
-    """Yield nonoverlapping BGR uint8 clips; pad final clip with its last frame."""
+def iter_clips(path: Path, clip_length: int = 16, *, strict: bool = True) -> Iterator[np.ndarray]:
+    """Yield nonoverlapping BGR uint8 clips; pad final clip with its last frame.
+
+    strict=False accepts a container whose header overstates its frame count and
+    uses only the frames that actually decode (clip-level features, no timeline).
+    """
     if clip_length < 1:
         raise ValueError("clip_length must be positive")
     metadata = probe_video(path)
@@ -55,7 +59,7 @@ def iter_clips(path: Path, clip_length: int = 16) -> Iterator[np.ndarray]:
                 frames = []
         if not decoded:
             raise ValueError(f"Video contains no decodable frames: {path}")
-        if decoded != metadata.num_frames:
+        if strict and decoded != metadata.num_frames:
             raise ValueError(
                 f"Decoded frame count {decoded} differs from reported {metadata.num_frames}: "
                 f"{path}. Exact timeline mapping requires a complete, consistent video."

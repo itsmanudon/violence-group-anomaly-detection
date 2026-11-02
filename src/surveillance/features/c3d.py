@@ -120,7 +120,9 @@ class C3DExtractor:
         self.model.to(self.device).eval()
 
     @torch.inference_mode()
-    def extract_video(self, path: Path, num_segments: int = 32) -> np.ndarray:
+    def extract_video(
+        self, path: Path, num_segments: int = 32, *, strict_frame_count: bool = True
+    ) -> np.ndarray:
         """Extract FC6 clip units, average into segments, and L2 normalize."""
         metadata = probe_video(path)
         if metadata.fps <= 0:
@@ -128,7 +130,7 @@ class C3DExtractor:
         outputs = []
         batch = []
         timings = dict(video_decode_seconds=0.0, c3d_preprocess_seconds=0.0, c3d_seconds=0.0)
-        clips = iter(iter_clips(path))
+        clips = iter(iter_clips(path, strict=strict_frame_count))
         while True:
             started = time.perf_counter()
             try:
