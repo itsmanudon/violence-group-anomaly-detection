@@ -300,3 +300,16 @@ decision, why, alternatives rejected.
   non-violence false-positive rate 3.6% (limit 10%).
 - Dry run of the test evaluation on DCSASS val (32 sources): point estimates favour 100% over
   0% (+0.054 PR-AUC, +0.083 within-source ROC-AUC) but both CIs include 0.
+
+## D24 — 2026-11-03 — v2 one-time DCSASS test: improved
+
+- Ran once under protocol `3964c37` (`test_results_v2.json`; the script refuses to rerun).
+- **Pre-registered criterion met:** 100% vs 0% added DCSASS: PR-AUC +0.219 (CI [0.088,
+  0.392]); within-source ROC-AUC +0.172 (CI [0.069, 0.273]).
+- vs zero-shot Sultani: PR-AUC +0.155 (CI excludes 0); within-source +0.032 (CI includes 0).
+- v1 Indian-only head scores ROC-AUC 0.36 on DCSASS test (below chance).
+- DCSASS-only control beats the combined model; the Indian clips still dilute the signal.
+- Weak operating point: at 0.45, recall 0.84 and FPR 0.60.
+- **Demo switched to v2** per the protocol (criterion met): spec
+  `runs/indian_pilot/demo/indian_pilot_spec_v2.json`; the server was restarted with it. Live =
+  offline exactly for 3 clips (Playwright, Chrome).

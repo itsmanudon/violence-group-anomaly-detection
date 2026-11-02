@@ -1,0 +1,8 @@
+{
+  "checkpoint": "runs/indian_pilot/experiments_v2/curve_d100_s7/best.pt",
+  "checkpoint_sha256": "e44bc5d814090f9a742474370d8c2964d5e3967671d2b8eaf09e3255eb7024af",
+  "threshold": 0.45,
+  "split_freeze_hash": "ec95807ee52d6086d49b086b0ebbe27b997d9f2138accb6bf2fc8b1d08d571ed",
+  "threshold_rule": "combined validation only: max F1 subject to recall >= 0.8",
+  "notes": "Indian pilot v2: Indian + DCSASS training (seed 7). Improved on the matched DCSASS test; see runs/indian_pilot/REPORT.md."
+}

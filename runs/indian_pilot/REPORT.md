@@ -17,6 +17,13 @@ head trained without the Indian street-walk collections calls most of them viole
 honest result is a measured confound, and the path forward is specific: non-violence clips
 from the **same cameras and phone sources** as the violence clips.
 
+**Update, v2 (same day): adding matched data improved the model.** Training on Indian plus
+DCSASS clips (where normal and violent clips come from the same source recordings) and testing
+once on a held-out, source-safe DCSASS test set met the pre-registered improvement criterion:
+PR-AUC 0.424 → 0.635 (+0.219, 95% CI [0.088, 0.392]) and within-source ROC-AUC 0.530 → 0.703
+(+0.172, CI [0.069, 0.273]) when going from 0% to 100% added DCSASS data. Absolute performance
+is still modest (ROC-AUC 0.70) and DCSASS is not Indian footage. Details in §11.
+
 ## 1. Setup and data
 
 | item | value |
@@ -200,3 +207,65 @@ PYTHONPATH=src .venv/bin/python scripts/pilot_cascade_baseline.py --split val --
 # test (once, protocol-gated): cache --splits test --test-protocol runs/indian_pilot/EVAL_PROTOCOL.md,
 # pilot_cascade_baseline.py --split test --test-protocol ..., then scripts/pilot_test_eval.py
 ```
+
+## 11. v2: adding matched DCSASS data
+
+Protocol [`DCSASS_PROTOCOL.md`](DCSASS_PROTOCOL.md) (commit `3964c37`), committed before any
+DCSASS feature existed; run end to end autonomously at the user's request.
+
+- **Data.** Combined split `ec95807e…`: Indian v1 train/val plus the frozen, source-safe DCSASS
+  human-centric split (Abuse, Assault, Fighting, Robbery; Vandalism excluded). Train 4,223 clips
+  (353 Indian + 3,870 DCSASS), val 941, test 831 DCSASS clips from 26 source recordings (382
+  violent). In DCSASS, normal and violent clips are cut from the **same** recordings, so the source
+  cannot reveal the label. The UCF scorer excluded these test sources from its training.
+- **Models.** Same head and loss as v1; 600 steps. Learning curve: all Indian train groups plus
+  0/10/25/50/100% of DCSASS train sources, 3 seeds each; a DCSASS-only control.
+
+### Test (one-time; seed mean ± std; 95% CIs by bootstrap over the 26 test sources)
+
+| model | PR-AUC | ROC-AUC | within-source ROC-AUC |
+|---|---|---|---|
+| Zero-shot UCF Sultani | 0.487 [0.362, 0.627] | 0.519 | 0.670 [0.579, 0.757] |
+| v1 head (Indian only, from §5) | 0.401 | **0.361** | 0.487 |
+| Indian + 0% DCSASS | 0.424 ± 0.006 | 0.407 | 0.530 |
+| + 10% | 0.494 ± 0.020 | 0.534 | 0.561 |
+| + 25% | 0.474 ± 0.027 | 0.533 | 0.567 |
+| + 50% | 0.625 ± 0.004 | 0.655 | 0.682 |
+| **+ 100% (deployed)** | **0.635 ± 0.003** [0.511, 0.808] | **0.699** [0.594, 0.821] | **0.703** [0.596, 0.798] |
+| DCSASS only (control) | 0.693 ± 0.012 | 0.726 | 0.757 |
+
+Chance PR-AUC is 0.46 (382 / 831).
+
+- **Did the model improve? Yes, by the pre-registered criterion.** 100% vs 0%: PR-AUC +0.219
+  (CI [0.088, 0.392]) and within-source ROC-AUC +0.172 (CI [0.069, 0.273]); both CIs exclude 0.
+  The learning curve rises overall, though not monotonically (25% dips below 10%).
+- **vs zero-shot:** better on clip-level PR-AUC (+0.155, CI [0.021, 0.328]); within-source ROC-AUC
+  is not clearly better (+0.032, CI [−0.064, 0.141]).
+- **The v1 Indian-only head is below chance on matched data** (ROC-AUC 0.36): it had learned
+  source cues, and CCTV-style normal footage looks "violent" to it. This confirms the §4 finding.
+- **The Indian clips still cost something:** DCSASS-only training beats the combined model on
+  DCSASS test, consistent with the Indian source shortcut diluting the signal.
+- **Operating point is weak.** At the validation threshold 0.45 the deployed model catches 320 of
+  382 violent clips (recall 0.84) but flags 268 of 449 normal clips (FPR 0.60; precision 0.54).
+  Zero-shot Sultani at 0.5: recall 0.44, FPR 0.38. Human review remains essential.
+- **Indian sanity check:** on Indian validation the deployed model flags 3.6% of documented-Indian
+  non-violence (limit 10%).
+
+### Demo
+
+The console's "Indian pilot" score now uses the v2 model
+(`runs/indian_pilot/demo/indian_pilot_spec_v2.json`, threshold 0.45). Live scores matched offline
+scores exactly for 3 clips (a violent and a normal clip from the same DCSASS test recording, and an
+Indian validation clip), checked with Playwright in Chrome.
+
+```bash
+PYTHONPATH=src .venv/bin/python -m surveillance.municipal --device cpu \
+  --indian-pilot runs/indian_pilot/demo/indian_pilot_spec_v2.json serve
+```
+
+### What this means for the presentation
+
+1. Indian-only data teaches source identity (v1). 2. Matched data fixes the measurement and
+measurably improves violence detection (v2). 3. The next step is matched **Indian** data: the
+team's 40–60 fresh clips will be scored once with the v2 model and the zero-shot cascade, under a
+protocol committed before scoring.
