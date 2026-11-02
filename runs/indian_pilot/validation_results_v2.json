@@ -1,0 +1,442 @@
+{
+  "scope": "validation_only",
+  "split_freeze_hash": "ec95807ee52d6086d49b086b0ebbe27b997d9f2138accb6bf2fc8b1d08d571ed",
+  "deployed": "curve_d100_s7",
+  "threshold": 0.45,
+  "runs": {
+    "curve_d000_s7": {
+      "best_step": 7,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5578982560722752,
+        "roc_auc": 0.666538561268336
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5572800779189475,
+        "roc_auc": 0.6198978068103453
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9553571428571428,
+        "roc_auc": 0.995433789954338
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.9636363636363636
+    },
+    "curve_d000_s8": {
+      "best_step": 69,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5140357863768038,
+        "roc_auc": 0.6047933027115129
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5122644225496191,
+        "roc_auc": 0.5450556849713023
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9742063492063491,
+        "roc_auc": 0.9977168949771689
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.0
+    },
+    "curve_d000_s9": {
+      "best_step": 7,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5473730591381407,
+        "roc_auc": 0.657497870054823
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5449395325679791,
+        "roc_auc": 0.6056955598633804
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 1.0,
+        "roc_auc": 1.0
+      },
+      "documented_indian_nv_fpr_at_threshold": 1.0
+    },
+    "curve_d010_s7": {
+      "best_step": 8,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5596964255294515,
+        "roc_auc": 0.6824390650466735
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5672457308259713,
+        "roc_auc": 0.6560292352886876
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.11358116851376655,
+        "roc_auc": 0.7054794520547945
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.5454545454545454
+    },
+    "curve_d010_s8": {
+      "best_step": 269,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5596561031716754,
+        "roc_auc": 0.6683351237220329
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5600649866515444,
+        "roc_auc": 0.6228083036039118
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.531547619047619,
+        "roc_auc": 0.9726027397260274
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.03636363636363636
+    },
+    "curve_d010_s9": {
+      "best_step": 269,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5611177094769675,
+        "roc_auc": 0.6680943473107126
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5614951282952654,
+        "roc_auc": 0.6224390614733847
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.531547619047619,
+        "roc_auc": 0.9726027397260274
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.03636363636363636
+    },
+    "curve_d025_s7": {
+      "best_step": 7,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.6189521387115318,
+        "roc_auc": 0.6392660023707216
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.6247339460869452,
+        "roc_auc": 0.6034230917512393
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.09559376649552506,
+        "roc_auc": 0.632420091324201
+      },
+      "documented_indian_nv_fpr_at_threshold": 1.0
+    },
+    "curve_d025_s8": {
+      "best_step": 39,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5656114163647168,
+        "roc_auc": 0.6375064824418433
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5670240971514164,
+        "roc_auc": 0.5896633923577739
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.6063161375661376,
+        "roc_auc": 0.9543378995433789
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.43636363636363634
+    },
+    "curve_d025_s9": {
+      "best_step": 35,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5765726385347729,
+        "roc_auc": 0.641576529856275
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5779997093173963,
+        "roc_auc": 0.5938716666395165
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.7417022792022792,
+        "roc_auc": 0.9703196347031964
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.43636363636363634
+    },
+    "curve_d050_s7": {
+      "best_step": 384,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5922055911423152,
+        "roc_auc": 0.6567685953474589
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5935264017001053,
+        "roc_auc": 0.6113780876515658
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.7267676767676767,
+        "roc_auc": 0.9771689497716896
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.01818181818181818
+    },
+    "curve_d050_s8": {
+      "best_step": 383,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5909679941648991,
+        "roc_auc": 0.6553609794043562
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5922322463966996,
+        "roc_auc": 0.6096350475942247
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.7267676767676767,
+        "roc_auc": 0.9771689497716896
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.01818181818181818
+    },
+    "curve_d050_s9": {
+      "best_step": 211,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5943585892136287,
+        "roc_auc": 0.6529069121351311
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5961552509398877,
+        "roc_auc": 0.6076856663462948
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.5417478354978355,
+        "roc_auc": 0.9680365296803652
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.01818181818181818
+    },
+    "curve_d100_s7": {
+      "best_step": 125,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.6018509786858157,
+        "roc_auc": 0.6771442991554304
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.6029780194664518,
+        "roc_auc": 0.6352783705561981
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.7683531746031745,
+        "roc_auc": 0.9680365296803652
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.03636363636363636
+    },
+    "curve_d100_s8": {
+      "best_step": 125,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5956066356951373,
+        "roc_auc": 0.6718726848421989
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5964339339851508,
+        "roc_auc": 0.6284989764390941
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.8073412698412699,
+        "roc_auc": 0.9726027397260273
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.01818181818181818
+    },
+    "curve_d100_s9": {
+      "best_step": 124,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.6014452806252918,
+        "roc_auc": 0.6719236183138243
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.6024953647828022,
+        "roc_auc": 0.6289822492275781
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.8174297924297924,
+        "roc_auc": 0.9771689497716896
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.01818181818181818
+    },
+    "dcsass_only_s7": {
+      "best_step": 109,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5331546077964605,
+        "roc_auc": 0.6390993110090384
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5446034302588735,
+        "roc_auc": 0.6212498846118343
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.396582389498964,
+        "roc_auc": 0.6598173515981736
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.7818181818181819
+    },
+    "dcsass_only_s8": {
+      "best_step": 107,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5266483640049848,
+        "roc_auc": 0.6306721366128315
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.540674434287945,
+        "roc_auc": 0.6168352691395029
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.29763040762302767,
+        "roc_auc": 0.6438356164383562
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.8181818181818182
+    },
+    "dcsass_only_s9": {
+      "best_step": 106,
+      "combined_val": {
+        "count": 941,
+        "pr_auc": 0.5361821323186682,
+        "roc_auc": 0.6307508519780708
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5524395112463243,
+        "roc_auc": 0.6214345056770977
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.2968303316054664,
+        "roc_auc": 0.636986301369863
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.8727272727272727
+    }
+  },
+  "learning_curve_val": {
+    "0": {
+      "dcsass_val_pr_auc": [
+        0.5381613443455152,
+        0.01899228235831416
+      ],
+      "dcsass_val_roc_auc": [
+        0.5902163505483426,
+        0.03245551048339459
+      ],
+      "indian_val_pr_auc": [
+        0.9765211640211641,
+        0.018298723984466858
+      ],
+      "indian_val_roc_auc": [
+        0.997716894977169,
+        0.0018641474450404477
+      ]
+    },
+    "10": {
+      "dcsass_val_pr_auc": [
+        0.5629352819242603,
+        0.0031033641510434143
+      ],
+      "dcsass_val_roc_auc": [
+        0.6337588667886614,
+        0.01574825005692082
+      ],
+      "indian_val_pr_auc": [
+        0.39222546886966825,
+        0.1970312743206392
+      ],
+      "indian_val_roc_auc": [
+        0.8835616438356163,
+        0.12592312541678247
+      ]
+    },
+    "25": {
+      "dcsass_val_pr_auc": [
+        0.5899192508519193,
+        0.025022167090206267
+      ],
+      "dcsass_val_roc_auc": [
+        0.5956527169161766,
+        0.005756818387247505
+      ],
+      "indian_val_pr_auc": [
+        0.4812040610879806,
+        0.27821313928777774
+      ],
+      "indian_val_roc_auc": [
+        0.852359208523592,
+        0.15565724187139568
+      ]
+    },
+    "50": {
+      "dcsass_val_pr_auc": [
+        0.5939712996788976,
+        0.0016321645791440734
+      ],
+      "dcsass_val_roc_auc": [
+        0.6095662671973617,
+        0.0015082090551708717
+      ],
+      "indian_val_pr_auc": [
+        0.6650943963443963,
+        0.08721918961064228
+      ],
+      "indian_val_roc_auc": [
+        0.974124809741248,
+        0.004305064116813127
+      ]
+    },
+    "100": {
+      "dcsass_val_pr_auc": [
+        0.6006357727448016,
+        0.00297767533572642
+      ],
+      "dcsass_val_roc_auc": [
+        0.6309198654076235,
+        0.0030882371988602206
+      ],
+      "indian_val_pr_auc": [
+        0.7977080789580789,
+        0.021161716680032857
+      ],
+      "indian_val_roc_auc": [
+        0.9726027397260273,
+        0.003728294890080986
+      ]
+    }
+  }
+}

@@ -288,3 +288,15 @@ decision, why, alternatives rejected.
   split is source-safe, so a test score cannot be won by recognising the source.
 - **Steps changed from v1 (300 → 600):** fixed now, before training, because v1's budget is
   under one pass over ~5,000 training clips.
+
+## D23 — 2026-11-03 — v2 validation (before test)
+
+- Combined split `ec95807e…`: train 4,223 (353 Indian + 3,870 DCSASS), val 941, test 831 (DCSASS
+  only, 26 sources). Features: 5,164 train/val bags on MPS in 17 min.
+- DCSASS val PR-AUC (seed mean): 0% 0.538 → 10% 0.563 → 25% 0.590 → 50% 0.594 → 100% 0.601;
+  ROC-AUC 0.59 → 0.63. Chance PR-AUC is ~0.45. Indian val PR-AUC drops from its shortcut
+  0.977 (0%) to 0.39–0.80 once DCSASS is added.
+- Deployed `curve_d100_s7`, validation threshold 0.45. Sanity check passed: documented-Indian
+  non-violence false-positive rate 3.6% (limit 10%).
+- Dry run of the test evaluation on DCSASS val (32 sources): point estimates favour 100% over
+  0% (+0.054 PR-AUC, +0.083 within-source ROC-AUC) but both CIs include 0.
