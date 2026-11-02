@@ -1,0 +1,11 @@
+{
+  "clip_id": "clip_id",
+  "file_path": "file_path",
+  "label": "label",
+  "reviewer": "reviewer",
+  "timestamp": "timestamp",
+  "playback_status": "playback_status",
+  "violence_start": "violence_start",
+  "violence_end": "violence_end",
+  "notes": "notes"
+}

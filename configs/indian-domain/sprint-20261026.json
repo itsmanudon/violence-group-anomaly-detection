@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "kind": "prospective_experiment_plan_not_a_training_cli_config",
+  "execution_authorized": false,
+  "hardware": "local NVIDIA RTX 4070 Laptop GPU only",
+  "approved_split_dir_future_path": "data/indian-domain/split-approved-v1",
+  "required_before_any_real_experiment": [
+    "human annotation, recording/incident, rights and benchmark-overlap evidence",
+    "source-safe freeze_split receipt and both-class validation support",
+    "preserve 14 municipal reservations and immutable protected test membership"
+  ],
+  "test_policy": "No test inference here; separate final one-time protocol after validation freezes",
+  "E0": {
+    "status": "implemented_but_blocked_by_source_approval",
+    "checkpoint_config": "configs/surveillance_demo_ucf_v1.yaml",
+    "threshold": 0.5,
+    "max_behavior_windows": 3,
+    "selection": "none; pretrained five-model baseline frozen",
+    "binary_mapping": "anomaly score proxy vs true binary clip label, no six-class relabeling",
+    "command_template": ".venv/Scripts/python.exe scripts/evaluate_indian_frozen.py run --split-dir data/indian-domain/split-approved-v1 --config configs/surveillance_demo_ucf_v1.yaml --output runs/indian-domain/e0-approved-val-v1",
+    "capacity": "one 4s permitted demo measured at 972.81 MiB peak allocator; long Indian footage NOT MEASURED"
+  },
+  "E1": {
+    "status": "implemented_but_blocked_by_source_approval",
+    "representation": "32 L2-normalized frozen 4096-dimensional C3D segments",
+    "checkpoint": "checkpoints/c3d_fc6_openmmlab_v1.pt",
+    "seed": 7,
+    "steps": 100,
+    "batch_size": 8,
+    "learning_rate": 0.001,
+    "patience_steps": 20,
+    "precision": "fp32",
+    "sampling": "uniform",
+    "class_weighting": "none",
+    "selection": "validation PR-AUC then F1; validation recall-floor calibration separately",
+    "cache_command_template": ".venv/Scripts/python.exe scripts/train_indian_binary.py cache --split-dir data/indian-domain/split-approved-v1 --checkpoint checkpoints/c3d_fc6_openmmlab_v1.pt --output data/indian-domain/c3d-approved-cache-v1 --device cuda:0 --batch-size 2",
+    "train_command_template": ".venv/Scripts/python.exe scripts/train_indian_binary.py train --split-dir data/indian-domain/split-approved-v1 --cache data/indian-domain/c3d-approved-cache-v1 --output runs/indian-domain/e1-seed7 --device cuda:0 --steps 100 --seed 7 --learning-rate 0.001 --batch-size 8 --patience 20 --precision fp32 --sampling uniform --class-weighting none",
+    "capacity": "synthetic cached head previously measured; full real corpus cache time NOT MEASURED"
+  },
+  "E2": {
+    "status": "conditional_not_launchable_current_trainer_has_no_per_clip_hard_negative_weights",
+    "required_inputs": ["E1 train-only scores with exact approved train membership, model and feature hashes", "human hard-negative review", "fixed positive recall/validation protocol"],
+    "hypothesis": "reviewed high-scoring benign training interactions can improve precision while preserving violence recall",
+    "prospective_controls": "same E1 splits/features/seed/optimizer budget; single changed sampling factor; keep all negatives in pool",
+    "prospective_mining": "rank nonviolence TRAIN scores only; cutoff/budget prospectively registered before validation; no test or validation mining",
+    "implementation_required": "extend existing deterministic sampler/receipt to bind reviewed train-only per-clip weights and verify resume",
+    "command_template": null,
+    "not_equivalent": "class weighting or balanced class sampling is NOT hard-negative mining",
+    "capacity": "cached head path; no extra backbone proposed"
+  },
+  "E3": {
+    "status": "implemented_replay_but_blocked_by_approved_E0",
+    "modes": ["legacy", "coverage_consistency", "coverage"],
+    "variable": "behavior suggestion abstention from actor coverage and agreement; raw anomaly alert unchanged",
+    "command_template": ".venv/Scripts/python.exe scripts/evaluate_indian_frozen.py review --split-dir data/indian-domain/split-approved-v1 --baseline runs/indian-domain/e0-approved-val-v1 --output runs/indian-domain/e3-review-val-v1",
+    "capacity": "CPU assessment, actual demo median 0.207 ms; no GPU rerun",
+    "selection": "validation only; binary metrics identical by contract; six-class accuracy unavailable without six-class truth"
+  },
+  "E4": {
+    "status": "conditional_not_launchable_actor_cache_trainer_loader_absent",
+    "required_inputs": ["approved paired actor validation baseline and failure analysis", "hash-bound RGB actor cache plus detector/window/coverage policy"],
+    "existing_api": "BinaryActorAdapter(system, classifier_tuning=True)",
+    "unfreeze": ["RGB projection", "RGB encoder"],
+    "keep_frozen": ["person detector", "I3D", "original six-class heads"],
+    "prospective_controls": "one selective-tuning variable against frozen actor binary head; same samples, seed 7 and fixed budget; hyperparameters registered after actor smoke",
+    "command_template": null,
+    "implementation_required": "actor cache orchestration, dedicated binary checkpoint loader/resume and actual RTX backward memory smoke",
+    "capacity": "NOT MEASURED; do not use frozen video inference peak as backward memory guarantee"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "fixed_diagnostic_study_not_an_alert_intervention",
+  "dataset": "DCSASS human-centric v1",
+  "split": "existing validation in both selected model protocols",
+  "population_selection": "all selected human validation clips; no outcome-based filtering",
+  "modes": ["legacy", "coverage_consistency", "coverage"],
+  "anomaly_threshold": 0.5,
+  "max_behavior_windows": 3,
+  "policy_tuning": false,
+  "new_training": false,
+  "source_bootstrap_repetitions": 2000,
+  "source_bootstrap_seed": 20261026,
+  "bootstrap_scope": "paired source-recording clusters, diagnostic uncertainty, not independent confirmatory test",
+  "human_uncertainty_ground_truth": "unavailable",
+  "binary_ground_truth": "non-Normal abnormal clip, not certified violence",
+  "indian_footage_authorized": false
+}

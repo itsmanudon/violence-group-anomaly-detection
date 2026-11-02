@@ -1,0 +1,13 @@
+{
+  "clip_id": "clip_id",
+  "file_path": "relative_video_path",
+  "label": "label",
+  "reviewer": "assigned_reviewer",
+  "timestamp": "reviewed_at",
+  "playback_status": "playback_status",
+  "violence_start": "violence_start_sec",
+  "violence_end": "violence_end_sec",
+  "notes": "reviewer_notes",
+  "source_video_id": "source_video_id",
+  "source": "video_url"
+}
