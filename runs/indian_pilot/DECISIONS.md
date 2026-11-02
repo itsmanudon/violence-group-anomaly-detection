@@ -267,3 +267,24 @@ decision, why, alternatives rejected.
 - **Examples:** viewed thumbnails of the 10 pre-registered test examples after the one-time
   evaluation, for one-line likely causes only; nothing was changed as a result.
 - Full suite 715 passed, 4 skipped; frontend tests 6 passed; ruff clean.
+
+## D21 — 2026-11-03 — Technical details restyle (user request)
+
+- The professor console and technical pages now use the site's theme tokens, fonts and
+  rounded cards in light and dark; the 105 hard-coded console colours were mapped by role and
+  its 7–12px type raised to 13–26px. The video canvas stays dark in both themes. Verified with
+  Playwright: 5 pages × 2 themes × 2 widths, no overflow, no console errors (`9c87d0d`).
+
+## D22 — 2026-11-03 — v2: add DCSASS (user decision, autonomous run authorised)
+
+- **Decided by the user:** use DCSASS as matched data now; the team will provide 40–60 fresh
+  matched Indian clips as a new test set later.
+- **Protocol:** `runs/indian_pilot/DCSASS_PROTOCOL.md`, committed before any DCSASS feature
+  exists. It fixes the data, labels (Vandalism excluded), learning curve (0/10/25/50/100% of
+  DCSASS train sources), schedule (600 steps, patience 100), metrics (including
+  within-source ROC-AUC and source-cluster bootstrap) and the pre-registered "improved"
+  criterion.
+- **Why DCSASS:** normal and violent clips come from the same source recordings, and its frozen
+  split is source-safe, so a test score cannot be won by recognising the source.
+- **Steps changed from v1 (300 → 600):** fixed now, before training, because v1's budget is
+  under one pass over ~5,000 training clips.
