@@ -224,3 +224,15 @@ decision, why, alternatives rejected.
   decision (handover §1, hard stop 5). The frozen test split has no non-violence from any
   violence-bearing collection, so a test result could not tell violence from source.
 - **Not done:** no re-split, no change to labels, models or thresholds after viewing results.
+
+## D18 — 2026-11-03 — Reframe as a confound finding (user decision)
+
+- **Decided by the user** after hard stop 5: run the one-time test as planned, add the
+  source-only rule as a pre-registered baseline, and present the pilot as a confound
+  finding. The path-forward ask is matched data: non-violence clips from the same cameras
+  and phone sources as the violence clips.
+- **Rejected by the user:** pausing to collect matched data before Nov 10; presenting the
+  head's numbers with caveats only.
+- `EVAL_PROTOCOL.md` fixes everything about the test evaluation before any test feature is
+  extracted. Recall-at-FPR uses FPR ≤ 0.05; bootstrap is clip-level, label-stratified, 2000
+  resamples, seed 20261103.
