@@ -1,0 +1,8 @@
+{
+  "checkpoint": "runs/indian_pilot/experiments/violence_f100_s7/best.pt",
+  "checkpoint_sha256": "828b9bee7ae01f1440ebd7f877abbf78c3707d67b2816dd0948c1877b8559ac3",
+  "threshold": 0.4,
+  "split_freeze_hash": "ae9a0fab918eb20992b3202093a0982af16f7e3bc28a57c9e28ff2598818b32f",
+  "threshold_rule": "validation only: max F1 subject to recall >= 0.8",
+  "notes": "Indian pilot head (seed 7, 100% train). Confound finding: see runs/indian_pilot/REPORT.md."
+}

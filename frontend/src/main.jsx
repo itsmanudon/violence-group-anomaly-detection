@@ -791,7 +791,7 @@ function App() {
                     </span>
                   </strong>
                 </div>
-                <p className="muted">
+                <p className="pilot-note">
                   Pilot head on a small team-annotated Indian set. Shown for
                   human review only; it does not change the alert above.
                 </p>

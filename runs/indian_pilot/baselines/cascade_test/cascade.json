@@ -1,0 +1,664 @@
+{
+  "clips": {
+    "0353ad277d61bd7e7b933f0d": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.009896335192024708,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.328532208004617
+    },
+    "04a9bad51d0fbc4a013886c1": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.374020516872406,
+      "behavior": null,
+      "label": 1,
+      "status": "scored",
+      "total_seconds": 2.2819943750000675
+    },
+    "06540a38349f74ff103d4a47": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.013181387446820736,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.799907874999917
+    },
+    "076e983bf492cdae1c00bb6d": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.00990927591919899,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.4903139160014689
+    },
+    "0869715d2b45a1fb983ada49": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.010914294049143791,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5640182919960353
+    },
+    "0afcaffbb3d427544a5834f9": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.009989100508391857,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4998387919986271
+    },
+    "0c3d1d4c84c5e3d5c64ad0cc": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.039340320974588394,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 3.6971563340048306
+    },
+    "154377c7616786379a2d5c3e": {
+      "alert": 0,
+      "alert_state": "refused",
+      "anomaly_score": 0.0,
+      "error": "Decoded frame count 391 differs from reported 416: /Volumes/Seagate_2TB/violence-datasets/datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/17.mp4. Exact timeline mapping requires a complete, consistent video.",
+      "label": 1,
+      "status": "refused"
+    },
+    "1c8cc46c417cdc6018d9cbec": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.017915701493620872,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.608289292002155
+    },
+    "1ca2b2d36b46b350ccba0232": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.02214912883937359,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.0322338749974733
+    },
+    "1cfc942e1f44eda1bbad1f51": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.011968291364610195,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.787695958002587
+    },
+    "1f2be9e3bcb53ea188b5aaaf": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.011779025197029114,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.1733161250012927
+    },
+    "1ff01514476c3d9cd9f550bb": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.017357736825942993,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.454598459000408
+    },
+    "2377f3d3613a461caf7eecc9": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.030052028596401215,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.957343417001539
+    },
+    "273f1329c86be3d5e6aa1b5b": {
+      "alert": 1,
+      "alert_state": "behavior_review",
+      "anomaly_score": 0.8853249549865723,
+      "behavior": "Assault",
+      "label": 1,
+      "status": "scored",
+      "total_seconds": 9.322885583002062
+    },
+    "29ce61813978a3b6b4521215": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.037274766713380814,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.6604080830002204
+    },
+    "2d3deb38779c67e85db64ec3": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.35181212425231934,
+      "behavior": null,
+      "label": 1,
+      "status": "scored",
+      "total_seconds": 3.026546207998763
+    },
+    "344ea0ef2f32f9696a139881": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.011029220186173916,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5169578330023796
+    },
+    "3585c56cc0a56be92ac51e0a": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0075020273216068745,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.3270647500030464
+    },
+    "40a67ffd4a14d79065b83f50": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.01790105737745762,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 3.2641352919963538
+    },
+    "46a6c038ff7693e38aa042eb": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.009298817254602909,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.2403677080001216
+    },
+    "46d27e608448898828a52035": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.012624324299395084,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 3.4825223329971777
+    },
+    "48797a824e37377ca4445e05": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.026670360937714577,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.816707708996546
+    },
+    "48cf167b47bb929a3ec32a31": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.017955612391233444,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.9974725830034004
+    },
+    "54d7b7efd3835a8bfc2c694c": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.010510562919080257,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.8157239590000245
+    },
+    "55d24b2fd25a910ae10b6e17": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.015227126888930798,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.8424501250046887
+    },
+    "5854361ddbd74fbf2342df97": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.010639151558279991,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.2818900420024875
+    },
+    "5a8326f8c2ce1e922e84f367": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.04538952186703682,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.4775613750025514
+    },
+    "5b1c136d3684fcc235ee3d8a": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.011724803596735,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5666825419975794
+    },
+    "5b91f68013c451e66092a033": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.041080545634031296,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.6031106250011362
+    },
+    "645a42e185c4119a0aff9b19": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.009644130244851112,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5579752910052775
+    },
+    "6824f079babd0b29ceadb64e": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.012466954998672009,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.0947765829987475
+    },
+    "6bd39d5e1ede3bb2575729e5": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.03080081380903721,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.6075447499970323
+    },
+    "6fd5f806fcc2b94e5710d207": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.010657034814357758,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5940931660006754
+    },
+    "730a85ec59101454170b8054": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.05672486871480942,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.3232771670009242
+    },
+    "739a6247fbcd0dba37b63fda": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.008571863174438477,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.7175550000029034
+    },
+    "741a7716d433353993273043": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.021118082106113434,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.3464597500060336
+    },
+    "7801a6ddb63b210b2ee7016b": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.012543467804789543,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.1742939590039896
+    },
+    "7c645e874c3262648ea1989e": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.004842499736696482,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4800992089949432
+    },
+    "9076310ed3d1f4f720423946": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.014531147666275501,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.5201270830002613
+    },
+    "966898d11a3ed1d296439464": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.02048630639910698,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.627695124996535
+    },
+    "99498acdcbc0137b2c97e841": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.05035849288105965,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.2566066660001525
+    },
+    "9f7843eff32eaa4c348ff2ff": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.021821949630975723,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4989613340003416
+    },
+    "a0ecd732adb17c5d907378cd": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.006130618043243885,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.5934265410032822
+    },
+    "a129b87e509a209b1f770116": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.03538747876882553,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.578971625000122
+    },
+    "a1a7e68244676a1c0bc7dcf9": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.024030549451708794,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5707391659962013
+    },
+    "ab2ae0c6d55ac77d744960e9": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.04651503637433052,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.021966792002786
+    },
+    "b17a0e786762941298825a9a": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.042825303971767426,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.3792094579985132
+    },
+    "b63887818d5beb4c2e7f0f55": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0068988376297056675,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.503531499998644
+    },
+    "b9dcde4b593d0b1a8bb72dbd": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0038758181035518646,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.7071188340050867
+    },
+    "c1d28015af1dd8712402de47": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.015531773678958416,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.9278736670021317
+    },
+    "c3d4aa7686cd1d9a5c4bba95": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.03337118402123451,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.6107385420036735
+    },
+    "c957c5ae1d1f570749df0e77": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.002631174400448799,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.3578288330027135
+    },
+    "cd09b79c98652b517f3dfc40": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.06425603479146957,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.4941104170065955
+    },
+    "d5ce1b498b92eeb9f0c21886": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.017868636175990105,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.6626666669981205
+    },
+    "d7a0aafa96eae40cf3b140af": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.019672492519021034,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.9047857080004178
+    },
+    "dc472e9920fdd387d65a6ca0": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.011181952431797981,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 2.0449253329934436
+    },
+    "def5c06187b1bf56ed9701cc": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0227221567183733,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4982552500005113
+    },
+    "e21b01d9d2c1b7260f9a4373": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.03766990080475807,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.866086959002132
+    },
+    "ec7d5592e0375b2ed3beb24e": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.006277712062001228,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.9693180829999619
+    },
+    "ec90750bbf982f70284c2a5f": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.04376929998397827,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.1873625829975936
+    },
+    "ecc2b008dc92519281c80ef1": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0064588612876832485,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4623010409995914
+    },
+    "ed535afdb952ad23657adf01": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.07507430762052536,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 3.0542024169990327
+    },
+    "f2fcecb871d511f3f901cf8c": {
+      "alert": 1,
+      "alert_state": "behavior_review",
+      "anomaly_score": 0.8332884311676025,
+      "behavior": "Vandalism",
+      "label": 1,
+      "status": "scored",
+      "total_seconds": 4.679814874994918
+    },
+    "f3d526843ab478c1a9b4f812": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.04407591372728348,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.519033374999708
+    },
+    "f78b0ffd4eb651cc716945be": {
+      "alert": 1,
+      "alert_state": "behavior_review",
+      "anomaly_score": 0.6745967268943787,
+      "behavior": "Robbery",
+      "label": 1,
+      "status": "scored",
+      "total_seconds": 4.576174416994036
+    },
+    "f88ad9e8f3b78be9d0fa2b94": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.03519437462091446,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.5353433749987744
+    },
+    "f9716549a0d3df5bda11a2ca": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.012647520750761032,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 1.4203263329982292
+    },
+    "fc856de7deef4423198a3deb": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.013360056094825268,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.9973280420017545
+    },
+    "fcc84f1d0deea7ac45022da5": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.0057923076674342155,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.39950154200050747
+    },
+    "fcf8e1d4d944d9d165ac46f2": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.013322176411747932,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.48164266599633265
+    },
+    "fd5ebae97839c8c38db64043": {
+      "alert": 0,
+      "alert_state": "no_anomaly",
+      "anomaly_score": 0.008734036237001419,
+      "behavior": null,
+      "label": 0,
+      "status": "scored",
+      "total_seconds": 0.7061032089986838
+    }
+  },
+  "config_sha256": "bb3df5dbc0faeaee67d95002fcb61f32351f2a89020f6f2b112fea13fdcc948c",
+  "device": "cpu",
+  "model_loading_seconds": 0.7431207499976153,
+  "refused": [
+    "154377c7616786379a2d5c3e"
+  ],
+  "scope": "zero_shot_cascade_test",
+  "split_freeze_hash": "ae9a0fab918eb20992b3202093a0982af16f7e3bc28a57c9e28ff2598818b32f",
+  "test_protocol": {
+    "commit": "0a17a508c75f870f1a3e9690a670c7891a371dd4",
+    "path": "runs/indian_pilot/EVAL_PROTOCOL.md",
+    "sha256": "e2fad752e3a4a01bbf2012dbfa89c860e87afd6f6b4874d97529aebbff7219b6"
+  }
+}

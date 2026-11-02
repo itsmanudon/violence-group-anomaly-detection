@@ -684,6 +684,13 @@ tr:last-child td {
   font-size: 12px;
   font-weight: 500;
 }
+.pilot-note {
+  margin: 0;
+  padding: 0 16px 12px;
+  font-size: 9px;
+  line-height: 1.45;
+  color: var(--muted);
+}
 .fixed {
   font-size: 7px;
   color: #748798;

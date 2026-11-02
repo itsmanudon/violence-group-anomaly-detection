@@ -75,3 +75,6 @@ frontend/dist/
 *.sqlite3
 *.sqlite3-wal
 *.sqlite3-shm
+# Per-run training registrations duplicate the feature registry; keep only the deployed head's.
+runs/indian_pilot/experiments/*/registration.json
+!runs/indian_pilot/experiments/violence_f100_s7/registration.json

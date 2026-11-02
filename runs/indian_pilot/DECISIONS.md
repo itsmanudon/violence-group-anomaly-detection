@@ -250,3 +250,20 @@ decision, why, alternatives rejected.
   as source separation improving with data, per the protocol.
 - One test violence clip (Snatch `17.mp4`) was refused by the strict cascade (overstated
   frame count) and counted as no alert; the head scored it 0.584 from non-strict features.
+
+## D20 — 2026-11-03 — Demo and report
+
+- **Demo:** the seed-7 head is served as an optional "Indian pilot score" through
+  `--indian-pilot runs/indian_pilot/demo/indian_pilot_spec.json` (checkpoint SHA256 pinned,
+  threshold 0.40). It scores the cascade's own C3D bag and never changes the alert. The
+  server I started earlier in this session (PID 72739) was restarted with the flag.
+- **Verification:** Playwright 1.64.1 driving installed Chrome (scratch install, not a repo
+  dependency) uploaded 3 test clips through the professor console. Live scores matched the
+  offline test scores within 6e-8 (protocol tolerance 1e-3); the rendered row showed the
+  expected values. A single non-fatal 404 appeared once during the 3-upload sequence and did
+  not reproduce in single-clip runs (likely a stale media URL); no other console errors.
+- **UI fix:** the pilot note used the console's body text size and spilled to the panel
+  edge; it now has its own small muted style (`.pilot-note`).
+- **Examples:** viewed thumbnails of the 10 pre-registered test examples after the one-time
+  evaluation, for one-line likely causes only; nothing was changed as a result.
+- Full suite 715 passed, 4 skipped; frontend tests 6 passed; ruff clean.

@@ -1,0 +1,1222 @@
+{
+  "checkpoint_sha256": "828b9bee7ae01f1440ebd7f877abbf78c3707d67b2816dd0948c1877b8559ac3",
+  "code": {
+    "files": {
+      "src/surveillance/datasets/indian_domain.py": "a925b9a8f7dd9cb3060459df71109332bbf362bbdf6eb4baa37b0b13016c71ec",
+      "src/surveillance/datasets/indian_split.py": "fbd20a604487bfbaf82217033c4984ca63e59d1730fd27992e39f23469acf685",
+      "src/surveillance/evaluation/indian_binary.py": "6a274992530044433f7ed9b8b566b7d0ee0ec722359f0b395f4726a0cbe37010",
+      "src/surveillance/models/indian_binary.py": "51ecfab8e4093a8c0728764d39307a36be76afc01a5dcd47cfbdd5897391dfa3",
+      "src/surveillance/training/indian_binary.py": "a13ac7827a6474fe46ca0326752598cc540b8e3a1649e9e62c8c4e12582dfa39"
+    },
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "evidence_kind": "frozen_feature_cache_not_an_evaluation",
+  "metrics_at_0_5": {
+    "accuracy": 0.9873417721518988,
+    "average_precision": 0.976190476190476,
+    "confusion_matrix": [
+      [
+        73,
+        0
+      ],
+      [
+        1,
+        5
+      ]
+    ],
+    "count": 79,
+    "detection_latency_seconds": null,
+    "f1": 0.9090909090909091,
+    "false_alarms_per_camera_hour": null,
+    "false_negative_rate": 0.16666666666666666,
+    "false_positive_rate": 0.0,
+    "population": "binary_labeled_clips",
+    "pr_auc": 0.9742063492063491,
+    "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+    "precision": 1.0,
+    "recall": 0.8333333333333334,
+    "roc_auc": 0.9977168949771689,
+    "roc_curve": {
+      "fpr": [
+        0.0,
+        0.0,
+        0.0,
+        0.0136986301369863,
+        0.0136986301369863,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        0.5744941234588623,
+        0.5009883642196655,
+        0.4484405517578125,
+        0.43597641587257385,
+        0.182720348238945
+      ],
+      "tpr": [
+        0.0,
+        0.16666666666666666,
+        0.8333333333333334,
+        0.8333333333333334,
+        1.0,
+        1.0
+      ]
+    },
+    "threshold": 0.5
+  },
+  "min_recall": 0.8,
+  "objective": "maximum_f1_subject_to_recall_floor",
+  "selected_metrics": {
+    "accuracy": 0.9873417721518988,
+    "average_precision": 0.976190476190476,
+    "confusion_matrix": [
+      [
+        72,
+        1
+      ],
+      [
+        0,
+        6
+      ]
+    ],
+    "count": 79,
+    "detection_latency_seconds": null,
+    "f1": 0.9230769230769231,
+    "false_alarms_per_camera_hour": null,
+    "false_negative_rate": 0.0,
+    "false_positive_rate": 0.0136986301369863,
+    "population": "binary_labeled_clips",
+    "pr_auc": 0.9742063492063491,
+    "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+    "precision": 0.8571428571428571,
+    "recall": 1.0,
+    "roc_auc": 0.9977168949771689,
+    "roc_curve": {
+      "fpr": [
+        0.0,
+        0.0,
+        0.0,
+        0.0136986301369863,
+        0.0136986301369863,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        0.5744941234588623,
+        0.5009883642196655,
+        0.4484405517578125,
+        0.43597641587257385,
+        0.182720348238945
+      ],
+      "tpr": [
+        0.0,
+        0.16666666666666666,
+        0.8333333333333334,
+        0.8333333333333334,
+        1.0,
+        1.0
+      ]
+    },
+    "threshold": 0.4
+  },
+  "selected_threshold": 0.4,
+  "split": "val",
+  "split_freeze_hash": "ae9a0fab918eb20992b3202093a0982af16f7e3bc28a57c9e28ff2598818b32f",
+  "test_predictions_used": false,
+  "tie_break": [
+    "higher_recall",
+    "higher_threshold"
+  ],
+  "training_registration_sha256": "ce0e829c8aedf1642bd5cb7ab28a4bab300a5ac67db8d6e9a27ba8f17b8beacc",
+  "trials": [
+    {
+      "accuracy": 0.0759493670886076,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          0,
+          73
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.1411764705882353,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 1.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0759493670886076,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.05
+    },
+    {
+      "accuracy": 0.0759493670886076,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          0,
+          73
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.1411764705882353,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 1.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0759493670886076,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.1
+    },
+    {
+      "accuracy": 0.0759493670886076,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          0,
+          73
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.1411764705882353,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 1.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0759493670886076,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.15
+    },
+    {
+      "accuracy": 0.12658227848101267,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          4,
+          69
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.14814814814814814,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.9452054794520548,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.08,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.2
+    },
+    {
+      "accuracy": 0.4050632911392405,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          26,
+          47
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.2033898305084746,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.6438356164383562,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.11320754716981132,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.25
+    },
+    {
+      "accuracy": 0.7341772151898734,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          52,
+          21
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.36363636363636365,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.2876712328767123,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.2222222222222222,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.3
+    },
+    {
+      "accuracy": 0.9367088607594937,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          68,
+          5
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.7058823529411765,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.0684931506849315,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.5454545454545454,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.35
+    },
+    {
+      "accuracy": 0.9873417721518988,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          72,
+          1
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.9230769230769231,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.0,
+      "false_positive_rate": 0.0136986301369863,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.8571428571428571,
+      "recall": 1.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.4
+    },
+    {
+      "accuracy": 0.9873417721518988,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.9090909090909091,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.16666666666666666,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 1.0,
+      "recall": 0.8333333333333334,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.45
+    },
+    {
+      "accuracy": 0.9873417721518988,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.9090909090909091,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.16666666666666666,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 1.0,
+      "recall": 0.8333333333333334,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.5
+    },
+    {
+      "accuracy": 0.9620253164556962,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.6666666666666666,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 0.5,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 1.0,
+      "recall": 0.5,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.55
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.6
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.65
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.7
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.75
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.8
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.85
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.9
+    },
+    {
+      "accuracy": 0.9240506329113924,
+      "average_precision": 0.976190476190476,
+      "confusion_matrix": [
+        [
+          73,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "count": 79,
+      "detection_latency_seconds": null,
+      "f1": 0.0,
+      "false_alarms_per_camera_hour": null,
+      "false_negative_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "population": "binary_labeled_clips",
+      "pr_auc": 0.9742063492063491,
+      "pr_auc_definition": "trapezoidal precision-recall curve; AP reported separately",
+      "precision": 0.0,
+      "recall": 0.0,
+      "roc_auc": 0.9977168949771689,
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0136986301369863,
+          1.0
+        ],
+        "thresholds": [
+          null,
+          0.5744941234588623,
+          0.5009883642196655,
+          0.4484405517578125,
+          0.43597641587257385,
+          0.182720348238945
+        ],
+        "tpr": [
+          0.0,
+          0.16666666666666666,
+          0.8333333333333334,
+          0.8333333333333334,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": 0.95
+    }
+  ],
+  "validation_clip_ids": [
+    "002378df696c97f1233db0ad",
+    "02c003d64f9a7be22ad1de70",
+    "049a5d5e0a91dde3d0caa81f",
+    "075613b99d9ba8798069b257",
+    "0a102c8b2ebf14a268c22c05",
+    "0d1bdd7fb615cc55ea843151",
+    "12e1440a3d806b856eb5265b",
+    "1381454716050ab36d65e3e2",
+    "1adb4559565585263f29c0ab",
+    "2275ecf2fde4499b6bfe1445",
+    "257611899d36138887b6d9e3",
+    "2590e01c1497015e6178df71",
+    "25e36364f4d47aeb029aee16",
+    "275a2fbaf01865b02be33ea6",
+    "27f7bbe554d1fd47bd61d2d4",
+    "2bcaa788b9f686573ff42432",
+    "2bd9ac31ef54a892f6a14aac",
+    "2bee4201edb0c1e395ba8b39",
+    "2c806310465bf731d7bd6a5c",
+    "2d9d9eb300992f6bfd6295e6",
+    "2e9a73f29a789c5ba1d46ba2",
+    "2f9e98f78ae0eccdf4c5621b",
+    "3ad9c9ef50cac0425270769d",
+    "3b413e2da2f3b197f6387db4",
+    "3dbe6882aa42e2c8d5938378",
+    "3f667dc43920fe0b6eecf790",
+    "42bf031945a0dbce43647725",
+    "430fa8a2b5e268c5db861a99",
+    "49583fd66d6e6116a853514a",
+    "4b2d99a9c01c0cf62340a407",
+    "519e53766b699063a6717fdc",
+    "53e7c56795266fd046d0a59e",
+    "591d8f8fbed6075c06c19f55",
+    "591dc20376c9a9d366331e19",
+    "5b61e0fde7020aed00ad9a40",
+    "5bbaac3c9994aff38fb900d3",
+    "5d977b58e3c8cea800347b0b",
+    "6202e0653a4af6c260f245b1",
+    "69a897a45273495a7a346eb8",
+    "6c247563daa8cb5cd8a903da",
+    "7984b89c3650bcc142356b2a",
+    "7c25ad5de5609d358b93c426",
+    "808ee52d35781fd9a8ce0b2e",
+    "84e4a09bc07b0c7caf03a650",
+    "865595298d0568c15542178a",
+    "91a49af4f506aa8fd85e0276",
+    "92193dfe216b663412e4975c",
+    "99b5add4193ad71f7a0f577f",
+    "9ae93d985edb1dfe3541bce9",
+    "9bd240d7c58ecc0de681d516",
+    "a04aebd5ab5ab1170b39be8f",
+    "a1e8a0b2fdbcd7fe776a79c1",
+    "b3d85bde98c049d0dcdd544b",
+    "b9f866c784a50fc190cf6387",
+    "bb7c2599d95cf0d740f3c7e6",
+    "bbd1c7d4b400c97cd3b74b66",
+    "bc3989b470d1173b1dbd33a0",
+    "bebd1fc9a9e5356b82dc08b4",
+    "c08544c399c4b6f4e701e51f",
+    "caec855307a6199f9cd3e045",
+    "d0523949bd1680f4c80d4fff",
+    "d095bc734659e06439ce0db3",
+    "d4738314452e346a6dd718d3",
+    "d53f34ce3c5048d8ff6cf0bd",
+    "d9b7a6fa03228cc9b63c6b0d",
+    "dded270b7e1128bdfa155f54",
+    "e1083a76ceca3d815faa330b",
+    "e34efbd02a5461389ca7923c",
+    "e388a08252efefac13230f68",
+    "e73cfe833f2195150e2b01be",
+    "ed7f5c0ae3f17bae0470fcfa",
+    "f7cbb44bdadafa4a368d114d",
+    "f9beb65872867563590b0861",
+    "fa9edf50594a76549254898b",
+    "fab00620f7cf442114d105e0",
+    "fac1d06b586a582fcb333094",
+    "fb44ed57ff2626ed46434203",
+    "fbb0e720449b17b0fec0f076",
+    "fc43f70a7480992a0ea46da7"
+  ],
+  "validation_prediction_hash": "316eafe43661893e2e732ae59927011045fc535e8c022a8a3c77d0040c813f19"
+}
