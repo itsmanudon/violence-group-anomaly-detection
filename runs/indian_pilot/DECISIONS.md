@@ -236,3 +236,17 @@ decision, why, alternatives rejected.
 - `EVAL_PROTOCOL.md` fixes everything about the test evaluation before any test feature is
   extracted. Recall-at-FPR uses FPR ≤ 0.05; bootstrap is clip-level, label-stratified, 2000
   resamples, seed 20261103.
+
+## D19 — 2026-11-03 — One-time test evaluation ran
+
+- Ran once under protocol commit `0a17a508` (script `e7c7577`, validated by a dry run on
+  validation). Output `runs/indian_pilot/test_results.json`; the script refuses to rerun.
+- **Pre-registered reading:** the beyond-source criterion is not met (paired HEAD − SOURCE
+  PR-AUC difference 0.000, CI [0, 0]). Test is saturated: the zero-shot UCF Sultani score
+  also ranks it perfectly (PR-AUC 1.000). The head's only measurable gain over the zero-shot
+  pipeline is at the operating point: 6/6 vs 3/6 violence at fixed thresholds, both with 0
+  false alarms out of 66.
+- The test learning curve rises (overall PR-AUC 0.92 → 0.95 → 1.00 → 1.00) and is reported
+  as source separation improving with data, per the protocol.
+- One test violence clip (Snatch `17.mp4`) was refused by the strict cascade (overstated
+  frame count) and counted as no alert; the head scored it 0.584 from non-strict features.
