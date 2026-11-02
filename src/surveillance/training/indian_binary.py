@@ -125,12 +125,52 @@ def profile_binary_device(output: Path, *, batch_sizes=(1, 8, 32), steps=10, pre
     return report
 
 
-def cache_c3d(split_dir: Path, checkpoint: Path, output: Path, *, device="cpu", batch_size=2):
-    """Extract train/validation only, into a fresh cache, binding all source bytes."""
+def committed_protocol(protocol: Path) -> dict:
+    """Identity of an evaluation protocol that is tracked and unmodified in git HEAD."""
+    protocol = Path(protocol).resolve()
+    root = Path(__file__).resolve().parents[3]
+
+    def git(*args):
+        return subprocess.run(
+            ["git", "-C", str(root), *args], capture_output=True, text=True, timeout=10
+        )
+
+    relative = str(protocol.relative_to(root))
+    if git("ls-files", "--error-unmatch", relative).returncode != 0:
+        raise ValueError("Evaluation protocol must be committed before test features exist")
+    if git("diff", "--quiet", "HEAD", "--", relative).returncode != 0:
+        raise ValueError("Evaluation protocol has uncommitted changes")
+    commit = git("log", "-1", "--format=%H", "--", relative).stdout.strip()
+    return {"path": relative, "sha256": sha256(protocol), "commit": commit}
+
+
+def cache_c3d(
+    split_dir: Path,
+    checkpoint: Path,
+    output: Path,
+    *,
+    device="cpu",
+    batch_size=2,
+    splits=("train", "val"),
+    strict_frame_count=True,
+    test_protocol: Path | None = None,
+):
+    """Extract the requested splits into a fresh cache, binding all source bytes.
+
+    Test features require a committed, unmodified evaluation protocol; its identity
+    is recorded so the one-time test evaluation is auditable.
+    """
     from surveillance.features.c3d import C3DExtractor
 
     if Path(output).exists():
         raise FileExistsError(f"Refuse to overwrite feature cache: {output}")
+    if not set(splits) or set(splits) - {"train", "val", "test"}:
+        raise ValueError("Splits must be a nonempty subset of train/val/test")
+    protocol = None
+    if "test" in splits:
+        if test_protocol is None:
+            raise ValueError("Protected test features require --test-protocol")
+        protocol = committed_protocol(test_protocol)
     rows, receipt = verify_split(split_dir)
     checkpoint_hash = sha256(checkpoint)
     extraction_started = time.perf_counter()
@@ -140,12 +180,14 @@ def cache_c3d(split_dir: Path, checkpoint: Path, output: Path, *, device="cpu", 
     output.mkdir(parents=True, exist_ok=False)
     features = {}
     video_timings = []
-    for index, row in enumerate(r for r in rows if r.split in {"train", "val"}):
+    for index, row in enumerate(r for r in rows if r.split in set(splits)):
         path = output / f"bag-{index:06d}.npy"  # never use untrusted clip IDs as paths
         if str(device).startswith("cuda"):
             torch.cuda.synchronize(device)
         video_started = time.perf_counter()
-        array = extractor.extract_video(Path(row.path), 32)
+        # Only non-strict decoding needs the keyword; strict extractors keep their signature.
+        options = {} if strict_frame_count else {"strict_frame_count": False}
+        array = extractor.extract_video(Path(row.path), 32, **options)
         if str(device).startswith("cuda"):
             torch.cuda.synchronize(device)
         video_timings.append(
@@ -173,7 +215,11 @@ def cache_c3d(split_dir: Path, checkpoint: Path, output: Path, *, device="cpu", 
             "aggregation": "32_l2_normalized_c3d_segments",
         },
         "features": features,
-        "protected_test_features_extracted": False,
+        "splits": sorted(splits),
+        "strict_frame_count": strict_frame_count,
+        "device": str(device),
+        "protected_test_features_extracted": "test" in splits,
+        "test_protocol": protocol,
         "timing": {
             "model_loading_seconds": model_loading_seconds,
             "total_cache_seconds": time.perf_counter() - extraction_started,

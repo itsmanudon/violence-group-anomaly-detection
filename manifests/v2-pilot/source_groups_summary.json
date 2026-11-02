@@ -1,0 +1,49 @@
+{
+  "pilot_override": "team_labels_unadjudicated",
+  "eligible_clips": 504,
+  "excluded": {
+    "0635770a717bd568f423c81c": "quality hold (label=not_sure)",
+    "0d6b22ca39285d0446a113f9": "quality hold (label=not_sure)",
+    "0ea426a7f941bd228484bb80": "quality hold (label=violence)",
+    "1689555e1ec22c2fbec5ef07": "quality hold (label=violence)",
+    "30315e8087fd7507e2d4e8e6": "quality hold (label=violence)",
+    "53822d3718aee69e79969fbd": "quality hold (label=violence)",
+    "545cba068e6b848db83c0610": "quality hold (label=violence)",
+    "61ce78f9b7a71bf64ddab267": "quality hold (label=not_sure)",
+    "7c510a86971bdee794c450a3": "quality hold (label=not_sure)",
+    "7d545efce2a8d4c53e29a6b6": "quality hold (label=violence)",
+    "80ec9cc209a4da372c8d82eb": "not annotated (audio-only item without a video stream)",
+    "b1d9b41a2ebe04ef221b9e48": "quality hold (label=not_sure)",
+    "b20a1b1000a6d5cadd023657": "quality hold (label=violence)",
+    "b73c70cbe78ab5b9986c3d8b": "not annotated (audio-only item without a video stream)",
+    "bb47e7926110c7cf49d67f9b": "quality hold (label=violence)",
+    "d905989e5bce70e497fcfcaf": "quality hold (label=not_sure)",
+    "eff54d4cf18ea5b3b543088e": "quality hold (label=not_sure)",
+    "f1b5b1596421b4283627ff3e": "quality hold (label=violence)",
+    "f74dc1433140f8b84451eb09": "quality hold (label=blank)"
+  },
+  "hamming_threshold": 8,
+  "min_frame_matches": 2,
+  "links": 438,
+  "link_kinds": {
+    "phash": 110,
+    "filename": 315,
+    "capture_time": 1,
+    "review": 12
+  },
+  "groups": 118,
+  "groups_with_violence": 32,
+  "mixed_label_groups": 1,
+  "largest_groups": [
+    97,
+    33,
+    27,
+    26,
+    22,
+    21,
+    17,
+    17,
+    16,
+    16
+  ]
+}

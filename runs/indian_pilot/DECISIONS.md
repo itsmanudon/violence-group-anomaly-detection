@@ -96,3 +96,55 @@ decision, why, alternatives rejected.
   globally), media, images and CSVs there. Split and source-group CSVs under
   `manifests/v2-pilot/` are committed as the handover instructs (clip IDs, groups,
   labels; no footage).
+
+## D9 — 2026-11-03 — Pilot eligibility
+
+- **Decided:** 504 eligible clips = every non-hold clip labelled violence/non_violence
+  (39 / 465). All 504 decode. 19 excluded with written reasons: 17 quality holds (9
+  violence, 7 not_sure, 1 blank) and 2 audio-only items.
+- **Geography tag:** from the inventory's `geographic_origin`, not hard-coded:
+  WalkIndia-50 + IPID = 352 documented-Indian (all non_violence); the rest unknown.
+
+## D10 — 2026-11-03 — Source-group reconstruction
+
+- **Decided:** union-find (reusing `indian_split.source_groups`) over: pHash links (≥ 2
+  frame pairs within Hamming 8, ~1 frame/s, near-blank frames skipped); WalkIndia
+  `{place}-Scene-NNN` and HCI `krishna-clip-*` filenames; HCI capture times ≤ 5 min apart;
+  and explicit visual-review merges in `manifests/v2-pilot/review_decisions.json`.
+- **Threshold evidence:** no cross-collection clip pair matches at ≤ 8; the first
+  cross-collection matches appear at 10 (2 pairs) and 12 (15 pairs). Two-frame minimum
+  guards against a single coincidental frame.
+- **Rejected:** the Snatch `N` / `N_0` filename rule. Visual review showed different
+  footage in all 5 pairs, and pHash agrees (no frame pair below 20 bits).
+- **Rejected:** `imagehash` (new dependency); the same DCT recipe is ~10 lines with scipy.
+- **Rejected:** weak hints (duration, resolution, file mtime) as automatic links. mtimes are
+  transfer times, not recording times; identical resolution is shared by entire collections
+  (all 1920×1080), so it would merge unrelated clips wholesale.
+- **Result:** 118 groups; 32 contain violence (one of 5 clips, three of 2, 28 singletons);
+  one mixed-label group (G096, Refined debris protest).
+
+## D11 — 2026-11-03 — Visual review of violence clusters
+
+- **Decided:** reviewed all 48 clips of the three collections containing violence (Snatch,
+  HCI, Refined) on contact sheets, not only the violence groups, so cross-group same-camera
+  pairs would be visible. Five merges recorded with evidence; details in
+  `manifests/v2-pilot/violence_cluster_review.md`.
+- **Label noise noted, labels unchanged:** Refined `Video4` (annotated non_violence) shows a
+  shield line and thrown objects.
+- **Geography note:** the 5 SHAWNRTV clips look non-Indian. "Unknown geography" must not be
+  presented as Indian footage.
+
+## D12 — 2026-11-03 — Split rules (fixed before viewing any assignment)
+
+- **Decided:** seed 7; ratios 70/15/15; groups whole; strata label × collection; required in
+  both val and test: ≥ 6 violence, ≥ 10 unknown-geography non_violence, ≥ 10
+  documented-Indian non_violence. G096 (mixed labels, suspected label noise) forced to train.
+- **Interpretation:** the handover's "non-violence from the same unknown-geography collection
+  as the violence clips" is read at the geography level (its stated minimum tag). Within
+  that level, the non-violence is mostly Unidentified-Archive; the only collections with
+  both labels are Snatch (7 NV in 2 groups) and Refined (NV only inside G096). So a
+  fully collection-matched within-collection test is not feasible with this data, and the
+  report must say so.
+- **Rejected:** forcing Snatch non-violence into val and test. With 2 groups (5 + 2 clips)
+  that would leave train with no Snatch non-violence at all, and yield a 2-clip test
+  subset that cannot carry a metric.

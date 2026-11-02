@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "reviewer": "Claude (Mac pilot session), visual review of 3 thumbnails per clip",
+  "reviewed_at": "2026-11-03",
+  "policy": "Merge clips that plausibly share an incident, camera or production source; when unsure, merge.",
+  "merges": [
+    {
+      "name": "snatch-shawnrtv",
+      "paths": [
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/8.mp4",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/9.mp4",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/10.mp4",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/11.mp4",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Snatch Theft/12.mp4"
+      ],
+      "evidence": "All five carry the SHAWNRTV watermark: staged clips from one production channel, likely shared actors and locations."
+    },
+    {
+      "name": "snatch-normal-overlay-network",
+      "paths": [
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_11.avi",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_12.avi",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_15.avi",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_18.avi",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_20.avi"
+      ],
+      "evidence": "Same on-screen overlay style (bottom channel/time text), low-light street CCTV; plausibly one camera network. Unsure, so merged."
+    },
+    {
+      "name": "snatch-normal-day-road",
+      "paths": [
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_23.avi",
+        "datasets/snatch-1.0/source/6a8ca01df7b5b232182121dc54f0d9a3f0985f4b/Snatch 1.0/Normal/s_24.avi"
+      ],
+      "evidence": "Daytime busy-road CCTV with the same overlay; one frame pair at pHash distance 6 (below the 2-frame link rule)."
+    },
+    {
+      "name": "refined-debris-protest",
+      "paths": [
+        "archive/Refined Clips/Video2.mp4",
+        "archive/Refined Clips/Video3.mp4",
+        "archive/Refined Clips/Video4.mp4"
+      ],
+      "evidence": "Same debris-strewn tree-lined road, yellow barricades and police shield line; likely one incident filmed by several phones."
+    },
+    {
+      "name": "refined-crowd-rally",
+      "paths": [
+        "archive/Refined Clips/Video5.mp4",
+        "archive/Refined Clips/Video9.mp4"
+      ],
+      "evidence": "Dense crowd pressing against police and barricades; plausibly the same rally. Unsure, so merged."
+    }
+  ],
+  "rejected_links": [
+    {
+      "rule": "Snatch Theft N.mp4 / N_0.mp4 shared numbering",
+      "evidence": "All five pairs (9, 10, 11, 14, 17) show different footage: un-suffixed clips are staged or different cameras, _0 clips are distinct CCTV feeds. pHash also finds no frame closer than 20 bits."
+    }
+  ],
+  "kept_automatic_links": [
+    {
+      "link": "HCI krishna-clip-4 / krishna-clip-5 (filename)",
+      "note": "Visible incidents differ (one has an AP watermark), but both may be cut from one compilation; kept merged as the conservative choice."
+    },
+    {
+      "link": "HCI Instagram screen recordings 202523 / 202543 (captured 20 s apart)",
+      "note": "Different crowd scenes, possibly the same reel or incident; kept merged."
+    }
+  ],
+  "label_observations": [
+    {
+      "path": "archive/Refined Clips/Video4.mp4",
+      "note": "Annotated non_violence but shows a police shield line and thrown objects. Label kept (team annotation, not adjudicated); flagged as possible label noise."
+    },
+    {
+      "path": "archive/Refined Clips/Video3.mp4",
+      "note": "Annotated non_violence; protest aftermath with debris and barricades. Plausible as non_violence at clip level, but a borderline case."
+    }
+  ],
+  "geography_observations": [
+    {
+      "paths": "Snatch Theft 8, 9, 10, 11, 12.mp4 (SHAWNRTV)",
+      "note": "Streets and signage look non-Indian; unknown geography should not be read as Indian."
+    }
+  ]
+}

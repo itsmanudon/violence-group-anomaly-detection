@@ -261,6 +261,189 @@ def freeze_split(
     return receipt
 
 
+def _matches(attributes: dict, condition: dict) -> bool:
+    return all(attributes[key] == value for key, value in condition.items())
+
+
+def assign_groups_stratified(
+    clips: dict[str, dict],
+    groups: list[list[str]],
+    seed: int,
+    ratios: tuple[float, float, float],
+    *,
+    strata: tuple[str, ...],
+    requirements: list[tuple[str, dict, int]],
+    forced_train: set[str] | frozenset[str] = frozenset(),
+    trials: int = 4096,
+) -> tuple[dict[str, str], dict]:
+    """Group-wise split balancing clip counts within every stratum.
+
+    Each trial visits groups in a seeded random order and places each in the split
+    whose stratum fill is furthest below its ratio. The most balanced trial that
+    meets every (name, condition, minimum) requirement in both val and test wins.
+    Groups containing any forced_train clip go to train.
+    """
+    if type(seed) is not int or seed < 0 or abs(sum(ratios) - 1) > 1e-8 or min(ratios) <= 0:
+        raise ValueError("Need nonnegative integer seed and positive ratios summing to 1")
+    groups = sorted(sorted(group) for group in groups)
+    if sorted(key for group in groups for key in group) != sorted(clips):
+        raise ValueError("Groups must partition exactly the supplied clips")
+    stratum = {key: tuple(clips[key][name] for name in strata) for key in clips}
+    totals = Counter(stratum.values())
+    vectors = [Counter(stratum[key] for key in group) for group in groups]
+    pinned = [bool(set(group) & set(forced_train)) for group in groups]
+
+    def cost(fill):
+        return sum((fill[i][s] / totals[s] - ratios[i]) ** 2 for i in range(3) for s in totals)
+
+    rng, best = random.Random(seed), None
+    for _ in range(trials):
+        order = list(range(len(groups)))
+        rng.shuffle(order)
+        fill = [Counter() for _ in SPLITS]
+        choice = {}
+        for index in sorted(order, key=lambda i: not pinned[i]):
+            if pinned[index]:
+                target = 0
+            else:
+                deltas = [
+                    sum(
+                        ((fill[i][s] + n) / totals[s] - ratios[i]) ** 2
+                        - (fill[i][s] / totals[s] - ratios[i]) ** 2
+                        for s, n in vectors[index].items()
+                    )
+                    for i in range(3)
+                ]
+                target = min(range(3), key=lambda i: (deltas[i], rng.random()))
+            fill[target].update(vectors[index])
+            choice[index] = target
+        assignment = {key: SPLITS[choice[i]] for i, group in enumerate(groups) for key in group}
+        met = {
+            (name, split): sum(
+                assignment[key] == split and _matches(clips[key], condition) for key in clips
+            )
+            for name, condition, _ in requirements
+            for split in ("val", "test")
+        }
+        if any(
+            met[(name, split)] < low for name, _, low in requirements for split in ("val", "test")
+        ):
+            continue
+        score = cost(fill)
+        if best is None or score < best[0]:
+            best = (score, assignment, met)
+    if best is None:
+        raise ValueError("No trial met the val/test requirements; relax them explicitly")
+    report = {
+        "balance_cost": best[0],
+        "requirements_met": {f"{name}|{split}": n for (name, split), n in best[2].items()},
+    }
+    return best[1], report
+
+
+def freeze_pilot_split(
+    clips: dict[str, dict],
+    group_of: dict[str, str],
+    output: Path,
+    *,
+    pilot_override: str,
+    seed: int,
+    ratios=(0.7, 0.15, 0.15),
+    strata=("label", "collection"),
+    requirements: list[tuple[str, dict, int]],
+    forced_train: set[str] | frozenset[str] = frozenset(),
+    artifacts: list[Path],
+    excluded: dict[str, str],
+) -> dict:
+    """Freeze a pilot split from reconstructed groups, explicitly overriding readiness gates.
+
+    The pilot overrides provenance/annotation approval (which freeze_split enforces)
+    by name; it never edits those gates. The receipt has the same identity fields as
+    freeze_split, so verify_split and every downstream trainer check it unchanged.
+    clips maps clip_id -> {path, sha256, label, collection, geography, fps, num_frames}.
+    """
+    if pilot_override != "team_labels_unadjudicated":
+        raise ValueError("Unknown pilot override")
+    if Path(output).exists():
+        raise FileExistsError(f"Refuse to overwrite frozen split: {output}")
+    members = defaultdict(list)
+    for key in clips:
+        members[group_of[key]].append(key)
+    groups = sorted(sorted(v) for v in members.values())
+    assignments, balance = assign_groups_stratified(
+        clips,
+        groups,
+        seed,
+        tuple(ratios),
+        strata=tuple(strata),
+        requirements=requirements,
+        forced_train=set(forced_train),
+    )
+    for key, item in clips.items():
+        if sha256(Path(item["path"])) != item["sha256"]:
+            raise ValueError(f"Video differs from inventory hash: {key}")
+    records = [
+        Record(
+            dataset="indian_pilot",
+            video_id=key,
+            source_video_id=group_of[key],
+            path=str(item["path"]),
+            split=assignments[key],
+            label=item["label"],
+            duration_sec=item["num_frames"] / item["fps"],
+            fps=item["fps"],
+            num_frames=item["num_frames"],
+            temporal_annotations=None,
+        )
+        for key, item in sorted(clips.items())
+    ]
+    check_leakage(records)
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=False)
+    write_manifest(records, output / "manifest.jsonl")
+
+    def count(split, condition):
+        return sum(r.split == split and _matches(clips[r.video_id], condition) for r in records)
+
+    payload = {
+        "schema_version": 1,
+        "dataset": "indian_pilot",
+        "pilot_override": pilot_override,
+        "override_scope": (
+            "annotation, provenance and benchmark-independence approvals are NOT granted; "
+            "team labels unadjudicated; source groups reconstructed heuristically"
+        ),
+        "seed": seed,
+        "ratios": list(ratios),
+        "strata": list(strata),
+        "requirements": [[name, condition, low] for name, condition, low in requirements],
+        "forced_train_clips": sorted(forced_train),
+        "split_unit": "reconstructed_source_group",
+        "method": "4096 seeded group orders; greedy stratum-deficit placement; min squared error",
+        "balance": balance,
+        "groups": groups,
+        "assignments": assignments,
+        "excluded_clips": excluded,
+        "clip_counts": dict(Counter(assignments.values())),
+        "group_counts": dict(Counter(assignments[group[0]] for group in groups)),
+        "class_counts": {
+            split: {str(label): count(split, {"label": label}) for label in (0, 1)}
+            for split in SPLITS
+        },
+        "test_clip_ids": sorted(r.video_id for r in records if r.split == "test"),
+        "video_sha256": {key: item["sha256"] for key, item in clips.items()},
+        "manifest_sha256": sha256(output / "manifest.jsonl"),
+        "artifacts": {str(Path(path).resolve()): sha256(path) for path in artifacts},
+        "limitations": (
+            "Pilot only: unadjudicated team labels; heuristic groups may miss shared "
+            "sources; label and collection are confounded (see DECISIONS.md)"
+        ),
+    }
+    receipt = {**payload, "freeze_hash": content_hash(payload)}
+    write_new_json(output / "split-receipt.json", receipt)
+    return receipt
+
+
 def verify_split(directory: Path, *, verify_media: bool = True) -> tuple[list[Record], dict]:
     """Reject altered membership/inputs/media before every downstream training run."""
     directory = Path(directory)
