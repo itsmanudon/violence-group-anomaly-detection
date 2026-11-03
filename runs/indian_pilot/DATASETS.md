@@ -30,6 +30,18 @@ used the same way:
 | 7 | Surveillance Camera Fight ([GitHub](https://github.com/seymanurakti/fight-detection-surv-dataset)) | 300 two-second YouTube CCTV clips, 150 fight / 150 non-fight | No | Public | Low value: tiny, unmatched |
 | 8 | RWF-2000 ([GitHub](https://github.com/mchengny/RWF2000-Video-Database-for-Violence-Detection)) | 2,000 surveillance clips | No | **Videos withheld** for privacy; not obtainable | None |
 
+## Other anomaly-detection datasets (from the ExtrAnom comparison table)
+
+Most of these label *any* unusual event, not violence, so they add few violent positives.
+
+| Dataset | Verdict |
+|---|---|
+| **UCA** ([project](https://xuange923.github.io/Surveillance-Video-Understanding), [GitHub](https://github.com/Xuange923/Surveillance-Video-Understanding)) | **Useful.** Manual timestamps and event descriptions for 1,854 UCF-Crime videos. Not new footage, but its event times let us cut more matched violent/normal segments from UCF-Crime videos we already have. They share sources with DCSASS, so keep DCSASS source groups |
+| RareAnom ([paper](https://www.sciencedirect.com/science/article/abs/pii/S0031320323002674)) | Maybe. 2,200 multi-source real-world videos, 17 rare anomaly types, temporal labels; same IIT Bhubaneswar group as ExtrAnom. Class list and access not verified; ask the authors alongside ExtrAnom |
+| UBnormal | Low. Synthetic (Cinema 4D) scenes; "fighting" is one of 22 types. Rendering gap to real CCTV |
+| ADOC, Street Scene, Subway Entrance, UCSD Ped1/Ped2, CUHK Avenue | No. Single-scene benchmarks whose anomalies are jaywalking, bikes, wrong direction, running, thrown objects; little or no violence |
+| UCF-Crime, CCTV-Fights, XD-Violence, ExtrAnom | Covered above |
+
 ## Web-sourced Indian CCTV clips
 
 Usable only as matched data: an uncut single-camera recording with calm footage before the
