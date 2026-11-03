@@ -37,6 +37,7 @@ Most of these label *any* unusual event, not violence, so they add few violent p
 | Dataset | Verdict |
 |---|---|
 | **UCA** ([project](https://xuange923.github.io/Surveillance-Video-Understanding), [GitHub](https://github.com/Xuange923/Surveillance-Video-Understanding)) | **Useful.** Manual timestamps and event descriptions for 1,854 UCF-Crime videos. Not new footage, but its event times let us cut more matched violent/normal segments from UCF-Crime videos we already have. They share sources with DCSASS, so keep DCSASS source groups |
+| ↳ fetched 2026-11-03 | Clone at `/Volumes/Seagate_2TB/violence-training/raw/uca` (commit `e478cb5`). 1,854 videos, all present in the SSD UCF-Crime copy; violent categories Abuse 50, Assault 48, Fighting 50, Robbery 149. Timestamps cover every described event (normal ones too), so a violent segment must be picked by a pre-registered sentence rule and spot-checked |
 | RareAnom ([paper](https://www.sciencedirect.com/science/article/abs/pii/S0031320323002674)) | Maybe. 2,200 multi-source real-world videos, 17 rare anomaly types, temporal labels; same IIT Bhubaneswar group as ExtrAnom. Class list and access not verified; ask the authors alongside ExtrAnom |
 | UBnormal | Low. Synthetic (Cinema 4D) scenes; "fighting" is one of 22 types. Rendering gap to real CCTV |
 | ADOC, Street Scene, Subway Entrance, UCSD Ped1/Ped2, CUHK Avenue | No. Single-scene benchmarks whose anomalies are jaywalking, bikes, wrong direction, running, thrown objects; little or no violence |
