@@ -349,3 +349,22 @@ decision, why, alternatives rejected.
 - **Not covered by the protocol:** `ubi:N_383_0_0_1_0` links to a DCSASS train source and a
   DCSASS val source. Either split would put shared footage on both sides, so its clips are
   **dropped**.
+
+## D28 — 2026-11-03 — v3 validation (before test)
+
+- Split `c558ed03…` (`3f1cb78`): train 11,532 (4,311 violent; `v3_cctv` uses 9,153), val
+  2,001 (828 violent), test 49 IITB clips (24 violent). 3 UBI clips dropped (D27); link
+  overrides moved 31 clips val→train and 6 train→val.
+- Features: 13,533 train/val bags on MPS in 37 min. Schedule by the protocol formula:
+  `v3_cctv` 1,200 steps (patience 200), `v3_all` 1,500 (patience 250).
+- **Deployed arm `v3_all`** by the pre-registered rule: non-XD validation PR-AUC seed mean
+  0.572 vs `v3_cctv` 0.533. Deployed `v3_all_s7`, threshold 0.40. Sanity check passed:
+  documented-Indian non-violence false-positive rate 7.3% (limit 10%).
+- Validation PR-AUC seed means (`v3_all` / `v3_cctv`): all 0.639 / 0.538, DCSASS 0.572 /
+  0.552, UBI 0.573 / 0.505, XD 0.790 / 0.564, Indian 0.930 / 0.758.
+- **Caution, as observed:** DCSASS val PR-AUC is below v2's 0.601. `v3_cctv` peaked early on
+  combined validation (best steps 23, 263, 43); `v3_all` seeds converged to nearly the same
+  model (best steps 1,047–1,084, seed std ≤ 0.002).
+- Dry run of the test script on validation: v3_all vs v2 PR-AUC +0.110 (CI [0.046, 0.187]),
+  within-source ROC-AUC +0.106 (CI [0.055, 0.161]). Not evidence for IITB: validation shares
+  the UBI/XD domains v3 trained on.

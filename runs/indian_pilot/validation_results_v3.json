@@ -1,0 +1,278 @@
+{
+  "scope": "validation_only",
+  "split_freeze_hash": "c558ed0324aab3de2145265ce2f7dfa699f9fe83dd03beb332253e0e4679e6b1",
+  "deployed": {
+    "rule": "higher seed-mean PR-AUC on non-XD validation clips (V3_PROTOCOL.md)",
+    "non_xd_val_pr_auc_seed_mean": {
+      "v3_cctv": 0.5333349833329086,
+      "v3_all": 0.5715905125899353
+    },
+    "deployed_arm": "v3_all",
+    "deployed_run": "v3_all_s7",
+    "split_freeze_hash": "c558ed0324aab3de2145265ce2f7dfa699f9fe83dd03beb332253e0e4679e6b1"
+  },
+  "threshold": 0.4,
+  "sanity_documented_indian_nv_fpr": 0.07272727272727272,
+  "runs": {
+    "v3_cctv_s7": {
+      "best_step": 23,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.5454443462736611,
+        "roc_auc": 0.633228622261759
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.5797736233494747,
+        "roc_auc": 0.815068493150685
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5674707278169583,
+        "roc_auc": 0.585216196697455
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.49905796087449217,
+        "roc_auc": 0.6249174427052374
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.575781781043776,
+        "roc_auc": 0.6759933665008293
+      },
+      "documented_indian_nv_fpr_at_threshold": 1.0
+    },
+    "v3_cctv_s8": {
+      "best_step": 263,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.5321976106008739,
+        "roc_auc": 0.6338376350330092
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9742063492063491,
+        "roc_auc": 0.9977168949771689
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5445235148462705,
+        "roc_auc": 0.5972328560335793
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.5221082535818886,
+        "roc_auc": 0.6388943927085395
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.5511001548650871,
+        "roc_auc": 0.6185339966832504
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.12727272727272726
+    },
+    "v3_cctv_s9": {
+      "best_step": 43,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.5354170444091005,
+        "roc_auc": 0.6150426669302462
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.7188186813186813,
+        "roc_auc": 0.9703196347031964
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5432375638886199,
+        "roc_auc": 0.5659504455340707
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.49350136712814635,
+        "roc_auc": 0.6257512713823394
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.5654629457843037,
+        "roc_auc": 0.639363184079602
+      },
+      "documented_indian_nv_fpr_at_threshold": 1.0
+    },
+    "v3_all_s7": {
+      "best_step": 1047,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.6390721740752916,
+        "roc_auc": 0.7344395435132675
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9296296296296296,
+        "roc_auc": 0.9908675799086758
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5714835298942933,
+        "roc_auc": 0.6340267483343379
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.572399097563468,
+        "roc_auc": 0.6804372234330626
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.7923040637454765,
+        "roc_auc": 0.8619568822553897
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.07272727272727272
+    },
+    "v3_all_s8": {
+      "best_step": 1083,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.6383844727515134,
+        "roc_auc": 0.7339051772778005
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9296296296296296,
+        "roc_auc": 0.9908675799086758
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5721848478819406,
+        "roc_auc": 0.6342710997442454
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.5724914748154755,
+        "roc_auc": 0.6814609338881183
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.7891300646026064,
+        "roc_auc": 0.8598739635157546
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.05454545454545454
+    },
+    "v3_all_s9": {
+      "best_step": 1084,
+      "all_val": {
+        "count": 2001,
+        "pr_auc": 0.6392875464096901,
+        "roc_auc": 0.7337538249914543
+      },
+      "indian_val": {
+        "count": 79,
+        "pr_auc": 0.9296296296296296,
+        "roc_auc": 0.9908675799086758
+      },
+      "dcsass_val": {
+        "count": 862,
+        "pr_auc": 0.5737348159489775,
+        "roc_auc": 0.6341244888983009
+      },
+      "ubi_val": {
+        "count": 500,
+        "pr_auc": 0.5736313922017602,
+        "roc_auc": 0.6811141932501157
+      },
+      "xd_val": {
+        "count": 560,
+        "pr_auc": 0.7886693195037908,
+        "roc_auc": 0.8595555555555556
+      },
+      "documented_indian_nv_fpr_at_threshold": 0.05454545454545454
+    }
+  },
+  "arms_val": {
+    "v3_cctv": {
+      "all_val_pr_auc": [
+        0.5376863337612119,
+        0.0056409961956423805
+      ],
+      "all_val_roc_auc": [
+        0.6273696414083382,
+        0.008720032453171008
+      ],
+      "indian_val_pr_auc": [
+        0.7575995512915017,
+        0.163344749356706
+      ],
+      "indian_val_roc_auc": [
+        0.9277016742770167,
+        0.08042523478613638
+      ],
+      "dcsass_val_pr_auc": [
+        0.5517439355172828,
+        0.011132906613405678
+      ],
+      "dcsass_val_roc_auc": [
+        0.582799832755035,
+        0.012884782049420744
+      ],
+      "ubi_val_pr_auc": [
+        0.504889193861509,
+        0.012385231709741538
+      ],
+      "ubi_val_roc_auc": [
+        0.6298543689320387,
+        0.006401319654335007
+      ],
+      "xd_val_pr_auc": [
+        0.5641149605643889,
+        0.010121214216386166
+      ],
+      "xd_val_roc_auc": [
+        0.6446301824212273,
+        0.023751501687350737
+      ]
+    },
+    "v3_all": {
+      "all_val_pr_auc": [
+        0.6389147310788317,
+        0.000385120527345092
+      ],
+      "all_val_roc_auc": [
+        0.7340328485941741,
+        0.0002941399287842958
+      ],
+      "indian_val_pr_auc": [
+        0.9296296296296296,
+        0.0
+      ],
+      "indian_val_roc_auc": [
+        0.9908675799086758,
+        0.0
+      ],
+      "dcsass_val_pr_auc": [
+        0.5724677312417371,
+        0.0009405989125520616
+      ],
+      "dcsass_val_roc_auc": [
+        0.6341407789922947,
+        0.00010041888352528229
+      ],
+      "ubi_val_pr_auc": [
+        0.5728406548602346,
+        0.0005604061304889508
+      ],
+      "ubi_val_roc_auc": [
+        0.6810041168570988,
+        0.00042511440277673014
+      ],
+      "xd_val_pr_auc": [
+        0.7900344826172913,
+        0.0016158218516865415
+      ],
+      "xd_val_roc_auc": [
+        0.8604621337755667,
+        0.0010649102217963392
+      ]
+    }
+  }
+}

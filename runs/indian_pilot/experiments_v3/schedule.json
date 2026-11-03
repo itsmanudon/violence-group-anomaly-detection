@@ -1,0 +1,12 @@
+{
+ "v3_cctv": {
+  "n_train": 9153,
+  "steps": 1200,
+  "patience": 200
+ },
+ "v3_all": {
+  "n_train": 11532,
+  "steps": 1500,
+  "patience": 250
+ }
+}

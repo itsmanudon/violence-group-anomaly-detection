@@ -1,0 +1,10 @@
+{
+ "rule": "higher seed-mean PR-AUC on non-XD validation clips (V3_PROTOCOL.md)",
+ "non_xd_val_pr_auc_seed_mean": {
+  "v3_cctv": 0.5333349833329086,
+  "v3_all": 0.5715905125899353
+ },
+ "deployed_arm": "v3_all",
+ "deployed_run": "v3_all_s7",
+ "split_freeze_hash": "c558ed0324aab3de2145265ce2f7dfa699f9fe83dd03beb332253e0e4679e6b1"
+}

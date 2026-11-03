@@ -81,3 +81,5 @@ runs/indian_pilot/experiments/*/registration.json
 !runs/indian_pilot/experiments/violence_f100_s7/registration.json
 runs/indian_pilot/experiments_v2/*/registration.json
 !runs/indian_pilot/experiments_v2/curve_d100_s7/registration.json
+runs/indian_pilot/experiments_v3/*/registration.json
+!runs/indian_pilot/experiments_v3/v3_all_s7/registration.json
