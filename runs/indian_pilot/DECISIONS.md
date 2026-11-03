@@ -313,3 +313,13 @@ decision, why, alternatives rejected.
 - **Demo switched to v2** per the protocol (criterion met): spec
   `runs/indian_pilot/demo/indian_pilot_spec_v2.json`; the server was restarted with it. Live =
   offline exactly for 3 clips (Playwright, Chrome).
+
+## D25 — 2026-11-03 — Training data lives on the SSD
+
+- User instruction: keep training data on the external SSD, not internal storage.
+- Moved the 3.3 GB of feature caches to `/Volumes/Seagate_2TB/violence-training/indian_pilot/features`
+  (8,026 files, SHA-256 identical); `runs/indian_pilot/features` is now a symlink there. The v2
+  validation dry run reproduces its earlier output byte for byte through the symlink. The local
+  copy was removed after verification. Scripts need the SSD mounted.
+- Checkpoints (`checkpoints/`, `experiments*/`) stay local so the demo runs without the SSD.
+- Candidate datasets for v3 are listed in `DATASETS.md`; web candidate URLs are on the SSD.

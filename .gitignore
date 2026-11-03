@@ -21,7 +21,8 @@ checkpoints/
 runs/*
 # Indian pilot: protocol, decisions, reports and small metric JSON only.
 !runs/indian_pilot/
-runs/indian_pilot/features/
+# Symlink to /Volumes/Seagate_2TB/violence-training/indian_pilot/features (feature caches live on the SSD).
+runs/indian_pilot/features
 runs/indian_pilot/**/*.csv
 runs/indian_pilot/**/*.mp4
 runs/indian_pilot/**/*.png
