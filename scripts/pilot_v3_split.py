@@ -61,8 +61,10 @@ def main():
             overrides["dropped_iitb_link"] += 1
             continue
         inherited = {split_of[ref] for ref in linked if ref in split_of}
-        if len(inherited) > 1:
-            raise ValueError(f"{source} links to sources in different splits: {linked}")
+        if len(inherited) > 1:  # D27: either split would leak, so the source is dropped
+            excluded[c["clip_id"]] = f"source {source} shares frames with train and val sources"
+            overrides["dropped_conflicting_links"] += 1
+            continue
         if inherited and inherited != {split}:
             overrides[f"{split}->{next(iter(inherited))}"] += 1
             split = next(iter(inherited))

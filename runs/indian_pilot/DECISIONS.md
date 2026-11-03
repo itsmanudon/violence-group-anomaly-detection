@@ -337,3 +337,15 @@ decision, why, alternatives rejected.
   (mixed-type intervals cannot be attributed).
 - **Spent test reused:** the v2 DCSASS test sources join v3 training; they are no longer
   used to evaluate anything.
+
+## D27 — 2026-11-03 — v3 overlap links (before the split is frozen)
+
+- 7,590 clips cut (every clip has exactly its planned frame count). Fingerprints: 7,226
+  videos/clips, 381,163 hashes. 23 new sources link to existing data (16 UBI→DCSASS, 7
+  XD→DCSASS, 2 XD→Indian); **none link to IITB test**.
+- Several links look coincidental (a feature film to a UCF robbery clip; four unrelated UBI
+  normal videos to `robbery109`). Applied anyway, as the protocol says: a false link only
+  moves a source into a split, it cannot leak. No visual review.
+- **Not covered by the protocol:** `ubi:N_383_0_0_1_0` links to a DCSASS train source and a
+  DCSASS val source. Either split would put shared footage on both sides, so its clips are
+  **dropped**.
