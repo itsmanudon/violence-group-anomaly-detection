@@ -323,3 +323,17 @@ decision, why, alternatives rejected.
   copy was removed after verification. Scripts need the SSD mounted.
 - Checkpoints (`checkpoints/`, `experiments*/`) stay local so the demo runs without the SSD.
 - Candidate datasets for v3 are listed in `DATASETS.md`; web candidate URLs are on the SSD.
+
+## D26 — 2026-11-03 — v3: UBI-Fights + XD-Violence, IITB-Corridor test (user decision)
+
+- **Decided by the user:** train on the new datasets now; about 50 test clips from
+  IITB-Corridor (chosen over a mixed test or waiting for the team's clips).
+- **Protocol:** `runs/indian_pilot/V3_PROTOCOL.md`, committed before any v3 clip, feature or
+  model exists.
+- **Read to write it:** IITB `test.txt` class names and counts only (8 Fighting, 10 Normal, 132
+  non-violent anomalies). No per-frame IITB annotation opened.
+- **Rejected:** Chasing as violence (pursuit is not a violent act); IITB train in any role (one
+  camera, normal-only, the same camera as the test); shooting/accident/explosion XD videos
+  (mixed-type intervals cannot be attributed).
+- **Spent test reused:** the v2 DCSASS test sources join v3 training; they are no longer
+  used to evaluate anything.
