@@ -368,3 +368,18 @@ decision, why, alternatives rejected.
 - Dry run of the test script on validation: v3_all vs v2 PR-AUC +0.110 (CI [0.046, 0.187]),
   within-source ROC-AUC +0.106 (CI [0.055, 0.161]). Not evidence for IITB: validation shares
   the UBI/XD domains v3 trained on.
+
+## D29 — 2026-11-03 — v3 one-time IITB test: improvement not shown
+
+- Ran once under protocol `1351c1a` (`test_results_v3.json`; the script refuses to rerun).
+  49 clips (24 violent), 18 videos, 8 with both labels.
+- **Pre-registered criterion not met.** `v3_all` vs v2 (seed means): PR-AUC 0.929 vs 0.877,
+  +0.059, CI [−0.058, 0.243]; within-video ROC-AUC 0.917 vs 0.917, −0.002, CI [−0.133, 0.125].
+  vs zero-shot Sultani (PR-AUC 0.856): +0.075, CI [−0.041, 0.212]. `v3_cctv`: PR-AUC 0.927,
+  within-video 0.951. v1 head: 0.754.
+- **Operating points (reported, not the criterion):** v3 at 0.40: 17/24 fights caught, 2/25
+  false alarms (precision 0.89, recall 0.71, FPR 0.08). v2 at 0.45: 0/24 caught; every v2
+  IITB score lies in 0.39–0.44. v1 at 0.40 flags all 49. Sultani at 0.5 flags none.
+- v3's margin is thin: violent median 0.442, highest non-violent 0.421, threshold 0.40.
+- **Demo keeps v2**, as the protocol says for "not shown". Switching to v3 because of the
+  operating-point result would be a post-hoc decision for the user, logged as such.
