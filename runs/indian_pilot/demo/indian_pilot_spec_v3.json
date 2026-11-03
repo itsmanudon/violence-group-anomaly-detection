@@ -1,0 +1,8 @@
+{
+  "checkpoint": "runs/indian_pilot/experiments_v3/v3_all_s7/best.pt",
+  "checkpoint_sha256": "68c142c8f15aa1e53bee1edba34349d525433b6623810deb66bf0c92321743b9",
+  "threshold": 0.4,
+  "split_freeze_hash": "c558ed0324aab3de2145265ce2f7dfa699f9fe83dd03beb332253e0e4679e6b1",
+  "threshold_rule": "v3 validation only: max F1 subject to recall >= 0.8",
+  "notes": "Indian pilot v3: Indian + DCSASS + UBI-Fights + XD-Violence training (seed 7). Chosen by the user after the IITB test (D30): ranking gain over v2 not significant, but 17/24 IITB fights caught with 2/25 false alarms vs v2's 0/24."
+}

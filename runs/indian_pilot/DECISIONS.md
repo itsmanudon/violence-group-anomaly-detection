@@ -383,3 +383,16 @@ decision, why, alternatives rejected.
 - v3's margin is thin: violent median 0.442, highest non-violent 0.421, threshold 0.40.
 - **Demo keeps v2**, as the protocol says for "not shown". Switching to v3 because of the
   operating-point result would be a post-hoc decision for the user, logged as such.
+
+## D30 — 2026-11-03 — Demo frozen on v3 (user decision, post hoc)
+
+- **Decided by the user after seeing the IITB test:** freeze the demo on `v3_all_s7` (all three
+  new datasets), threshold 0.40, spec `runs/indian_pilot/demo/indian_pilot_spec_v3.json`. This
+  overrides the protocol's "keep v2" and must be presented as a post-hoc choice: the ranking
+  gain over v2 was not significant; v3 was chosen for its working alert threshold on IITB
+  (17/24 vs 0/24).
+- Server restarted with the v3 spec. Live = offline for 3 IITB test clips via the HTTP API
+  (max difference 1.5e-7; tolerance 1e-3).
+- The pilot's displayed description said "a small team-annotated Indian set", stale since v2;
+  it now names the actual training data (`indian_pilot.py` scope, `main.jsx` note). Pilot
+  tests 8 passed, frontend tests 6 passed, bundle rebuilt.

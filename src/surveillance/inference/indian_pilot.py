@@ -1,8 +1,8 @@
 """Optional Indian pilot binary score on the cascade's own C3D bag.
 
-Pilot evidence only: a head fine-tuned on a small set of team-annotated Indian clips
-(labels not adjudicated). It never changes the cascade alert and is shown separately
-for human review.
+Pilot evidence only: a separately trained head whose training data and test results are
+recorded in runs/indian_pilot (v3: Indian, DCSASS, UBI-Fights and XD-Violence clips). It
+never changes the cascade alert and is shown separately for human review.
 """
 
 import json
@@ -15,8 +15,8 @@ from surveillance.datasets.dcsass_audit import sha256
 from surveillance.training.indian_binary import load_binary_checkpoint
 
 SCOPE = (
-    "Pilot score from a head fine-tuned on a small set of team-annotated Indian clips "
-    "(labels not adjudicated). For human review only; it never decides anything."
+    "Pilot score from a separately trained violence head, outside the cascade's validated "
+    "alert. For human review only; it never decides anything."
 )
 SPEC_KEYS = {"checkpoint", "checkpoint_sha256", "threshold", "split_freeze_hash", "threshold_rule"}
 

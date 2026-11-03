@@ -792,8 +792,9 @@ function App() {
                   </strong>
                 </div>
                 <p className="pilot-note">
-                  Pilot head on a small team-annotated Indian set. Shown for
-                  human review only; it does not change the alert above.
+                  Pilot head trained on Indian, DCSASS, UBI-Fights and XD-Violence
+                  clips. Shown for human review only; it does not change the alert
+                  above.
                 </p>
               </>
             )}
