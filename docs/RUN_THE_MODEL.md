@@ -20,7 +20,6 @@ macOS / Linux:
 ```bash
 git clone https://github.com/itsmanudon/violence-group-anomaly-detection.git
 cd violence-group-anomaly-detection
-git checkout common   # shared team branch until it is merged into main
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -32,7 +31,6 @@ Windows (PowerShell):
 ```powershell
 git clone https://github.com/itsmanudon/violence-group-anomaly-detection.git
 cd violence-group-anomaly-detection
-git checkout common   # shared team branch until it is merged into main
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
