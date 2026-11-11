@@ -1,5 +1,11 @@
 # Surveillance behavior anomaly research
 
+> **Teammates:** to run the demo model on your own laptop, follow
+> [docs/RUN_THE_MODEL.md](docs/RUN_THE_MODEL.md). How the model performs on its held-out
+> test set: [docs/results/MODEL_PERFORMANCE.md](docs/results/MODEL_PERFORMANCE.md).
+> Backend walkthrough for presentations:
+> [notebooks/professor_walkthrough.ipynb](notebooks/professor_walkthrough.ipynb).
+
 Indian-domain improvement preparation: start with the
 [repository audit](docs/indian-domain/repository-audit.md),
 [milestone plan](docs/indian-domain/implementation-plan.md),
